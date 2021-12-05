@@ -1,0 +1,13 @@
+version: '3'
+services:
+  crdb:
+    image: cockroachdb/cockroach:v21.2.2
+    ports:
+      - "26257:26257"
+      - "8080:8080"
+    command: start-single-node --cluster-name=example-single-node --logtostderr=WARNING --log-file-verbosity=WARNING --insecure
+    volumes:
+      - crdb-volume:/cockroach/cockroach-data
+
+volumes:
+  crdb-volume:

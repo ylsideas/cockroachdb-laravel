@@ -5,7 +5,7 @@ namespace YlsIdeas\CockroachDb\Facades;
 use Illuminate\Support\Facades\Facade;
 
 /**
- * @see \YlsIdeas\CockroachDb\CockroachDb
+ * @see \YlsIdeas\CockroachDb\CockroachGrammer
  */
 class CockroachDb extends Facade
 {

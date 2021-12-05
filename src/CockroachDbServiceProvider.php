@@ -2,24 +2,18 @@
 
 namespace YlsIdeas\CockroachDb;
 
-use Spatie\LaravelPackageTools\Package;
-use Spatie\LaravelPackageTools\PackageServiceProvider;
-use YlsIdeas\CockroachDb\Commands\CockroachDbCommand;
+use Illuminate\Database\Connection;
+use Illuminate\Support\ServiceProvider;
 
-class CockroachDbServiceProvider extends PackageServiceProvider
+class CockroachDbServiceProvider extends ServiceProvider
 {
-    public function configurePackage(Package $package): void
+    public function register()
     {
-        /*
-         * This class is a Package Service Provider
-         *
-         * More info: https://github.com/spatie/laravel-package-tools
-         */
-        $package
-            ->name('cockroachdb-laravel')
-            ->hasConfigFile()
-            ->hasViews()
-            ->hasMigration('create_cockroachdb-laravel_table')
-            ->hasCommand(CockroachDbCommand::class);
+        Connection::resolverFor('crdb', function ($connection, $database, $prefix, $config) {
+            $connector = new CockroachDbConnector();
+            $connection = $connector->connect($config);
+
+            return new CockroachDbConnection($connection, $database, $prefix, $config);
+        });
     }
 }
