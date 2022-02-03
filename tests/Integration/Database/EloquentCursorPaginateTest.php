@@ -7,9 +7,12 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Pagination\Cursor;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+use YlsIdeas\CockroachDb\Tests\WithMultipleApplicationVersions;
 
 class EloquentCursorPaginateTest extends DatabaseTestCase
 {
+    use WithMultipleApplicationVersions;
+
     protected function defineDatabaseMigrationsAfterDatabaseRefreshed()
     {
         Schema::create('test_posts', function (Blueprint $table) {
@@ -34,6 +37,25 @@ class EloquentCursorPaginateTest extends DatabaseTestCase
         }
 
         $this->assertCount(15, TestPost::cursorPaginate(15, ['id', 'title']));
+    }
+
+    public function testPaginationWithUnion()
+    {
+        $this->skipIfOlderThan('8.83');
+
+        TestPost::create(['title' => 'Hello world', 'user_id' => 1]);
+        TestPost::create(['title' => 'Goodbye world', 'user_id' => 2]);
+        TestPost::create(['title' => 'Howdy', 'user_id' => 3]);
+        TestPost::create(['title' => '4th', 'user_id' => 4]);
+
+        $table1 = TestPost::query()->whereIn('user_id', [1, 2]);
+        $table2 = TestPost::query()->whereIn('user_id', [3, 4]);
+
+        $result = $table1->unionAll($table2)
+            ->orderBy('user_id', 'desc')
+            ->cursorPaginate(1);
+
+        self::assertSame(['user_id'], $result->getOptions()['parameters']);
     }
 
     public function testPaginationWithDistinct()

@@ -5,6 +5,7 @@ namespace YlsIdeas\CockroachDb\Query;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Database\Query\Grammars\Grammar;
 use Illuminate\Database\Query\Grammars\PostgresGrammar;
+use YlsIdeas\CockroachDb\Exceptions\FeatureNotSupportedException;
 
 class CockroachGrammar extends PostgresGrammar
 {
@@ -46,7 +47,7 @@ class CockroachGrammar extends PostgresGrammar
         $where = $this->compileWheres($query);
 
         if (! empty($query->joins)) {
-            throw new \LogicException(
+            throw new FeatureNotSupportedException(
                 'Joins for deletions are not supported by CockroachDB, consider using a where in sub-query instead.'
             );
         }
@@ -60,5 +61,17 @@ class CockroachGrammar extends PostgresGrammar
         }
 
         return trim($statement);
+    }
+
+    /**
+     * Compile a "where fulltext" clause.
+     *
+     * @param  \Illuminate\Database\Query\Builder  $query
+     * @param  array  $where
+     * @return string
+     */
+    public function whereFullText(Builder $query, $where)
+    {
+        throw new FeatureNotSupportedException('Fulltext indexes are not supported by CockroachDB as of version 2.5');
     }
 }

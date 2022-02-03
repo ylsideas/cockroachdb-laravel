@@ -9,9 +9,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
+use YlsIdeas\CockroachDb\Tests\WithMultipleApplicationVersions;
 
 class DatabaseCustomCastsTest extends DatabaseTestCase
 {
+    use WithMultipleApplicationVersions;
+
     protected function defineDatabaseMigrationsAfterDatabaseRefreshed()
     {
         Schema::create('test_eloquent_model_with_custom_casts', function (Blueprint $table) {
@@ -25,9 +28,7 @@ class DatabaseCustomCastsTest extends DatabaseTestCase
 
     public function test_custom_casting()
     {
-        if (! class_exists(AsStringable::class)) {
-            $this->markTestSkipped('Class AsStringable does not exist for the test to continue');
-        }
+        $this->skipIfClassMissing(AsStringable::class);
 
         $model = new TestEloquentModelWithCustomCasts();
 

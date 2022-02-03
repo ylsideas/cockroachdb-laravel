@@ -5,8 +5,22 @@
 [![GitHub Code Style Action Status](https://img.shields.io/github/workflow/status/ylsideas/cockroachdb-laravel/Check%20&%20fix%20styling?label=code%20style)](https://github.com/ylsideas/cockroachdb-laravel/actions?query=workflow%3A"Check+%26+fix+styling"+branch%3Amain)
 [![Total Downloads](https://img.shields.io/packagist/dt/ylsideas/cockroachdb-laravel.svg?style=flat-square)](https://packagist.org/packages/ylsideas/cockroachdb-laravel)
 
-A driver/grammar for Laravel that works with CockroachDB. This is currently an alpha.
-All tests pass, but you may run into bugs potentially going forward.
+A driver/grammar for Laravel that works with CockroachDB. While CockroachDB is compatible with Postgresql, this support
+is not 1 to 1 meaning you may run into issues, this driver hopes to resolve those problems as much as possible.
+
+Laravel 8 and 9 are both supported and tested against CockroachDB 2.5.
+
+## Support
+
+Peter Fox here, I just want to say this project has been my hardest yet. It's been a real labour of love to make and takes
+up a lot of time trying to organise the test suite so that compatibility is maintained between Eloquent and CockroachDB.
+
+I see a lot of promise in using CockroachDB's serverless offering which is what compelled me to go down this route originally.
+You can read [an article](https://medium.com/@SlyFireFox/laravel-tip-cockroachdbs-serverless-database-322aa7f5f7ef) 
+I made about using their service.
+
+If you're using this project at all then do please consider [sponsoring me](https://github.com/sponsors/peterfox) 
+as a way of encouraging more development.
 
 ## Installation
 
@@ -40,8 +54,22 @@ To enable set `DB_CONNECTION=crdb` in your .env.
 
 ## Notes
 
+CockroachDB should work inline with the feature set of Postgresql, with some exceptions. You can look at the
+features of each CockroachDB server in the CockroachDB [Docs](https://www.cockroachlabs.com/docs/stable/sql-feature-support.html#indexes).
+
+### Deletes with Joins
 CockroachDB does not support performing deletes using joins. If you wish to
 do something like this you will need to use a sub-query instead.
+
+At current if you try to call the `delete` method of the Query builder together with a `join` then
+a `YlsIdeas\CockroachDb\Exceptions\FeatureNotSupportedException` exception will be thrown.
+
+### Fulltext Search
+Eloquent and Postgresql support Fulltext search. CockroachDB does not support any full text
+search meaning the feature cannot be used when using this driver.
+
+At current if you try to create a Fulltext index using the Schema builder or try to use the `whereFulltext`
+method of the Query builder a `YlsIdeas\CockroachDb\Exceptions\FeatureNotSupportedException` exception will be thrown.
 
 ## Testing
 

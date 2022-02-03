@@ -9,13 +9,15 @@ use Illuminate\Database\Eloquent\Casts\AsEncryptedCollection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Schema;
 use stdClass;
+use YlsIdeas\CockroachDb\Tests\WithMultipleApplicationVersions;
 
 class EloquentModelEncryptedCastingTest extends DatabaseTestCase
 {
+    use WithMultipleApplicationVersions;
+
     protected $encrypter;
 
     protected function setUp(): void
@@ -184,16 +186,15 @@ class EloquentModelEncryptedCastingTest extends DatabaseTestCase
 
     public function testAsEncryptedCollection()
     {
-        if (version_compare(App::version(), '8.75', '<')) {
-            $this->markTestSkipped('Not included before 8.75');
-        }
+        $this->skipIfOlderThan('8.75');
+        $expectedCount = $this->executeOnVersion('9.0', 10, 12);
 
         $this->encrypter->expects('encryptString')
             ->twice()
             ->with('{"key1":"value1"}')
             ->andReturn('encrypted-secret-collection-string-1');
         $this->encrypter->expects('encryptString')
-            ->times(12)
+            ->times($expectedCount)
             ->with('{"key1":"value1","key2":"value2"}')
             ->andReturn('encrypted-secret-collection-string-2');
         $this->encrypter->expects('decryptString')
@@ -238,9 +239,8 @@ class EloquentModelEncryptedCastingTest extends DatabaseTestCase
 
     public function testAsEncryptedArrayObject()
     {
-        if (version_compare(App::version(), '8.75', '<')) {
-            $this->markTestSkipped('Not included before 8.75');
-        }
+        $this->skipIfOlderThan('8.75');
+        $expectedCount = $this->executeOnVersion('9.0', 10, 12);
 
         $this->encrypter->expects('encryptString')
             ->once()
@@ -251,7 +251,7 @@ class EloquentModelEncryptedCastingTest extends DatabaseTestCase
             ->with('encrypted-secret-array-string-1')
             ->andReturn('{"key1":"value1"}');
         $this->encrypter->expects('encryptString')
-            ->times(12)
+            ->times($expectedCount)
             ->with('{"key1":"value1","key2":"value2"}')
             ->andReturn('encrypted-secret-array-string-2');
         $this->encrypter->expects('decryptString')

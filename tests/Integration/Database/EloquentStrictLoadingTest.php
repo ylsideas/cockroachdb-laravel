@@ -6,7 +6,9 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\LazyLoadingViolationException;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Schema;
+use RuntimeException;
 
 class EloquentStrictLoadingTest extends DatabaseTestCase
 {
@@ -14,22 +16,23 @@ class EloquentStrictLoadingTest extends DatabaseTestCase
     {
         parent::setUp();
 
+        ResetCustomLoading::resetCustomLazyLoadingEvent();
         Model::preventLazyLoading();
     }
 
     protected function defineDatabaseMigrationsAfterDatabaseRefreshed()
     {
-        Schema::create('strict_loading_test_model1', function (Blueprint $table) {
+        Schema::create('test_model1', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('number')->default(1);
         });
 
-        Schema::create('strict_loading_test_model2', function (Blueprint $table) {
+        Schema::create('test_model2', function (Blueprint $table) {
             $table->increments('id');
             $table->foreignId('model_1_id');
         });
 
-        Schema::create('strict_loading_test_model3', function (Blueprint $table) {
+        Schema::create('test_model3', function (Blueprint $table) {
             $table->increments('id');
             $table->foreignId('model_2_id');
         });
@@ -115,7 +118,7 @@ class EloquentStrictLoadingTest extends DatabaseTestCase
 
     public function testStrictModeWithCustomCallbackOnLazyLoading()
     {
-        $this->expectsEvents(ViolatedLazyLoadingEvent::class);
+        Event::fake();
 
         Model::handleLazyLoadingViolationUsing(function ($model, $key) {
             event(new ViolatedLazyLoadingEvent($model, $key));
@@ -128,12 +131,12 @@ class EloquentStrictLoadingTest extends DatabaseTestCase
 
         $models[0]->modelTwos;
 
-        EloquentStrictLoadingTestModel1::resetCustomCallback();
+        Event::assertDispatched(ViolatedLazyLoadingEvent::class);
     }
 
     public function testStrictModeWithOverriddenHandlerOnLazyLoading()
     {
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Violated');
 
         EloquentStrictLoadingTestModel1WithCustomHandler::create();
@@ -145,9 +148,17 @@ class EloquentStrictLoadingTest extends DatabaseTestCase
     }
 }
 
+class ResetCustomLoading extends Model
+{
+    public static function resetCustomLazyLoadingEvent()
+    {
+        Model::$lazyLoadingViolationCallback = null;
+    }
+}
+
 class EloquentStrictLoadingTestModel1 extends Model
 {
-    public $table = 'strict_loading_test_model1';
+    public $table = 'test_model1';
     public $timestamps = false;
     protected $guarded = [];
 
@@ -155,16 +166,11 @@ class EloquentStrictLoadingTestModel1 extends Model
     {
         return $this->hasMany(EloquentStrictLoadingTestModel2::class, 'model_1_id');
     }
-
-    public static function resetCustomCallback()
-    {
-        self::$lazyLoadingViolationCallback = null;
-    }
 }
 
 class EloquentStrictLoadingTestModel1WithCustomHandler extends Model
 {
-    public $table = 'strict_loading_test_model1';
+    public $table = 'test_model1';
     public $timestamps = false;
     protected $guarded = [];
 
@@ -175,13 +181,13 @@ class EloquentStrictLoadingTestModel1WithCustomHandler extends Model
 
     protected function handleLazyLoadingViolation($key)
     {
-        throw new \RuntimeException("Violated {$key}");
+        throw new RuntimeException("Violated {$key}");
     }
 }
 
 class EloquentStrictLoadingTestModel2 extends Model
 {
-    public $table = 'strict_loading_test_model2';
+    public $table = 'test_model2';
     public $timestamps = false;
     protected $guarded = [];
 
@@ -193,7 +199,7 @@ class EloquentStrictLoadingTestModel2 extends Model
 
 class EloquentStrictLoadingTestModel3 extends Model
 {
-    public $table = 'strict_loading_test_model3';
+    public $table = 'test_model3';
     public $timestamps = false;
     protected $guarded = [];
 }
