@@ -10,7 +10,6 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Schema;
-use stdClass;
 
 uses(DatabaseTestCase::class);
 

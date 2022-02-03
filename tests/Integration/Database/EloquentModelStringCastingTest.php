@@ -3,7 +3,6 @@
 use Illuminate\Database\Eloquent\Model as Eloquent;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use stdClass;
 
 uses(DatabaseTestCase::class);
 

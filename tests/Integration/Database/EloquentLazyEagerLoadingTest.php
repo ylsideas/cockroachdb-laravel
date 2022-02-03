@@ -1,6 +1,5 @@
 <?php
 
-use DB;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
