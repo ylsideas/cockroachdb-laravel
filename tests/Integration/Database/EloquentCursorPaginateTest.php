@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Pagination\Cursor;
 use Illuminate\Support\Facades\DB;

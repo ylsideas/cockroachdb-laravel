@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Schema;
 use YlsIdeas\CockroachDb\Tests\Integration\Database\DatabaseTestCase;
 

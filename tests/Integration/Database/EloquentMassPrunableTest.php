@@ -2,9 +2,6 @@
 
 use Illuminate\Container\Container;
 use Illuminate\Contracts\Events\Dispatcher;
-use Illuminate\Database\Eloquent\MassPrunable;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Events\ModelsPruned;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;

@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Database\Eloquent\Model;
 
 uses(DatabaseTestCase::class);
 

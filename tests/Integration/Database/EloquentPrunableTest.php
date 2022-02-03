@@ -1,8 +1,5 @@
 <?php
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Prunable;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Events\ModelsPruned;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Event;
