@@ -1,211 +1,158 @@
 <?php
 
-namespace YlsIdeas\CockroachDb\Tests\Integration\Database;
-
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\LazyLoadingViolationException;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class EloquentStrictLoadingTest extends DatabaseTestCase
+uses(DatabaseTestCase::class);
+
+beforeEach(function () {
+    Model::preventLazyLoading();
+});
+
+test('strict mode throws an exception on lazy loading', function () {
+    $this->expectException(LazyLoadingViolationException::class);
+    $this->expectExceptionMessage('Attempted to lazy load');
+
+    EloquentStrictLoadingTestModel1::create();
+    EloquentStrictLoadingTestModel1::create();
+
+    $models = EloquentStrictLoadingTestModel1::get();
+
+    $models[0]->modelTwos;
+});
+
+test('strict mode doesnt throw an exception on lazy loading with single model', function () {
+    EloquentStrictLoadingTestModel1::create();
+
+    $models = EloquentStrictLoadingTestModel1::get();
+
+    $this->assertInstanceOf(Collection::class, $models);
+});
+
+test('strict mode doesnt throw an exception on attributes', function () {
+    EloquentStrictLoadingTestModel1::create();
+
+    $models = EloquentStrictLoadingTestModel1::get(['id']);
+
+    $this->assertNull($models[0]->number);
+});
+
+test('strict mode doesnt throw an exception on eager loading', function () {
+    app()['config']->set('database.connections.testing.zxc', false);
+
+    EloquentStrictLoadingTestModel1::create();
+    EloquentStrictLoadingTestModel1::create();
+
+    $models = EloquentStrictLoadingTestModel1::with('modelTwos')->get();
+
+    $this->assertInstanceOf(Collection::class, $models[0]->modelTwos);
+});
+
+test('strict mode doesnt throw an exception on lazy eager loading', function () {
+    EloquentStrictLoadingTestModel1::create();
+    EloquentStrictLoadingTestModel1::create();
+
+    $models = EloquentStrictLoadingTestModel1::get();
+
+    $models->load('modelTwos');
+
+    $this->assertInstanceOf(Collection::class, $models[0]->modelTwos);
+});
+
+test('strict mode doesnt throw an exception on single model loading', function () {
+    $model = EloquentStrictLoadingTestModel1::create();
+
+    $model = EloquentStrictLoadingTestModel1::find($model->id);
+
+    $this->assertInstanceOf(Collection::class, $model->modelTwos);
+});
+
+test('strict mode throws an exception on lazy loading in relations', function () {
+    $this->expectException(LazyLoadingViolationException::class);
+    $this->expectExceptionMessage('Attempted to lazy load');
+
+    $model1 = EloquentStrictLoadingTestModel1::create();
+    EloquentStrictLoadingTestModel2::create(['model_1_id' => $model1->id]);
+    EloquentStrictLoadingTestModel2::create(['model_1_id' => $model1->id]);
+
+    $models = EloquentStrictLoadingTestModel1::with('modelTwos')->get();
+
+    $models[0]->modelTwos[0]->modelThrees;
+});
+
+test('strict mode with custom callback on lazy loading', function () {
+    $this->expectsEvents(ViolatedLazyLoadingEvent::class);
+
+    Model::handleLazyLoadingViolationUsing(function ($model, $key) {
+        event(new ViolatedLazyLoadingEvent($model, $key));
+    });
+
+    EloquentStrictLoadingTestModel1::create();
+    EloquentStrictLoadingTestModel1::create();
+
+    $models = EloquentStrictLoadingTestModel1::get();
+
+    $models[0]->modelTwos;
+
+    EloquentStrictLoadingTestModel1::resetCustomCallback();
+});
+
+test('strict mode with overridden handler on lazy loading', function () {
+    $this->expectException(\RuntimeException::class);
+    $this->expectExceptionMessage('Violated');
+
+    EloquentStrictLoadingTestModel1WithCustomHandler::create();
+    EloquentStrictLoadingTestModel1WithCustomHandler::create();
+
+    $models = EloquentStrictLoadingTestModel1WithCustomHandler::get();
+
+    $models[0]->modelTwos;
+});
+
+// Helpers
+function defineDatabaseMigrationsAfterDatabaseRefreshed()
 {
-    protected function setUp(): void
-    {
-        parent::setUp();
+    Schema::create('strict_loading_test_model1', function (Blueprint $table) {
+        $table->increments('id');
+        $table->integer('number')->default(1);
+    });
 
-        Model::preventLazyLoading();
-    }
+    Schema::create('strict_loading_test_model2', function (Blueprint $table) {
+        $table->increments('id');
+        $table->foreignId('model_1_id');
+    });
 
-    protected function defineDatabaseMigrationsAfterDatabaseRefreshed()
-    {
-        Schema::create('strict_loading_test_model1', function (Blueprint $table) {
-            $table->increments('id');
-            $table->integer('number')->default(1);
-        });
-
-        Schema::create('strict_loading_test_model2', function (Blueprint $table) {
-            $table->increments('id');
-            $table->foreignId('model_1_id');
-        });
-
-        Schema::create('strict_loading_test_model3', function (Blueprint $table) {
-            $table->increments('id');
-            $table->foreignId('model_2_id');
-        });
-    }
-
-    public function testStrictModeThrowsAnExceptionOnLazyLoading()
-    {
-        $this->expectException(LazyLoadingViolationException::class);
-        $this->expectExceptionMessage('Attempted to lazy load');
-
-        EloquentStrictLoadingTestModel1::create();
-        EloquentStrictLoadingTestModel1::create();
-
-        $models = EloquentStrictLoadingTestModel1::get();
-
-        $models[0]->modelTwos;
-    }
-
-    public function testStrictModeDoesntThrowAnExceptionOnLazyLoadingWithSingleModel()
-    {
-        EloquentStrictLoadingTestModel1::create();
-
-        $models = EloquentStrictLoadingTestModel1::get();
-
-        $this->assertInstanceOf(Collection::class, $models);
-    }
-
-    public function testStrictModeDoesntThrowAnExceptionOnAttributes()
-    {
-        EloquentStrictLoadingTestModel1::create();
-
-        $models = EloquentStrictLoadingTestModel1::get(['id']);
-
-        $this->assertNull($models[0]->number);
-    }
-
-    public function testStrictModeDoesntThrowAnExceptionOnEagerLoading()
-    {
-        $this->app['config']->set('database.connections.testing.zxc', false);
-
-        EloquentStrictLoadingTestModel1::create();
-        EloquentStrictLoadingTestModel1::create();
-
-        $models = EloquentStrictLoadingTestModel1::with('modelTwos')->get();
-
-        $this->assertInstanceOf(Collection::class, $models[0]->modelTwos);
-    }
-
-    public function testStrictModeDoesntThrowAnExceptionOnLazyEagerLoading()
-    {
-        EloquentStrictLoadingTestModel1::create();
-        EloquentStrictLoadingTestModel1::create();
-
-        $models = EloquentStrictLoadingTestModel1::get();
-
-        $models->load('modelTwos');
-
-        $this->assertInstanceOf(Collection::class, $models[0]->modelTwos);
-    }
-
-    public function testStrictModeDoesntThrowAnExceptionOnSingleModelLoading()
-    {
-        $model = EloquentStrictLoadingTestModel1::create();
-
-        $model = EloquentStrictLoadingTestModel1::find($model->id);
-
-        $this->assertInstanceOf(Collection::class, $model->modelTwos);
-    }
-
-    public function testStrictModeThrowsAnExceptionOnLazyLoadingInRelations()
-    {
-        $this->expectException(LazyLoadingViolationException::class);
-        $this->expectExceptionMessage('Attempted to lazy load');
-
-        $model1 = EloquentStrictLoadingTestModel1::create();
-        EloquentStrictLoadingTestModel2::create(['model_1_id' => $model1->id]);
-        EloquentStrictLoadingTestModel2::create(['model_1_id' => $model1->id]);
-
-        $models = EloquentStrictLoadingTestModel1::with('modelTwos')->get();
-
-        $models[0]->modelTwos[0]->modelThrees;
-    }
-
-    public function testStrictModeWithCustomCallbackOnLazyLoading()
-    {
-        $this->expectsEvents(ViolatedLazyLoadingEvent::class);
-
-        Model::handleLazyLoadingViolationUsing(function ($model, $key) {
-            event(new ViolatedLazyLoadingEvent($model, $key));
-        });
-
-        EloquentStrictLoadingTestModel1::create();
-        EloquentStrictLoadingTestModel1::create();
-
-        $models = EloquentStrictLoadingTestModel1::get();
-
-        $models[0]->modelTwos;
-
-        EloquentStrictLoadingTestModel1::resetCustomCallback();
-    }
-
-    public function testStrictModeWithOverriddenHandlerOnLazyLoading()
-    {
-        $this->expectException(\RuntimeException::class);
-        $this->expectExceptionMessage('Violated');
-
-        EloquentStrictLoadingTestModel1WithCustomHandler::create();
-        EloquentStrictLoadingTestModel1WithCustomHandler::create();
-
-        $models = EloquentStrictLoadingTestModel1WithCustomHandler::get();
-
-        $models[0]->modelTwos;
-    }
+    Schema::create('strict_loading_test_model3', function (Blueprint $table) {
+        $table->increments('id');
+        $table->foreignId('model_2_id');
+    });
 }
 
-class EloquentStrictLoadingTestModel1 extends Model
+function resetCustomCallback()
 {
-    public $table = 'strict_loading_test_model1';
-    public $timestamps = false;
-    protected $guarded = [];
-
-    public function modelTwos()
-    {
-        return $this->hasMany(EloquentStrictLoadingTestModel2::class, 'model_1_id');
-    }
-
-    public static function resetCustomCallback()
-    {
-        self::$lazyLoadingViolationCallback = null;
-    }
+    self::$lazyLoadingViolationCallback = null;
 }
 
-class EloquentStrictLoadingTestModel1WithCustomHandler extends Model
+function modelTwos()
 {
-    public $table = 'strict_loading_test_model1';
-    public $timestamps = false;
-    protected $guarded = [];
-
-    public function modelTwos()
-    {
-        return $this->hasMany(EloquentStrictLoadingTestModel2::class, 'model_1_id');
-    }
-
-    protected function handleLazyLoadingViolation($key)
-    {
-        throw new \RuntimeException("Violated {$key}");
-    }
+    return test()->hasMany(EloquentStrictLoadingTestModel2::class, 'model_1_id');
 }
 
-class EloquentStrictLoadingTestModel2 extends Model
+function handleLazyLoadingViolation($key)
 {
-    public $table = 'strict_loading_test_model2';
-    public $timestamps = false;
-    protected $guarded = [];
-
-    public function modelThrees()
-    {
-        return $this->hasMany(EloquentStrictLoadingTestModel3::class, 'model_2_id');
-    }
+    throw new \RuntimeException("Violated {$key}");
 }
 
-class EloquentStrictLoadingTestModel3 extends Model
+function modelThrees()
 {
-    public $table = 'strict_loading_test_model3';
-    public $timestamps = false;
-    protected $guarded = [];
+    return test()->hasMany(EloquentStrictLoadingTestModel3::class, 'model_2_id');
 }
 
-class ViolatedLazyLoadingEvent
+function __construct($model, $key)
 {
-    public $model;
-    public $key;
-
-    public function __construct($model, $key)
-    {
-        $this->model = $model;
-        $this->key = $key;
-    }
+    test()->model = $model;
+    test()->key = $key;
 }

@@ -1,81 +1,77 @@
 <?php
 
-namespace YlsIdeas\CockroachDb\Tests\Integration\Database;
-
 use Illuminate\Support\Facades\DB;
 use Orchestra\Testbench\TestCase;
 use YlsIdeas\CockroachDb\CockroachDbServiceProvider;
 
-class RefreshCommandTest extends TestCase
-{
-    public function testRefreshWithoutRealpath()
-    {
-        $this->app->setBasePath(__DIR__);
+uses(TestCase::class);
 
-        $options = [
-            '--path' => 'stubs/',
-        ];
+test('refresh without realpath', function () {
+    app()->setBasePath(__DIR__);
 
-        $this->migrateRefreshWith($options);
-    }
+    $options = [
+        '--path' => 'stubs/',
+    ];
 
-    public function testRefreshWithRealpath()
-    {
-        $options = [
-            '--path' => realpath(__DIR__.'/stubs/'),
-            '--realpath' => true,
-        ];
+    migrateRefreshWith($options);
+});
 
-        $this->migrateRefreshWith($options);
-    }
+test('refresh with realpath', function () {
+    $options = [
+        '--path' => realpath(__DIR__.'/stubs/'),
+        '--realpath' => true,
+    ];
 
-    /**
+    migrateRefreshWith($options);
+});
+
+// Helpers
+/**
      * Get package providers.
      *
      * @param  \Illuminate\Foundation\Application  $app
      *
      * @return array
      */
-    protected function getPackageProviders($app)
-    {
-        return [
-            CockroachDbServiceProvider::class,
-        ];
+function getPackageProviders($app)
+{
+    return [
+        CockroachDbServiceProvider::class,
+    ];
+}
+
+function getEnvironmentSetUp($app)
+{
+    config()->set('database.connections.crdb', [
+        'driver' => 'crdb',
+        'url' => env('DATABASE_URL'),
+        'host' => env('DB_HOST', '127.0.0.1'),
+        'port' => env('DB_PORT', '26257'),
+        'database' => env('DB_DATABASE', 'forge'),
+        'username' => env('DB_USERNAME', 'root'),
+        'password' => env('DB_PASSWORD', ''),
+        'charset' => 'utf8',
+        'prefix' => '',
+        'prefix_indexes' => true,
+        'schema' => 'public',
+        'sslmode' => 'prefer',
+    ]);
+}
+
+function migrateRefreshWith(array $options)
+{
+    if (test()->app['config']->get('database.default') !== 'testing') {
+        test()->artisan('db:wipe', ['--drop-views' => true]);
     }
 
-    protected function getEnvironmentSetUp($app)
-    {
-        config()->set('database.connections.crdb', [
-            'driver' => 'crdb',
-            'url' => env('DATABASE_URL'),
-            'host' => env('DB_HOST', '127.0.0.1'),
-            'port' => env('DB_PORT', '26257'),
-            'database' => env('DB_DATABASE', 'forge'),
-            'username' => env('DB_USERNAME', 'root'),
-            'password' => env('DB_PASSWORD', ''),
-            'charset' => 'utf8',
-            'prefix' => '',
-            'prefix_indexes' => true,
-            'schema' => 'public',
-            'sslmode' => 'prefer',
-        ]);
-    }
+    test()->beforeApplicationDestroyed(function () use ($options) {
+        test()->artisan('migrate:rollback', $options);
+    });
 
-    private function migrateRefreshWith(array $options)
-    {
-        if ($this->app['config']->get('database.default') !== 'testing') {
-            $this->artisan('db:wipe', ['--drop-views' => true]);
-        }
+    test()->artisan('migrate:refresh', $options);
+    DB::table('members')->insert(['name' => 'foo', 'email' => 'foo@bar', 'password' => 'secret']);
+    test()->assertEquals(1, DB::table('members')->count());
 
-        $this->beforeApplicationDestroyed(function () use ($options) {
-            $this->artisan('migrate:rollback', $options);
-        });
-
-        $this->artisan('migrate:refresh', $options);
-        DB::table('members')->insert(['name' => 'foo', 'email' => 'foo@bar', 'password' => 'secret']);
-        $this->assertEquals(1, DB::table('members')->count());
-
-        $this->artisan('migrate:refresh', $options);
-        $this->assertEquals(0, DB::table('members')->count());
-    }
+    test()->artisan('migrate:refresh', $options);
+    test()->assertEquals(0, DB::table('members')->count());
 }

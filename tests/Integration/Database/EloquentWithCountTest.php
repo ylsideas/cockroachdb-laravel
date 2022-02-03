@@ -1,148 +1,96 @@
 <?php
 
-namespace YlsIdeas\CockroachDb\Tests\Integration\Database;
-
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class EloquentWithCountTest extends DatabaseTestCase
+uses(DatabaseTestCase::class);
+
+it('basic', function () {
+    $one = Model1::create(['id' => 1]);
+    $two = $one->twos()->Create(['id' => 2]);
+    $two->threes()->Create(['id' => 3]);
+
+    $results = Model1::withCount([
+        'twos' => function ($query) {
+            $query->where('id', '>=', 1);
+        },
+    ]);
+
+    $this->assertEquals([
+        ['id' => 1, 'twos_count' => 1],
+    ], $results->get()->toArray());
+});
+
+test('global scopes', function () {
+    $one = Model1::create(['id' => 1]);
+    $one->fours()->create(['id' => 1]);
+
+    $result = Model1::withCount('fours')->first();
+    $this->assertEquals(0, $result->fours_count);
+
+    $result = Model1::withCount('allFours')->first();
+    $this->assertEquals(1, $result->all_fours_count);
+});
+
+test('sorting scopes', function () {
+    $one = Model1::create(['id' => 1]);
+    $one->twos()->create();
+
+    $query = Model1::withCount('twos')->getQuery();
+
+    $this->assertNull($query->orders);
+    $this->assertSame([], $query->getRawBindings()['order']);
+});
+
+// Helpers
+function defineDatabaseMigrationsAfterDatabaseRefreshed()
 {
-    protected function defineDatabaseMigrationsAfterDatabaseRefreshed()
-    {
-        Schema::create('one', function (Blueprint $table) {
-            $table->increments('id');
-        });
+    Schema::create('one', function (Blueprint $table) {
+        $table->increments('id');
+    });
 
-        Schema::create('two', function (Blueprint $table) {
-            $table->increments('id');
-            $table->integer('one_id');
-        });
+    Schema::create('two', function (Blueprint $table) {
+        $table->increments('id');
+        $table->integer('one_id');
+    });
 
-        Schema::create('three', function (Blueprint $table) {
-            $table->increments('id');
-            $table->integer('two_id');
-        });
+    Schema::create('three', function (Blueprint $table) {
+        $table->increments('id');
+        $table->integer('two_id');
+    });
 
-        Schema::create('four', function (Blueprint $table) {
-            $table->increments('id');
-            $table->integer('one_id');
-        });
-    }
-
-    public function testItBasic()
-    {
-        $one = Model1::create(['id' => 1]);
-        $two = $one->twos()->Create(['id' => 2]);
-        $two->threes()->Create(['id' => 3]);
-
-        $results = Model1::withCount([
-            'twos' => function ($query) {
-                $query->where('id', '>=', 1);
-            },
-        ]);
-
-        $this->assertEquals([
-            ['id' => 1, 'twos_count' => 1],
-        ], $results->get()->toArray());
-    }
-
-    public function testGlobalScopes()
-    {
-        $one = Model1::create(['id' => 1]);
-        $one->fours()->create(['id' => 1]);
-
-        $result = Model1::withCount('fours')->first();
-        $this->assertEquals(0, $result->fours_count);
-
-        $result = Model1::withCount('allFours')->first();
-        $this->assertEquals(1, $result->all_fours_count);
-    }
-
-    public function testSortingScopes()
-    {
-        $one = Model1::create(['id' => 1]);
-        $one->twos()->create();
-
-        $query = Model1::withCount('twos')->getQuery();
-
-        $this->assertNull($query->orders);
-        $this->assertSame([], $query->getRawBindings()['order']);
-    }
+    Schema::create('four', function (Blueprint $table) {
+        $table->increments('id');
+        $table->integer('one_id');
+    });
 }
 
-class Model1 extends Model
+function twos()
 {
-    public $table = 'one';
-    public $timestamps = false;
-    protected $guarded = [];
-
-    public function twos()
-    {
-        return $this->hasMany(Model2::class, 'one_id');
-    }
-
-    public function fours()
-    {
-        return $this->hasMany(Model4::class, 'one_id');
-    }
-
-    public function allFours()
-    {
-        return $this->fours()->withoutGlobalScopes();
-    }
+    return test()->hasMany(Model2::class, 'one_id');
 }
 
-class Model2 extends Model
+function fours()
 {
-    public $table = 'two';
-    public $timestamps = false;
-    protected $guarded = [];
-    protected $withCount = ['threes'];
-
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::addGlobalScope('app', function ($builder) {
-            $builder->latest();
-        });
-    }
-
-    public function threes()
-    {
-        return $this->hasMany(Model3::class, 'two_id');
-    }
+    return test()->hasMany(Model4::class, 'one_id');
 }
 
-class Model3 extends Model
+function allFours()
 {
-    public $table = 'three';
-    public $timestamps = false;
-    protected $guarded = [];
-
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::addGlobalScope('app', function ($builder) {
-            $builder->where('id', '>', 0);
-        });
-    }
+    return test()->fours()->withoutGlobalScopes();
 }
 
-class Model4 extends Model
+function threes()
 {
-    public $table = 'four';
-    public $timestamps = false;
-    protected $guarded = [];
+    return test()->hasMany(Model3::class, 'two_id');
+}
 
-    protected static function boot()
-    {
-        parent::boot();
+function boot()
+{
+    parent::boot();
 
-        static::addGlobalScope('app', function ($builder) {
-            $builder->where('id', '>', 1);
-        });
-    }
+    static::addGlobalScope('app', function ($builder) {
+        $builder->where('id', '>', 1);
+    });
 }

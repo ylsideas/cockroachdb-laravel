@@ -1,78 +1,60 @@
 <?php
 
-namespace YlsIdeas\CockroachDb\Tests\Integration\Database\EloquentMorphCountLazyEagerLoadingTest;
-
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use YlsIdeas\CockroachDb\Tests\Integration\Database\DatabaseTestCase;
 
-class EloquentMorphCountLazyEagerLoadingTest extends DatabaseTestCase
+uses(DatabaseTestCase::class);
+
+test('lazy eager loading', function () {
+    $comment = Comment::first();
+
+    $comment->loadMorphCount('commentable', [
+        Post::class => ['likes'],
+    ]);
+
+    $this->assertTrue($comment->relationLoaded('commentable'));
+    $this->assertEquals(2, $comment->commentable->likes_count);
+});
+
+// Helpers
+function defineDatabaseMigrationsAfterDatabaseRefreshed()
 {
-    protected function defineDatabaseMigrationsAfterDatabaseRefreshed()
-    {
-        Schema::create('likes', function (Blueprint $table) {
-            $table->increments('id');
-            $table->unsignedInteger('post_id');
-        });
+    Schema::create('likes', function (Blueprint $table) {
+        $table->increments('id');
+        $table->unsignedInteger('post_id');
+    });
 
-        Schema::create('posts', function (Blueprint $table) {
-            $table->increments('id');
-        });
+    Schema::create('posts', function (Blueprint $table) {
+        $table->increments('id');
+    });
 
-        Schema::create('comments', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('commentable_type');
-            $table->integer('commentable_id');
-        });
+    Schema::create('comments', function (Blueprint $table) {
+        $table->increments('id');
+        $table->string('commentable_type');
+        $table->integer('commentable_id');
+    });
 
-        $post = Post::create();
+    $post = Post::create();
 
-        tap((new Like())->post()->associate($post))->save();
-        tap((new Like())->post()->associate($post))->save();
+    tap((new Like())->post()->associate($post))->save();
+    tap((new Like())->post()->associate($post))->save();
 
-        (new Comment())->commentable()->associate($post)->save();
-    }
-
-    public function testLazyEagerLoading()
-    {
-        $comment = Comment::first();
-
-        $comment->loadMorphCount('commentable', [
-            Post::class => ['likes'],
-        ]);
-
-        $this->assertTrue($comment->relationLoaded('commentable'));
-        $this->assertEquals(2, $comment->commentable->likes_count);
-    }
+    (new Comment())->commentable()->associate($post)->save();
 }
 
-class Comment extends Model
+function commentable()
 {
-    public $timestamps = false;
-
-    public function commentable()
-    {
-        return $this->morphTo();
-    }
+    return test()->morphTo();
 }
 
-class Post extends Model
+function likes()
 {
-    public $timestamps = false;
-
-    public function likes()
-    {
-        return $this->hasMany(Like::class);
-    }
+    return test()->hasMany(Like::class);
 }
 
-class Like extends Model
+function post()
 {
-    public $timestamps = false;
-
-    public function post()
-    {
-        return $this->belongsTo(Post::class);
-    }
+    return test()->belongsTo(Post::class);
 }

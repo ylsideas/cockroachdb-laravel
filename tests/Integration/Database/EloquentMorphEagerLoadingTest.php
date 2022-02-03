@@ -1,100 +1,74 @@
 <?php
 
-namespace YlsIdeas\CockroachDb\Tests\Integration\Database\EloquentMorphEagerLoadingTest;
-
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use YlsIdeas\CockroachDb\Tests\Integration\Database\DatabaseTestCase;
 
-class EloquentMorphEagerLoadingTest extends DatabaseTestCase
+uses(DatabaseTestCase::class);
+
+test('with morph loading', function () {
+    $comments = Comment::query()
+        ->with(['commentable' => function (MorphTo $morphTo) {
+            $morphTo->morphWith([Post::class => ['user']]);
+        }])
+        ->get();
+
+    $this->assertTrue($comments[0]->relationLoaded('commentable'));
+    $this->assertTrue($comments[0]->commentable->relationLoaded('user'));
+    $this->assertTrue($comments[1]->relationLoaded('commentable'));
+});
+
+test('with morph loading with single relation', function () {
+    $comments = Comment::query()
+        ->with(['commentable' => function (MorphTo $morphTo) {
+            $morphTo->morphWith([Post::class => 'user']);
+        }])
+        ->get();
+
+    $this->assertTrue($comments[0]->relationLoaded('commentable'));
+    $this->assertTrue($comments[0]->commentable->relationLoaded('user'));
+});
+
+// Helpers
+function defineDatabaseMigrationsAfterDatabaseRefreshed()
 {
-    protected function defineDatabaseMigrationsAfterDatabaseRefreshed()
-    {
-        Schema::create('users', function (Blueprint $table) {
-            $table->increments('id');
-        });
+    Schema::create('users', function (Blueprint $table) {
+        $table->increments('id');
+    });
 
-        Schema::create('posts', function (Blueprint $table) {
-            $table->increments('post_id');
-            $table->unsignedInteger('user_id');
-        });
+    Schema::create('posts', function (Blueprint $table) {
+        $table->increments('post_id');
+        $table->unsignedInteger('user_id');
+    });
 
-        Schema::create('videos', function (Blueprint $table) {
-            $table->increments('video_id');
-        });
+    Schema::create('videos', function (Blueprint $table) {
+        $table->increments('video_id');
+    });
 
-        Schema::create('comments', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('commentable_type');
-            $table->integer('commentable_id');
-        });
+    Schema::create('comments', function (Blueprint $table) {
+        $table->increments('id');
+        $table->string('commentable_type');
+        $table->integer('commentable_id');
+    });
 
-        $user = User::create();
+    $user = User::create();
 
-        $post = tap((new Post())->user()->associate($user))->save();
+    $post = tap((new Post())->user()->associate($user))->save();
 
-        $video = Video::create();
+    $video = Video::create();
 
-        (new Comment())->commentable()->associate($post)->save();
-        (new Comment())->commentable()->associate($video)->save();
-    }
-
-    public function testWithMorphLoading()
-    {
-        $comments = Comment::query()
-            ->with(['commentable' => function (MorphTo $morphTo) {
-                $morphTo->morphWith([Post::class => ['user']]);
-            }])
-            ->get();
-
-        $this->assertTrue($comments[0]->relationLoaded('commentable'));
-        $this->assertTrue($comments[0]->commentable->relationLoaded('user'));
-        $this->assertTrue($comments[1]->relationLoaded('commentable'));
-    }
-
-    public function testWithMorphLoadingWithSingleRelation()
-    {
-        $comments = Comment::query()
-            ->with(['commentable' => function (MorphTo $morphTo) {
-                $morphTo->morphWith([Post::class => 'user']);
-            }])
-            ->get();
-
-        $this->assertTrue($comments[0]->relationLoaded('commentable'));
-        $this->assertTrue($comments[0]->commentable->relationLoaded('user'));
-    }
+    (new Comment())->commentable()->associate($post)->save();
+    (new Comment())->commentable()->associate($video)->save();
 }
 
-class Comment extends Model
+function commentable()
 {
-    public $timestamps = false;
-
-    public function commentable()
-    {
-        return $this->morphTo();
-    }
+    return test()->morphTo();
 }
 
-class Post extends Model
+function user()
 {
-    public $timestamps = false;
-    protected $primaryKey = 'post_id';
-
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
-}
-
-class User extends Model
-{
-    public $timestamps = false;
-}
-
-class Video extends Model
-{
-    public $timestamps = false;
-    protected $primaryKey = 'video_id';
+    return test()->belongsTo(User::class);
 }

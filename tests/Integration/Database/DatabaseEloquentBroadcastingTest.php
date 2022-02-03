@@ -1,7 +1,5 @@
 <?php
 
-namespace YlsIdeas\CockroachDb\Tests\Integration\Database;
-
 use Illuminate\Broadcasting\BroadcastEvent;
 use Illuminate\Contracts\Broadcasting\Broadcaster;
 use Illuminate\Contracts\Broadcasting\Factory as BroadcastingFactory;
@@ -13,257 +11,213 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Schema;
+
+uses(DatabaseTestCase::class);
 use Mockery as m;
 
-class DatabaseEloquentBroadcastingTest extends DatabaseTestCase
-{
-    protected function defineDatabaseMigrationsAfterDatabaseRefreshed()
-    {
-        Schema::create('test_eloquent_broadcasting_users', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('name');
-            $table->softDeletes();
-            $table->timestamps();
-        });
-    }
+test('basic broadcasting', function () {
+    Event::fake([BroadcastableModelEventOccurred::class]);
 
-    public function testBasicBroadcasting()
-    {
-        Event::fake([BroadcastableModelEventOccurred::class]);
+    $model = new TestEloquentBroadcastUser();
+    $model->name = 'Taylor';
+    $model->save();
 
-        $model = new TestEloquentBroadcastUser();
-        $model->name = 'Taylor';
-        $model->save();
-
-        Event::assertDispatched(function (BroadcastableModelEventOccurred $event) {
-            return $event->model instanceof TestEloquentBroadcastUser
-                    && count($event->broadcastOn()) === 1
-                    && $event->model->name === 'Taylor'
-                    && $event->broadcastOn()[0]->name == "private-YlsIdeas.CockroachDb.Tests.Integration.Database.TestEloquentBroadcastUser.{$event->model->id}";
-        });
-    }
-
-    public function testChannelRouteFormatting()
-    {
-        $model = new TestEloquentBroadcastUser();
-
-        $this->assertEquals('YlsIdeas.CockroachDb.Tests.Integration.Database.TestEloquentBroadcastUser.{testEloquentBroadcastUser}', $model->broadcastChannelRoute());
-    }
-
-    public function testBroadcastingOnModelTrashing()
-    {
-        Event::fake([BroadcastableModelEventOccurred::class]);
-
-        $model = new SoftDeletableTestEloquentBroadcastUser();
-        $model->name = 'Bean';
-        $model->saveQuietly();
-
-        $model->delete();
-
-        Event::assertDispatched(function (BroadcastableModelEventOccurred $event) {
-            return $event->model instanceof SoftDeletableTestEloquentBroadcastUser
-                && $event->event() == 'trashed'
+    Event::assertDispatched(function (BroadcastableModelEventOccurred $event) {
+        return $event->model instanceof TestEloquentBroadcastUser
                 && count($event->broadcastOn()) === 1
-                && $event->model->name === 'Bean'
-                && $event->broadcastOn()[0]->name == "private-YlsIdeas.CockroachDb.Tests.Integration.Database.SoftDeletableTestEloquentBroadcastUser.{$event->model->id}";
-        });
-    }
+                && $event->model->name === 'Taylor'
+                && $event->broadcastOn()[0]->name == "private-YlsIdeas.CockroachDb.Tests.Integration.Database.TestEloquentBroadcastUser.{$event->model->id}";
+    });
+});
 
-    public function testBroadcastingForSpecificEventsOnly()
-    {
-        Event::fake([BroadcastableModelEventOccurred::class]);
+test('channel route formatting', function () {
+    $model = new TestEloquentBroadcastUser();
 
-        $model = new TestEloquentBroadcastUserOnSpecificEventsOnly();
-        $model->name = 'James';
-        $model->save();
+    $this->assertEquals('YlsIdeas.CockroachDb.Tests.Integration.Database.TestEloquentBroadcastUser.{testEloquentBroadcastUser}', $model->broadcastChannelRoute());
+});
 
-        Event::assertDispatched(function (BroadcastableModelEventOccurred $event) {
-            return $event->model instanceof TestEloquentBroadcastUserOnSpecificEventsOnly
-                && $event->event() == 'created'
-                && count($event->broadcastOn()) === 1
-                && $event->model->name === 'James'
-                && $event->broadcastOn()[0]->name == "private-YlsIdeas.CockroachDb.Tests.Integration.Database.TestEloquentBroadcastUserOnSpecificEventsOnly.{$event->model->id}";
-        });
+test('broadcasting on model trashing', function () {
+    Event::fake([BroadcastableModelEventOccurred::class]);
 
-        $model->name = 'Graham';
-        $model->save();
+    $model = new SoftDeletableTestEloquentBroadcastUser();
+    $model->name = 'Bean';
+    $model->saveQuietly();
 
-        Event::assertNotDispatched(function (BroadcastableModelEventOccurred $event) {
-            return $event->model instanceof TestEloquentBroadcastUserOnSpecificEventsOnly
-                && $event->model->name === 'Graham'
-                && $event->event() == 'updated';
-        });
-    }
+    $model->delete();
 
-    public function testBroadcastNameDefault()
-    {
-        Event::fake([BroadcastableModelEventOccurred::class]);
+    Event::assertDispatched(function (BroadcastableModelEventOccurred $event) {
+        return $event->model instanceof SoftDeletableTestEloquentBroadcastUser
+            && $event->event() == 'trashed'
+            && count($event->broadcastOn()) === 1
+            && $event->model->name === 'Bean'
+            && $event->broadcastOn()[0]->name == "private-YlsIdeas.CockroachDb.Tests.Integration.Database.SoftDeletableTestEloquentBroadcastUser.{$event->model->id}";
+    });
+});
 
-        $model = new TestEloquentBroadcastUser();
-        $model->name = 'Mohamed';
-        $model->save();
+test('broadcasting for specific events only', function () {
+    Event::fake([BroadcastableModelEventOccurred::class]);
 
-        Event::assertDispatched(function (BroadcastableModelEventOccurred $event) {
-            return $event->model instanceof TestEloquentBroadcastUser
-                && $event->model->name === 'Mohamed'
-                && $event->broadcastAs() === 'TestEloquentBroadcastUserCreated'
-                && $this->assertHandldedBroadcastableEvent($event, function (array $channels, string $eventName, array $payload) {
-                    return $eventName === 'TestEloquentBroadcastUserCreated';
-                });
-        });
-    }
+    $model = new TestEloquentBroadcastUserOnSpecificEventsOnly();
+    $model->name = 'James';
+    $model->save();
 
-    public function testBroadcastNameCanBeDefined()
-    {
-        Event::fake([BroadcastableModelEventOccurred::class]);
+    Event::assertDispatched(function (BroadcastableModelEventOccurred $event) {
+        return $event->model instanceof TestEloquentBroadcastUserOnSpecificEventsOnly
+            && $event->event() == 'created'
+            && count($event->broadcastOn()) === 1
+            && $event->model->name === 'James'
+            && $event->broadcastOn()[0]->name == "private-YlsIdeas.CockroachDb.Tests.Integration.Database.TestEloquentBroadcastUserOnSpecificEventsOnly.{$event->model->id}";
+    });
 
-        $model = new TestEloquentBroadcastUserWithSpecificBroadcastName();
-        $model->name = 'Nuno';
-        $model->save();
+    $model->name = 'Graham';
+    $model->save();
 
-        Event::assertDispatched(function (BroadcastableModelEventOccurred $event) {
-            return $event->model instanceof TestEloquentBroadcastUserWithSpecificBroadcastName
-                && $event->model->name === 'Nuno'
-                && $event->broadcastAs() === 'foo'
-                && $this->assertHandldedBroadcastableEvent($event, function (array $channels, string $eventName, array $payload) {
-                    return $eventName === 'foo';
-                });
-        });
+    Event::assertNotDispatched(function (BroadcastableModelEventOccurred $event) {
+        return $event->model instanceof TestEloquentBroadcastUserOnSpecificEventsOnly
+            && $event->model->name === 'Graham'
+            && $event->event() == 'updated';
+    });
+});
 
-        $model->name = 'Dries';
-        $model->save();
+test('broadcast name default', function () {
+    Event::fake([BroadcastableModelEventOccurred::class]);
 
-        Event::assertDispatched(function (BroadcastableModelEventOccurred $event) {
-            return $event->model instanceof TestEloquentBroadcastUserWithSpecificBroadcastName
-                && $event->model->name === 'Dries'
-                && $event->broadcastAs() === 'TestEloquentBroadcastUserWithSpecificBroadcastNameUpdated'
-                && $this->assertHandldedBroadcastableEvent($event, function (array $channels, string $eventName, array $payload) {
-                    return $eventName === 'TestEloquentBroadcastUserWithSpecificBroadcastNameUpdated';
-                });
-        });
-    }
+    $model = new TestEloquentBroadcastUser();
+    $model->name = 'Mohamed';
+    $model->save();
 
-    public function testBroadcastPayloadDefault()
-    {
-        Event::fake([BroadcastableModelEventOccurred::class]);
-
-        $model = new TestEloquentBroadcastUser();
-        $model->name = 'Nuno';
-        $model->save();
-
-        Event::assertDispatched(function (BroadcastableModelEventOccurred $event) {
-            return $event->model instanceof TestEloquentBroadcastUser
-                && $event->model->name === 'Nuno'
-                && is_null($event->broadcastWith())
-                && $this->assertHandldedBroadcastableEvent($event, function (array $channels, string $eventName, array $payload) {
-                    return Arr::has($payload, ['model', 'connection', 'queue', 'socket']);
-                });
-        });
-    }
-
-    public function testBroadcastPayloadCanBeDefined()
-    {
-        Event::fake([BroadcastableModelEventOccurred::class]);
-
-        $model = new TestEloquentBroadcastUserWithSpecificBroadcastPayload();
-        $model->name = 'Dries';
-        $model->save();
-
-        Event::assertDispatched(function (BroadcastableModelEventOccurred $event) {
-            return $event->model instanceof TestEloquentBroadcastUserWithSpecificBroadcastPayload
-                && $event->model->name === 'Dries'
-                && $event->broadcastWith() === ['foo' => 'bar']
-                && $this->assertHandldedBroadcastableEvent($event, function (array $channels, string $eventName, array $payload) {
-                    return Arr::has($payload, ['foo', 'socket']);
-                });
-        });
-
-        $model->name = 'Graham';
-        $model->save();
-
-        Event::assertDispatched(function (BroadcastableModelEventOccurred $event) {
-            return $event->model instanceof TestEloquentBroadcastUserWithSpecificBroadcastPayload
-                && $event->model->name === 'Graham'
-                && is_null($event->broadcastWith())
-                && $this->assertHandldedBroadcastableEvent($event, function (array $channels, string $eventName, array $payload) {
-                    return Arr::has($payload, ['model', 'connection', 'queue', 'socket']);
-                });
-        });
-    }
-
-    private function assertHandldedBroadcastableEvent(BroadcastableModelEventOccurred $event, \Closure $closure)
-    {
-        $broadcaster = m::mock(Broadcaster::class);
-        $broadcaster->shouldReceive('broadcast')->once()
-            ->withArgs(function (array $channels, string $eventName, array $payload) use ($closure) {
-                return $closure($channels, $eventName, $payload);
+    Event::assertDispatched(function (BroadcastableModelEventOccurred $event) {
+        return $event->model instanceof TestEloquentBroadcastUser
+            && $event->model->name === 'Mohamed'
+            && $event->broadcastAs() === 'TestEloquentBroadcastUserCreated'
+            && assertHandldedBroadcastableEvent($event, function (array $channels, string $eventName, array $payload) {
+                return $eventName === 'TestEloquentBroadcastUserCreated';
             });
+    });
+});
 
-        $manager = m::mock(BroadcastingFactory::class);
-        $manager->shouldReceive('connection')->once()->with(null)->andReturn($broadcaster);
+test('broadcast name can be defined', function () {
+    Event::fake([BroadcastableModelEventOccurred::class]);
 
-        (new BroadcastEvent($event))->handle($manager);
+    $model = new TestEloquentBroadcastUserWithSpecificBroadcastName();
+    $model->name = 'Nuno';
+    $model->save();
 
-        return true;
+    Event::assertDispatched(function (BroadcastableModelEventOccurred $event) {
+        return $event->model instanceof TestEloquentBroadcastUserWithSpecificBroadcastName
+            && $event->model->name === 'Nuno'
+            && $event->broadcastAs() === 'foo'
+            && assertHandldedBroadcastableEvent($event, function (array $channels, string $eventName, array $payload) {
+                return $eventName === 'foo';
+            });
+    });
+
+    $model->name = 'Dries';
+    $model->save();
+
+    Event::assertDispatched(function (BroadcastableModelEventOccurred $event) {
+        return $event->model instanceof TestEloquentBroadcastUserWithSpecificBroadcastName
+            && $event->model->name === 'Dries'
+            && $event->broadcastAs() === 'TestEloquentBroadcastUserWithSpecificBroadcastNameUpdated'
+            && assertHandldedBroadcastableEvent($event, function (array $channels, string $eventName, array $payload) {
+                return $eventName === 'TestEloquentBroadcastUserWithSpecificBroadcastNameUpdated';
+            });
+    });
+});
+
+test('broadcast payload default', function () {
+    Event::fake([BroadcastableModelEventOccurred::class]);
+
+    $model = new TestEloquentBroadcastUser();
+    $model->name = 'Nuno';
+    $model->save();
+
+    Event::assertDispatched(function (BroadcastableModelEventOccurred $event) {
+        return $event->model instanceof TestEloquentBroadcastUser
+            && $event->model->name === 'Nuno'
+            && is_null($event->broadcastWith())
+            && assertHandldedBroadcastableEvent($event, function (array $channels, string $eventName, array $payload) {
+                return Arr::has($payload, ['model', 'connection', 'queue', 'socket']);
+            });
+    });
+});
+
+test('broadcast payload can be defined', function () {
+    Event::fake([BroadcastableModelEventOccurred::class]);
+
+    $model = new TestEloquentBroadcastUserWithSpecificBroadcastPayload();
+    $model->name = 'Dries';
+    $model->save();
+
+    Event::assertDispatched(function (BroadcastableModelEventOccurred $event) {
+        return $event->model instanceof TestEloquentBroadcastUserWithSpecificBroadcastPayload
+            && $event->model->name === 'Dries'
+            && $event->broadcastWith() === ['foo' => 'bar']
+            && assertHandldedBroadcastableEvent($event, function (array $channels, string $eventName, array $payload) {
+                return Arr::has($payload, ['foo', 'socket']);
+            });
+    });
+
+    $model->name = 'Graham';
+    $model->save();
+
+    Event::assertDispatched(function (BroadcastableModelEventOccurred $event) {
+        return $event->model instanceof TestEloquentBroadcastUserWithSpecificBroadcastPayload
+            && $event->model->name === 'Graham'
+            && is_null($event->broadcastWith())
+            && assertHandldedBroadcastableEvent($event, function (array $channels, string $eventName, array $payload) {
+                return Arr::has($payload, ['model', 'connection', 'queue', 'socket']);
+            });
+    });
+});
+
+// Helpers
+function defineDatabaseMigrationsAfterDatabaseRefreshed()
+{
+    Schema::create('test_eloquent_broadcasting_users', function (Blueprint $table) {
+        $table->increments('id');
+        $table->string('name');
+        $table->softDeletes();
+        $table->timestamps();
+    });
+}
+
+function assertHandldedBroadcastableEvent(BroadcastableModelEventOccurred $event, \Closure $closure)
+{
+    $broadcaster = m::mock(Broadcaster::class);
+    $broadcaster->shouldReceive('broadcast')->once()
+        ->withArgs(function (array $channels, string $eventName, array $payload) use ($closure) {
+            return $closure($channels, $eventName, $payload);
+        });
+
+    $manager = m::mock(BroadcastingFactory::class);
+    $manager->shouldReceive('connection')->once()->with(null)->andReturn($broadcaster);
+
+    (new BroadcastEvent($event))->handle($manager);
+
+    return true;
+}
+
+function broadcastOn($event)
+{
+    switch ($event) {
+        case 'created':
+            return [$this];
     }
 }
 
-class TestEloquentBroadcastUser extends Model
+function broadcastAs($event)
 {
-    use BroadcastsEvents;
-
-    protected $table = 'test_eloquent_broadcasting_users';
-}
-
-class SoftDeletableTestEloquentBroadcastUser extends Model
-{
-    use BroadcastsEvents;
-    use SoftDeletes;
-
-    protected $table = 'test_eloquent_broadcasting_users';
-}
-
-class TestEloquentBroadcastUserOnSpecificEventsOnly extends Model
-{
-    use BroadcastsEvents;
-
-    protected $table = 'test_eloquent_broadcasting_users';
-
-    public function broadcastOn($event)
-    {
-        switch ($event) {
-            case 'created':
-                return [$this];
-        }
+    switch ($event) {
+        case 'created':
+            return 'foo';
     }
 }
 
-class TestEloquentBroadcastUserWithSpecificBroadcastName extends Model
+function broadcastWith($event)
 {
-    use BroadcastsEvents;
-
-    protected $table = 'test_eloquent_broadcasting_users';
-
-    public function broadcastAs($event)
-    {
-        switch ($event) {
-            case 'created':
-                return 'foo';
-        }
-    }
-}
-
-class TestEloquentBroadcastUserWithSpecificBroadcastPayload extends Model
-{
-    use BroadcastsEvents;
-
-    protected $table = 'test_eloquent_broadcasting_users';
-
-    public function broadcastWith($event)
-    {
-        switch ($event) {
-            case 'created':
-                return ['foo' => 'bar'];
-        }
+    switch ($event) {
+        case 'created':
+            return ['foo' => 'bar'];
     }
 }

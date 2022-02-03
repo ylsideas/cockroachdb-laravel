@@ -1,62 +1,47 @@
 <?php
 
-namespace YlsIdeas\CockroachDb\Tests\Integration\Database\EloquentHasOneOfManyTest;
-
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Schema;
 use YlsIdeas\CockroachDb\Tests\Integration\Database\DatabaseTestCase;
 
-class EloquentHasOneOfManyTest extends DatabaseTestCase
-{
-    protected function defineDatabaseMigrationsAfterDatabaseRefreshed()
-    {
-        Schema::create('users', function ($table) {
-            $table->id();
-        });
+uses(DatabaseTestCase::class);
 
-        Schema::create('logins', function ($table) {
-            $table->id();
-            $table->foreignId('user_id');
-        });
-    }
-
-    public function testItOnlyEagerLoadsRequiredModels()
-    {
-        $this->retrievedLogins = 0;
-        User::getEventDispatcher()->listen('eloquent.retrieved:*', function ($event, $models) {
-            foreach ($models as $model) {
-                if (get_class($model) == Login::class) {
-                    $this->retrievedLogins++;
-                }
+it('only eager loads required models', function () {
+    $this->retrievedLogins = 0;
+    User::getEventDispatcher()->listen('eloquent.retrieved:*', function ($event, $models) {
+        foreach ($models as $model) {
+            if (get_class($model) == Login::class) {
+                $this->retrievedLogins++;
             }
-        });
+        }
+    });
 
-        $user = User::create();
-        $user->latest_login()->create();
-        $user->latest_login()->create();
-        $user = User::create();
-        $user->latest_login()->create();
-        $user->latest_login()->create();
+    $user = User::create();
+    $user->latest_login()->create();
+    $user->latest_login()->create();
+    $user = User::create();
+    $user->latest_login()->create();
+    $user->latest_login()->create();
 
-        User::with('latest_login')->get();
+    User::with('latest_login')->get();
 
-        $this->assertSame(2, $this->retrievedLogins);
-    }
+    $this->assertSame(2, $this->retrievedLogins);
+});
+
+// Helpers
+function defineDatabaseMigrationsAfterDatabaseRefreshed()
+{
+    Schema::create('users', function ($table) {
+        $table->id();
+    });
+
+    Schema::create('logins', function ($table) {
+        $table->id();
+        $table->foreignId('user_id');
+    });
 }
 
-class User extends Model
+function latest_login()
 {
-    protected $guarded = [];
-    public $timestamps = false;
-
-    public function latest_login()
-    {
-        return $this->hasOne(Login::class)->ofMany();
-    }
-}
-
-class Login extends Model
-{
-    protected $guarded = [];
-    public $timestamps = false;
+    return test()->hasOne(Login::class)->ofMany();
 }

@@ -1,47 +1,37 @@
 <?php
 
-namespace YlsIdeas\CockroachDb\Tests\Integration\Database;
-
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class EloquentModelWithoutEventsTest extends DatabaseTestCase
+uses(DatabaseTestCase::class);
+
+test('without events registers booted listeners for later', function () {
+    $model = AutoFilledModel::withoutEvents(function () {
+        return AutoFilledModel::create();
+    });
+
+    $this->assertNull($model->project);
+
+    $model->save();
+
+    $this->assertSame('Laravel', $model->project);
+});
+
+// Helpers
+function defineDatabaseMigrationsAfterDatabaseRefreshed()
 {
-    protected function defineDatabaseMigrationsAfterDatabaseRefreshed()
-    {
-        Schema::create('auto_filled_models', function (Blueprint $table) {
-            $table->increments('id');
-            $table->text('project')->nullable();
-        });
-    }
-
-    public function testWithoutEventsRegistersBootedListenersForLater()
-    {
-        $model = AutoFilledModel::withoutEvents(function () {
-            return AutoFilledModel::create();
-        });
-
-        $this->assertNull($model->project);
-
-        $model->save();
-
-        $this->assertSame('Laravel', $model->project);
-    }
+    Schema::create('auto_filled_models', function (Blueprint $table) {
+        $table->increments('id');
+        $table->text('project')->nullable();
+    });
 }
 
-class AutoFilledModel extends Model
+function boot()
 {
-    public $table = 'auto_filled_models';
-    public $timestamps = false;
-    protected $guarded = [];
+    parent::boot();
 
-    public static function boot()
-    {
-        parent::boot();
-
-        static::saving(function ($model) {
-            $model->project = 'Laravel';
-        });
-    }
+    static::saving(function ($model) {
+        $model->project = 'Laravel';
+    });
 }

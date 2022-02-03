@@ -1,73 +1,54 @@
 <?php
 
-namespace YlsIdeas\CockroachDb\Tests\Integration\Database\EloquentMorphLazyEagerLoadingTest;
-
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use YlsIdeas\CockroachDb\Tests\Integration\Database\DatabaseTestCase;
 
-class EloquentMorphLazyEagerLoadingTest extends DatabaseTestCase
+uses(DatabaseTestCase::class);
+
+test('lazy eager loading', function () {
+    $comment = Comment::first();
+
+    $comment->loadMorph('commentable', [
+        Post::class => ['user'],
+    ]);
+
+    $this->assertTrue($comment->relationLoaded('commentable'));
+    $this->assertTrue($comment->commentable->relationLoaded('user'));
+});
+
+// Helpers
+function defineDatabaseMigrationsAfterDatabaseRefreshed()
 {
-    protected function defineDatabaseMigrationsAfterDatabaseRefreshed()
-    {
-        Schema::create('users', function (Blueprint $table) {
-            $table->increments('id');
-        });
+    Schema::create('users', function (Blueprint $table) {
+        $table->increments('id');
+    });
 
-        Schema::create('posts', function (Blueprint $table) {
-            $table->increments('post_id');
-            $table->unsignedInteger('user_id');
-        });
+    Schema::create('posts', function (Blueprint $table) {
+        $table->increments('post_id');
+        $table->unsignedInteger('user_id');
+    });
 
-        Schema::create('comments', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('commentable_type');
-            $table->integer('commentable_id');
-        });
+    Schema::create('comments', function (Blueprint $table) {
+        $table->increments('id');
+        $table->string('commentable_type');
+        $table->integer('commentable_id');
+    });
 
-        $user = User::create();
+    $user = User::create();
 
-        $post = tap((new Post())->user()->associate($user))->save();
+    $post = tap((new Post())->user()->associate($user))->save();
 
-        (new Comment())->commentable()->associate($post)->save();
-    }
-
-    public function testLazyEagerLoading()
-    {
-        $comment = Comment::first();
-
-        $comment->loadMorph('commentable', [
-            Post::class => ['user'],
-        ]);
-
-        $this->assertTrue($comment->relationLoaded('commentable'));
-        $this->assertTrue($comment->commentable->relationLoaded('user'));
-    }
+    (new Comment())->commentable()->associate($post)->save();
 }
 
-class Comment extends Model
+function commentable()
 {
-    public $timestamps = false;
-
-    public function commentable()
-    {
-        return $this->morphTo();
-    }
+    return test()->morphTo();
 }
 
-class Post extends Model
+function user()
 {
-    public $timestamps = false;
-    protected $primaryKey = 'post_id';
-
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
-}
-
-class User extends Model
-{
-    public $timestamps = false;
+    return test()->belongsTo(User::class);
 }
