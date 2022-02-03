@@ -1,30 +1,22 @@
 <?php
 
-namespace YlsIdeas\CockroachDb\Tests\Integration\Database;
 
-use Illuminate\Database\Eloquent\Model;
+uses(DatabaseTestCase::class);
 
-class EloquentModelScopeTest extends DatabaseTestCase
+test('model has scope', function () {
+    $model = new TestScopeModel1();
+
+    expect($model->hasNamedScope('exists'))->toBeTrue();
+});
+
+test('model does not have scope', function () {
+    $model = new TestScopeModel1();
+
+    expect($model->hasNamedScope('doesNotExist'))->toBeFalse();
+});
+
+// Helpers
+function scopeExists()
 {
-    public function testModelHasScope()
-    {
-        $model = new TestScopeModel1();
-
-        $this->assertTrue($model->hasNamedScope('exists'));
-    }
-
-    public function testModelDoesNotHaveScope()
-    {
-        $model = new TestScopeModel1();
-
-        $this->assertFalse($model->hasNamedScope('doesNotExist'));
-    }
-}
-
-class TestScopeModel1 extends Model
-{
-    public function scopeExists()
-    {
-        return true;
-    }
+    return true;
 }
