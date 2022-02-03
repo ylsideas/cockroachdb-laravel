@@ -27,10 +27,10 @@ test('global scopes', function () {
     $one->fours()->create(['id' => 1]);
 
     $result = Model1::withCount('fours')->first();
-    $this->assertEquals(0, $result->fours_count);
+    expect($result->fours_count)->toEqual(0);
 
     $result = Model1::withCount('allFours')->first();
-    $this->assertEquals(1, $result->all_fours_count);
+    expect($result->all_fours_count)->toEqual(1);
 });
 
 test('sorting scopes', function () {
@@ -39,8 +39,8 @@ test('sorting scopes', function () {
 
     $query = Model1::withCount('twos')->getQuery();
 
-    $this->assertNull($query->orders);
-    $this->assertSame([], $query->getRawBindings()['order']);
+    expect($query->orders)->toBeNull();
+    expect($query->getRawBindings()['order'])->toBe([]);
 });
 
 // Helpers

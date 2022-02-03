@@ -13,7 +13,7 @@ uses(DatabaseTestCase::class);
 test('sole', function () {
     $expected = ['id' => '1', 'title' => 'Foo Post'];
 
-    $this->assertEquals($expected, (array) DB::table('posts')->where('title', 'Foo Post')->select('id', 'title')->sole());
+    expect((array) DB::table('posts')->where('title', 'Foo Post')->select('id', 'title')->sole())->toEqual($expected);
 });
 
 test('sole fails for multiple records', function () {
@@ -35,8 +35,8 @@ test('sole fails if no records', function () {
 test('select', function () {
     $expected = ['id' => '1', 'title' => 'Foo Post'];
 
-    $this->assertEquals($expected, (array) DB::table('posts')->select('id', 'title')->first());
-    $this->assertEquals($expected, (array) DB::table('posts')->select(['id', 'title'])->first());
+    expect((array) DB::table('posts')->select('id', 'title')->first())->toEqual($expected);
+    expect((array) DB::table('posts')->select(['id', 'title'])->first())->toEqual($expected);
 });
 
 test('select replaces existing selects', function () {
@@ -58,9 +58,9 @@ test('select with sub query', function () {
 test('add select', function () {
     $expected = ['id' => '1', 'title' => 'Foo Post', 'content' => 'Lorem Ipsum.'];
 
-    $this->assertEquals($expected, (array) DB::table('posts')->select('id')->addSelect('title', 'content')->first());
-    $this->assertEquals($expected, (array) DB::table('posts')->select('id')->addSelect(['title', 'content'])->first());
-    $this->assertEquals($expected, (array) DB::table('posts')->addSelect(['id', 'title', 'content'])->first());
+    expect((array) DB::table('posts')->select('id')->addSelect('title', 'content')->first())->toEqual($expected);
+    expect((array) DB::table('posts')->select('id')->addSelect(['title', 'content'])->first())->toEqual($expected);
+    expect((array) DB::table('posts')->addSelect(['id', 'title', 'content'])->first())->toEqual($expected);
 });
 
 test('add select with sub query', function () {
@@ -73,7 +73,7 @@ test('add select with sub query', function () {
 });
 
 test('from with alias', function () {
-    $this->assertCount(2, DB::table('posts', 'alias')->select('alias.*')->get());
+    expect(DB::table('posts', 'alias')->select('alias.*')->get())->toHaveCount(2);
 });
 
 test('from with sub query', function () {
@@ -90,79 +90,79 @@ test('where value sub query', function () {
         $query->selectRaw("'Sub query value'");
     };
 
-    $this->assertTrue(DB::table('posts')->where($subQuery, 'Sub query value')->exists());
-    $this->assertFalse(DB::table('posts')->where($subQuery, 'Does not match')->exists());
-    $this->assertTrue(DB::table('posts')->where($subQuery, '!=', 'Does not match')->exists());
+    expect(DB::table('posts')->where($subQuery, 'Sub query value')->exists())->toBeTrue();
+    expect(DB::table('posts')->where($subQuery, 'Does not match')->exists())->toBeFalse();
+    expect(DB::table('posts')->where($subQuery, '!=', 'Does not match')->exists())->toBeTrue();
 });
 
 test('where value sub query builder', function () {
     $subQuery = DB::table('posts')->selectRaw("'Sub query value'")->limit(1);
 
-    $this->assertTrue(DB::table('posts')->where($subQuery, 'Sub query value')->exists());
-    $this->assertFalse(DB::table('posts')->where($subQuery, 'Does not match')->exists());
-    $this->assertTrue(DB::table('posts')->where($subQuery, '!=', 'Does not match')->exists());
+    expect(DB::table('posts')->where($subQuery, 'Sub query value')->exists())->toBeTrue();
+    expect(DB::table('posts')->where($subQuery, 'Does not match')->exists())->toBeFalse();
+    expect(DB::table('posts')->where($subQuery, '!=', 'Does not match')->exists())->toBeTrue();
 });
 
 test('where date', function () {
-    $this->assertSame(1, DB::table('posts')->whereDate('created_at', '2018-01-02')->count());
-    $this->assertSame(1, DB::table('posts')->whereDate('created_at', new Carbon('2018-01-02'))->count());
+    expect(DB::table('posts')->whereDate('created_at', '2018-01-02')->count())->toBe(1);
+    expect(DB::table('posts')->whereDate('created_at', new Carbon('2018-01-02'))->count())->toBe(1);
 });
 
 test('or where date', function () {
-    $this->assertSame(2, DB::table('posts')->where('id', 1)->orWhereDate('created_at', '2018-01-02')->count());
-    $this->assertSame(2, DB::table('posts')->where('id', 1)->orWhereDate('created_at', new Carbon('2018-01-02'))->count());
+    expect(DB::table('posts')->where('id', 1)->orWhereDate('created_at', '2018-01-02')->count())->toBe(2);
+    expect(DB::table('posts')->where('id', 1)->orWhereDate('created_at', new Carbon('2018-01-02'))->count())->toBe(2);
 });
 
 test('where day', function () {
-    $this->assertSame(1, DB::table('posts')->whereDay('created_at', '02')->count());
-    $this->assertSame(1, DB::table('posts')->whereDay('created_at', 2)->count());
-    $this->assertSame(1, DB::table('posts')->whereDay('created_at', new Carbon('2018-01-02'))->count());
+    expect(DB::table('posts')->whereDay('created_at', '02')->count())->toBe(1);
+    expect(DB::table('posts')->whereDay('created_at', 2)->count())->toBe(1);
+    expect(DB::table('posts')->whereDay('created_at', new Carbon('2018-01-02'))->count())->toBe(1);
 });
 
 test('or where day', function () {
-    $this->assertSame(2, DB::table('posts')->where('id', 1)->orWhereDay('created_at', '02')->count());
-    $this->assertSame(2, DB::table('posts')->where('id', 1)->orWhereDay('created_at', 2)->count());
-    $this->assertSame(2, DB::table('posts')->where('id', 1)->orWhereDay('created_at', new Carbon('2018-01-02'))->count());
+    expect(DB::table('posts')->where('id', 1)->orWhereDay('created_at', '02')->count())->toBe(2);
+    expect(DB::table('posts')->where('id', 1)->orWhereDay('created_at', 2)->count())->toBe(2);
+    expect(DB::table('posts')->where('id', 1)->orWhereDay('created_at', new Carbon('2018-01-02'))->count())->toBe(2);
 });
 
 test('where month', function () {
-    $this->assertSame(1, DB::table('posts')->whereMonth('created_at', '01')->count());
-    $this->assertSame(1, DB::table('posts')->whereMonth('created_at', 1)->count());
-    $this->assertSame(1, DB::table('posts')->whereMonth('created_at', new Carbon('2018-01-02'))->count());
+    expect(DB::table('posts')->whereMonth('created_at', '01')->count())->toBe(1);
+    expect(DB::table('posts')->whereMonth('created_at', 1)->count())->toBe(1);
+    expect(DB::table('posts')->whereMonth('created_at', new Carbon('2018-01-02'))->count())->toBe(1);
 });
 
 test('or where month', function () {
-    $this->assertSame(2, DB::table('posts')->where('id', 1)->orWhereMonth('created_at', '01')->count());
-    $this->assertSame(2, DB::table('posts')->where('id', 1)->orWhereMonth('created_at', 1)->count());
-    $this->assertSame(2, DB::table('posts')->where('id', 1)->orWhereMonth('created_at', new Carbon('2018-01-02'))->count());
+    expect(DB::table('posts')->where('id', 1)->orWhereMonth('created_at', '01')->count())->toBe(2);
+    expect(DB::table('posts')->where('id', 1)->orWhereMonth('created_at', 1)->count())->toBe(2);
+    expect(DB::table('posts')->where('id', 1)->orWhereMonth('created_at', new Carbon('2018-01-02'))->count())->toBe(2);
 });
 
 test('where year', function () {
-    $this->assertSame(1, DB::table('posts')->whereYear('created_at', '2018')->count());
-    $this->assertSame(1, DB::table('posts')->whereYear('created_at', 2018)->count());
-    $this->assertSame(1, DB::table('posts')->whereYear('created_at', new Carbon('2018-01-02'))->count());
+    expect(DB::table('posts')->whereYear('created_at', '2018')->count())->toBe(1);
+    expect(DB::table('posts')->whereYear('created_at', 2018)->count())->toBe(1);
+    expect(DB::table('posts')->whereYear('created_at', new Carbon('2018-01-02'))->count())->toBe(1);
 });
 
 test('or where year', function () {
-    $this->assertSame(2, DB::table('posts')->where('id', 1)->orWhereYear('created_at', '2018')->count());
-    $this->assertSame(2, DB::table('posts')->where('id', 1)->orWhereYear('created_at', 2018)->count());
-    $this->assertSame(2, DB::table('posts')->where('id', 1)->orWhereYear('created_at', new Carbon('2018-01-02'))->count());
+    expect(DB::table('posts')->where('id', 1)->orWhereYear('created_at', '2018')->count())->toBe(2);
+    expect(DB::table('posts')->where('id', 1)->orWhereYear('created_at', 2018)->count())->toBe(2);
+    expect(DB::table('posts')->where('id', 1)->orWhereYear('created_at', new Carbon('2018-01-02'))->count())->toBe(2);
 });
 
 test('where time', function () {
-    $this->assertSame(1, DB::table('posts')->whereTime('created_at', '03:04:05')->count());
-    $this->assertSame(1, DB::table('posts')->whereTime('created_at', new Carbon('2018-01-02 03:04:05'))->count());
+    expect(DB::table('posts')->whereTime('created_at', '03:04:05')->count())->toBe(1);
+    expect(DB::table('posts')->whereTime('created_at', new Carbon('2018-01-02 03:04:05'))->count())->toBe(1);
 });
 
 test('or where time', function () {
-    $this->assertSame(2, DB::table('posts')->where('id', 1)->orWhereTime('created_at', '03:04:05')->count());
-    $this->assertSame(2, DB::table('posts')->where('id', 1)->orWhereTime('created_at', new Carbon('2018-01-02 03:04:05'))->count());
+    expect(DB::table('posts')->where('id', 1)->orWhereTime('created_at', '03:04:05')->count())->toBe(2);
+    expect(DB::table('posts')->where('id', 1)->orWhereTime('created_at', new Carbon('2018-01-02 03:04:05'))->count())->toBe(2);
 });
 
 test('paginate with specific columns', function () {
     $result = DB::table('posts')->paginate(5, ['title', 'content']);
 
-    $this->assertInstanceOf(LengthAwarePaginator::class, $result);
+    expect($result)->toBeInstanceOf(LengthAwarePaginator::class);
     $this->assertEquals($result->items(), [
         (object) ['title' => 'Foo Post', 'content' => 'Lorem Ipsum.'],
         (object) ['title' => 'Bar Post', 'content' => 'Lorem Ipsum.'],
@@ -176,10 +176,10 @@ test('chunk map', function () {
         return $post->title;
     }, 1);
 
-    $this->assertCount(2, $results);
-    $this->assertSame('Foo Post', $results[0]);
-    $this->assertSame('Bar Post', $results[1]);
-    $this->assertCount(3, DB::getQueryLog());
+    expect($results)->toHaveCount(2);
+    expect($results[0])->toBe('Foo Post');
+    expect($results[1])->toBe('Bar Post');
+    expect(DB::getQueryLog())->toHaveCount(3);
 });
 
 // Helpers

@@ -16,10 +16,10 @@ test('user can update nullable date', function () {
     $user->fill([
         'nullable_date' => $now = Carbon::now(),
     ]);
-    $this->assertTrue($user->isDirty('nullable_date'));
+    expect($user->isDirty('nullable_date'))->toBeTrue();
 
     $user->save();
-    $this->assertEquals($now->toDateString(), $user->nullable_date->toDateString());
+    expect($user->nullable_date->toDateString())->toEqual($now->toDateString());
 });
 
 test('attribute changes', function () {
@@ -27,24 +27,24 @@ test('attribute changes', function () {
         'name' => Str::random(), 'title' => Str::random(),
     ]);
 
-    $this->assertEmpty($user->getDirty());
-    $this->assertEmpty($user->getChanges());
-    $this->assertFalse($user->isDirty());
-    $this->assertFalse($user->wasChanged());
+    expect($user->getDirty())->toBeEmpty();
+    expect($user->getChanges())->toBeEmpty();
+    expect($user->isDirty())->toBeFalse();
+    expect($user->wasChanged())->toBeFalse();
 
     $user->name = $name = Str::random();
 
-    $this->assertEquals(['name' => $name], $user->getDirty());
-    $this->assertEmpty($user->getChanges());
-    $this->assertTrue($user->isDirty());
-    $this->assertFalse($user->wasChanged());
+    expect($user->getDirty())->toEqual(['name' => $name]);
+    expect($user->getChanges())->toBeEmpty();
+    expect($user->isDirty())->toBeTrue();
+    expect($user->wasChanged())->toBeFalse();
 
     $user->save();
 
-    $this->assertEmpty($user->getDirty());
-    $this->assertEquals(['name' => $name], $user->getChanges());
-    $this->assertTrue($user->wasChanged());
-    $this->assertTrue($user->wasChanged('name'));
+    expect($user->getDirty())->toBeEmpty();
+    expect($user->getChanges())->toEqual(['name' => $name]);
+    expect($user->wasChanged())->toBeTrue();
+    expect($user->wasChanged('name'))->toBeTrue();
 });
 
 // Helpers

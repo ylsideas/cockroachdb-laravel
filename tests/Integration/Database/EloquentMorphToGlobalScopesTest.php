@@ -13,7 +13,7 @@ test('with global scopes', function () {
     $comments = Comment::with('commentable')->get();
 
     $this->assertNotNull($comments[0]->commentable);
-    $this->assertNull($comments[1]->commentable);
+    expect($comments[1]->commentable)->toBeNull();
 });
 
 test('without global scope', function () {

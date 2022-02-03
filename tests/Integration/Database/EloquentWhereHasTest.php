@@ -10,31 +10,31 @@ uses(DatabaseTestCase::class);
 test('where relation', function () {
     $users = User::whereRelation('posts', 'public', true)->get();
 
-    $this->assertEquals([1], $users->pluck('id')->all());
+    expect($users->pluck('id')->all())->toEqual([1]);
 });
 
 test('or where relation', function () {
     $users = User::whereRelation('posts', 'public', true)->orWhereRelation('posts', 'public', false)->get();
 
-    $this->assertEquals([1, 2], $users->pluck('id')->all());
+    expect($users->pluck('id')->all())->toEqual([1, 2]);
 });
 
 test('nested where relation', function () {
     $texts = User::whereRelation('posts.texts', 'content', 'test')->get();
 
-    $this->assertEquals([1], $texts->pluck('id')->all());
+    expect($texts->pluck('id')->all())->toEqual([1]);
 });
 
 test('nested or where relation', function () {
     $texts = User::whereRelation('posts.texts', 'content', 'test')->orWhereRelation('posts.texts', 'content', 'test2')->get();
 
-    $this->assertEquals([1, 2], $texts->pluck('id')->all());
+    expect($texts->pluck('id')->all())->toEqual([1, 2]);
 });
 
 test('where morph relation', function () {
     $comments = Comment::whereMorphRelation('commentable', '*', 'public', true)->get();
 
-    $this->assertEquals([1], $comments->pluck('id')->all());
+    expect($comments->pluck('id')->all())->toEqual([1]);
 });
 
 test('or where morph relation', function () {
@@ -42,7 +42,7 @@ test('or where morph relation', function () {
         ->orWhereMorphRelation('commentable', '*', 'public', false)
         ->get();
 
-    $this->assertEquals([1, 2], $comments->pluck('id')->all());
+    expect($comments->pluck('id')->all())->toEqual([1, 2]);
 });
 
 test('with count', function () {
@@ -50,7 +50,7 @@ test('with count', function () {
         $query->where('public', true);
     })->get();
 
-    $this->assertEquals([1], $users->pluck('id')->all());
+    expect($users->pluck('id')->all())->toEqual([1]);
 });
 
 // Helpers

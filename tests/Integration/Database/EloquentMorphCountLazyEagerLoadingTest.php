@@ -14,8 +14,8 @@ test('lazy eager loading', function () {
         Post::class => ['likes'],
     ]);
 
-    $this->assertTrue($comment->relationLoaded('commentable'));
-    $this->assertEquals(2, $comment->commentable->likes_count);
+    expect($comment->relationLoaded('commentable'))->toBeTrue();
+    expect($comment->commentable->likes_count)->toEqual(2);
 });
 
 // Helpers

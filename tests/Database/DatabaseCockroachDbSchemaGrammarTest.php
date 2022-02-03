@@ -19,16 +19,16 @@ test('basic create table', function () {
     $blueprint->string('name')->collation('nb_NO.utf8');
     $statements = $blueprint->toSql(getConnection(), getGrammar());
 
-    $this->assertCount(1, $statements);
-    $this->assertSame('create table "users" ("id" serial primary key not null, "email" varchar(255) not null, "name" varchar(255) collate "nb_NO.utf8" not null)', $statements[0]);
+    expect($statements)->toHaveCount(1);
+    expect($statements[0])->toBe('create table "users" ("id" serial primary key not null, "email" varchar(255) not null, "name" varchar(255) collate "nb_NO.utf8" not null)');
 
     $blueprint = new Blueprint('users');
     $blueprint->increments('id');
     $blueprint->string('email');
     $statements = $blueprint->toSql(getConnection(), getGrammar());
 
-    $this->assertCount(1, $statements);
-    $this->assertSame('alter table "users" add column "id" serial primary key not null, add column "email" varchar(255) not null', $statements[0]);
+    expect($statements)->toHaveCount(1);
+    expect($statements[0])->toBe('alter table "users" add column "id" serial primary key not null, add column "email" varchar(255) not null');
 });
 
 test('create table with auto increment starting value', function () {
@@ -39,9 +39,9 @@ test('create table with auto increment starting value', function () {
     $blueprint->string('name')->collation('nb_NO.utf8');
     $statements = $blueprint->toSql(getConnection(), getGrammar());
 
-    $this->assertCount(2, $statements);
-    $this->assertSame('create table "users" ("id" serial primary key not null, "email" varchar(255) not null, "name" varchar(255) collate "nb_NO.utf8" not null)', $statements[0]);
-    $this->assertSame('alter sequence users_id_seq restart with 1000', $statements[1]);
+    expect($statements)->toHaveCount(2);
+    expect($statements[0])->toBe('create table "users" ("id" serial primary key not null, "email" varchar(255) not null, "name" varchar(255) collate "nb_NO.utf8" not null)');
+    expect($statements[1])->toBe('alter sequence users_id_seq restart with 1000');
 });
 
 test('create table and comment column', function () {
@@ -51,9 +51,9 @@ test('create table and comment column', function () {
     $blueprint->string('email')->comment('my first comment');
     $statements = $blueprint->toSql(getConnection(), getGrammar());
 
-    $this->assertCount(2, $statements);
-    $this->assertSame('create table "users" ("id" serial primary key not null, "email" varchar(255) not null)', $statements[0]);
-    $this->assertSame('comment on column "users"."email" is \'my first comment\'', $statements[1]);
+    expect($statements)->toHaveCount(2);
+    expect($statements[0])->toBe('create table "users" ("id" serial primary key not null, "email" varchar(255) not null)');
+    expect($statements[1])->toBe('comment on column "users"."email" is \'my first comment\'');
 });
 
 test('create temporary table', function () {
@@ -64,8 +64,8 @@ test('create temporary table', function () {
     $blueprint->string('email');
     $statements = $blueprint->toSql(getConnection(), getGrammar());
 
-    $this->assertCount(1, $statements);
-    $this->assertSame('create temporary table "users" ("id" serial primary key not null, "email" varchar(255) not null)', $statements[0]);
+    expect($statements)->toHaveCount(1);
+    expect($statements[0])->toBe('create temporary table "users" ("id" serial primary key not null, "email" varchar(255) not null)');
 });
 
 test('drop table', function () {
@@ -73,8 +73,8 @@ test('drop table', function () {
     $blueprint->drop();
     $statements = $blueprint->toSql(getConnection(), getGrammar());
 
-    $this->assertCount(1, $statements);
-    $this->assertSame('drop table "users"', $statements[0]);
+    expect($statements)->toHaveCount(1);
+    expect($statements[0])->toBe('drop table "users"');
 });
 
 test('drop table if exists', function () {
@@ -82,8 +82,8 @@ test('drop table if exists', function () {
     $blueprint->dropIfExists();
     $statements = $blueprint->toSql(getConnection(), getGrammar());
 
-    $this->assertCount(1, $statements);
-    $this->assertSame('drop table if exists "users"', $statements[0]);
+    expect($statements)->toHaveCount(1);
+    expect($statements[0])->toBe('drop table if exists "users"');
 });
 
 test('drop column', function () {
@@ -91,22 +91,22 @@ test('drop column', function () {
     $blueprint->dropColumn('foo');
     $statements = $blueprint->toSql(getConnection(), getGrammar());
 
-    $this->assertCount(1, $statements);
-    $this->assertSame('alter table "users" drop column "foo"', $statements[0]);
+    expect($statements)->toHaveCount(1);
+    expect($statements[0])->toBe('alter table "users" drop column "foo"');
 
     $blueprint = new Blueprint('users');
     $blueprint->dropColumn(['foo', 'bar']);
     $statements = $blueprint->toSql(getConnection(), getGrammar());
 
-    $this->assertCount(1, $statements);
-    $this->assertSame('alter table "users" drop column "foo", drop column "bar"', $statements[0]);
+    expect($statements)->toHaveCount(1);
+    expect($statements[0])->toBe('alter table "users" drop column "foo", drop column "bar"');
 
     $blueprint = new Blueprint('users');
     $blueprint->dropColumn('foo', 'bar');
     $statements = $blueprint->toSql(getConnection(), getGrammar());
 
-    $this->assertCount(1, $statements);
-    $this->assertSame('alter table "users" drop column "foo", drop column "bar"', $statements[0]);
+    expect($statements)->toHaveCount(1);
+    expect($statements[0])->toBe('alter table "users" drop column "foo", drop column "bar"');
 });
 
 test('drop primary', function () {
@@ -114,8 +114,8 @@ test('drop primary', function () {
     $blueprint->dropPrimary();
     $statements = $blueprint->toSql(getConnection(), getGrammar());
 
-    $this->assertCount(1, $statements);
-    $this->assertSame('alter table "users" drop constraint "users_pkey"', $statements[0]);
+    expect($statements)->toHaveCount(1);
+    expect($statements[0])->toBe('alter table "users" drop constraint "users_pkey"');
 });
 
 test('drop unique', function () {
@@ -123,8 +123,8 @@ test('drop unique', function () {
     $blueprint->dropUnique('foo');
     $statements = $blueprint->toSql(getConnection(), getGrammar());
 
-    $this->assertCount(1, $statements);
-    $this->assertSame('alter table "users" drop constraint "foo"', $statements[0]);
+    expect($statements)->toHaveCount(1);
+    expect($statements[0])->toBe('alter table "users" drop constraint "foo"');
 });
 
 test('drop index', function () {
@@ -132,8 +132,8 @@ test('drop index', function () {
     $blueprint->dropIndex('foo');
     $statements = $blueprint->toSql(getConnection(), getGrammar());
 
-    $this->assertCount(1, $statements);
-    $this->assertSame('drop index "foo"', $statements[0]);
+    expect($statements)->toHaveCount(1);
+    expect($statements[0])->toBe('drop index "foo"');
 });
 
 test('drop spatial index', function () {
@@ -141,8 +141,8 @@ test('drop spatial index', function () {
     $blueprint->dropSpatialIndex(['coordinates']);
     $statements = $blueprint->toSql(getConnection(), getGrammar());
 
-    $this->assertCount(1, $statements);
-    $this->assertSame('drop index "geo_coordinates_spatialindex"', $statements[0]);
+    expect($statements)->toHaveCount(1);
+    expect($statements[0])->toBe('drop index "geo_coordinates_spatialindex"');
 });
 
 test('drop foreign', function () {
@@ -150,8 +150,8 @@ test('drop foreign', function () {
     $blueprint->dropForeign('foo');
     $statements = $blueprint->toSql(getConnection(), getGrammar());
 
-    $this->assertCount(1, $statements);
-    $this->assertSame('alter table "users" drop constraint "foo"', $statements[0]);
+    expect($statements)->toHaveCount(1);
+    expect($statements[0])->toBe('alter table "users" drop constraint "foo"');
 });
 
 test('drop timestamps', function () {
@@ -159,8 +159,8 @@ test('drop timestamps', function () {
     $blueprint->dropTimestamps();
     $statements = $blueprint->toSql(getConnection(), getGrammar());
 
-    $this->assertCount(1, $statements);
-    $this->assertSame('alter table "users" drop column "created_at", drop column "updated_at"', $statements[0]);
+    expect($statements)->toHaveCount(1);
+    expect($statements[0])->toBe('alter table "users" drop column "created_at", drop column "updated_at"');
 });
 
 test('drop timestamps tz', function () {
@@ -168,8 +168,8 @@ test('drop timestamps tz', function () {
     $blueprint->dropTimestampsTz();
     $statements = $blueprint->toSql(getConnection(), getGrammar());
 
-    $this->assertCount(1, $statements);
-    $this->assertSame('alter table "users" drop column "created_at", drop column "updated_at"', $statements[0]);
+    expect($statements)->toHaveCount(1);
+    expect($statements[0])->toBe('alter table "users" drop column "created_at", drop column "updated_at"');
 });
 
 test('drop morphs', function () {
@@ -177,9 +177,9 @@ test('drop morphs', function () {
     $blueprint->dropMorphs('imageable');
     $statements = $blueprint->toSql(getConnection(), getGrammar());
 
-    $this->assertCount(2, $statements);
-    $this->assertSame('drop index "photos_imageable_type_imageable_id_index"', $statements[0]);
-    $this->assertSame('alter table "photos" drop column "imageable_type", drop column "imageable_id"', $statements[1]);
+    expect($statements)->toHaveCount(2);
+    expect($statements[0])->toBe('drop index "photos_imageable_type_imageable_id_index"');
+    expect($statements[1])->toBe('alter table "photos" drop column "imageable_type", drop column "imageable_id"');
 });
 
 test('rename table', function () {
@@ -187,8 +187,8 @@ test('rename table', function () {
     $blueprint->rename('foo');
     $statements = $blueprint->toSql(getConnection(), getGrammar());
 
-    $this->assertCount(1, $statements);
-    $this->assertSame('alter table "users" rename to "foo"', $statements[0]);
+    expect($statements)->toHaveCount(1);
+    expect($statements[0])->toBe('alter table "users" rename to "foo"');
 });
 
 test('rename index', function () {
@@ -196,8 +196,8 @@ test('rename index', function () {
     $blueprint->renameIndex('foo', 'bar');
     $statements = $blueprint->toSql(getConnection(), getGrammar());
 
-    $this->assertCount(1, $statements);
-    $this->assertSame('alter index "foo" rename to "bar"', $statements[0]);
+    expect($statements)->toHaveCount(1);
+    expect($statements[0])->toBe('alter index "foo" rename to "bar"');
 });
 
 test('adding primary key', function () {
@@ -205,8 +205,8 @@ test('adding primary key', function () {
     $blueprint->primary('foo');
     $statements = $blueprint->toSql(getConnection(), getGrammar());
 
-    $this->assertCount(1, $statements);
-    $this->assertSame('alter table "users" add primary key ("foo")', $statements[0]);
+    expect($statements)->toHaveCount(1);
+    expect($statements[0])->toBe('alter table "users" add primary key ("foo")');
 });
 
 test('adding unique key', function () {
@@ -214,8 +214,8 @@ test('adding unique key', function () {
     $blueprint->unique('foo', 'bar');
     $statements = $blueprint->toSql(getConnection(), getGrammar());
 
-    $this->assertCount(1, $statements);
-    $this->assertSame('alter table "users" add constraint "bar" unique ("foo")', $statements[0]);
+    expect($statements)->toHaveCount(1);
+    expect($statements[0])->toBe('alter table "users" add constraint "bar" unique ("foo")');
 });
 
 test('adding index', function () {
@@ -223,8 +223,8 @@ test('adding index', function () {
     $blueprint->index(['foo', 'bar'], 'baz');
     $statements = $blueprint->toSql(getConnection(), getGrammar());
 
-    $this->assertCount(1, $statements);
-    $this->assertSame('create index "baz" on "users" ("foo", "bar")', $statements[0]);
+    expect($statements)->toHaveCount(1);
+    expect($statements[0])->toBe('create index "baz" on "users" ("foo", "bar")');
 });
 
 test('adding index with algorithm', function () {
@@ -232,8 +232,8 @@ test('adding index with algorithm', function () {
     $blueprint->index(['foo', 'bar'], 'baz', 'hash');
     $statements = $blueprint->toSql(getConnection(), getGrammar());
 
-    $this->assertCount(1, $statements);
-    $this->assertSame('create index "baz" on "users" using hash ("foo", "bar")', $statements[0]);
+    expect($statements)->toHaveCount(1);
+    expect($statements[0])->toBe('create index "baz" on "users" using hash ("foo", "bar")');
 });
 
 test('adding spatial index', function () {
@@ -241,8 +241,8 @@ test('adding spatial index', function () {
     $blueprint->spatialIndex('coordinates');
     $statements = $blueprint->toSql(getConnection(), getGrammar());
 
-    $this->assertCount(1, $statements);
-    $this->assertSame('create index "geo_coordinates_spatialindex" on "geo" using gist ("coordinates")', $statements[0]);
+    expect($statements)->toHaveCount(1);
+    expect($statements[0])->toBe('create index "geo_coordinates_spatialindex" on "geo" using gist ("coordinates")');
 });
 
 test('adding fluent spatial index', function () {
@@ -250,8 +250,8 @@ test('adding fluent spatial index', function () {
     $blueprint->point('coordinates')->spatialIndex();
     $statements = $blueprint->toSql(getConnection(), getGrammar());
 
-    $this->assertCount(2, $statements);
-    $this->assertSame('create index "geo_coordinates_spatialindex" on "geo" using gist ("coordinates")', $statements[1]);
+    expect($statements)->toHaveCount(2);
+    expect($statements[1])->toBe('create index "geo_coordinates_spatialindex" on "geo" using gist ("coordinates")');
 });
 
 test('adding raw index', function () {
@@ -259,8 +259,8 @@ test('adding raw index', function () {
     $blueprint->rawIndex('(function(column))', 'raw_index');
     $statements = $blueprint->toSql(getConnection(), getGrammar());
 
-    $this->assertCount(1, $statements);
-    $this->assertSame('create index "raw_index" on "users" ((function(column)))', $statements[0]);
+    expect($statements)->toHaveCount(1);
+    expect($statements[0])->toBe('create index "raw_index" on "users" ((function(column)))');
 });
 
 test('adding incrementing i d', function () {
@@ -268,8 +268,8 @@ test('adding incrementing i d', function () {
     $blueprint->increments('id');
     $statements = $blueprint->toSql(getConnection(), getGrammar());
 
-    $this->assertCount(1, $statements);
-    $this->assertSame('alter table "users" add column "id" serial primary key not null', $statements[0]);
+    expect($statements)->toHaveCount(1);
+    expect($statements[0])->toBe('alter table "users" add column "id" serial primary key not null');
 });
 
 test('adding small incrementing i d', function () {
@@ -277,8 +277,8 @@ test('adding small incrementing i d', function () {
     $blueprint->smallIncrements('id');
     $statements = $blueprint->toSql(getConnection(), getGrammar());
 
-    $this->assertCount(1, $statements);
-    $this->assertSame('alter table "users" add column "id" smallserial primary key not null', $statements[0]);
+    expect($statements)->toHaveCount(1);
+    expect($statements[0])->toBe('alter table "users" add column "id" smallserial primary key not null');
 });
 
 test('adding medium incrementing i d', function () {
@@ -286,8 +286,8 @@ test('adding medium incrementing i d', function () {
     $blueprint->mediumIncrements('id');
     $statements = $blueprint->toSql(getConnection(), getGrammar());
 
-    $this->assertCount(1, $statements);
-    $this->assertSame('alter table "users" add column "id" serial primary key not null', $statements[0]);
+    expect($statements)->toHaveCount(1);
+    expect($statements[0])->toBe('alter table "users" add column "id" serial primary key not null');
 });
 
 test('adding i d', function () {
@@ -295,15 +295,15 @@ test('adding i d', function () {
     $blueprint->id();
     $statements = $blueprint->toSql(getConnection(), getGrammar());
 
-    $this->assertCount(1, $statements);
-    $this->assertSame('alter table "users" add column "id" bigserial primary key not null', $statements[0]);
+    expect($statements)->toHaveCount(1);
+    expect($statements[0])->toBe('alter table "users" add column "id" bigserial primary key not null');
 
     $blueprint = new Blueprint('users');
     $blueprint->id('foo');
     $statements = $blueprint->toSql(getConnection(), getGrammar());
 
-    $this->assertCount(1, $statements);
-    $this->assertSame('alter table "users" add column "foo" bigserial primary key not null', $statements[0]);
+    expect($statements)->toHaveCount(1);
+    expect($statements[0])->toBe('alter table "users" add column "foo" bigserial primary key not null');
 });
 
 test('adding foreign i d', function () {
@@ -316,7 +316,7 @@ test('adding foreign i d', function () {
 
     $statements = $blueprint->toSql(getConnection(), getGrammar());
 
-    $this->assertInstanceOf(ForeignIdColumnDefinition::class, $foreignId);
+    expect($foreignId)->toBeInstanceOf(ForeignIdColumnDefinition::class);
     $this->assertSame([
         'alter table "users" add column "foo" bigint not null, add column "company_id" bigint not null, add column "laravel_idea_id" bigint not null, add column "team_id" bigint not null, add column "team_column_id" bigint not null',
         'alter table "users" add constraint "users_company_id_foreign" foreign key ("company_id") references "companies" ("id")',
@@ -331,8 +331,8 @@ test('adding big incrementing i d', function () {
     $blueprint->bigIncrements('id');
     $statements = $blueprint->toSql(getConnection(), getGrammar());
 
-    $this->assertCount(1, $statements);
-    $this->assertSame('alter table "users" add column "id" bigserial primary key not null', $statements[0]);
+    expect($statements)->toHaveCount(1);
+    expect($statements[0])->toBe('alter table "users" add column "id" bigserial primary key not null');
 });
 
 test('adding string', function () {
@@ -340,22 +340,22 @@ test('adding string', function () {
     $blueprint->string('foo');
     $statements = $blueprint->toSql(getConnection(), getGrammar());
 
-    $this->assertCount(1, $statements);
-    $this->assertSame('alter table "users" add column "foo" varchar(255) not null', $statements[0]);
+    expect($statements)->toHaveCount(1);
+    expect($statements[0])->toBe('alter table "users" add column "foo" varchar(255) not null');
 
     $blueprint = new Blueprint('users');
     $blueprint->string('foo', 100);
     $statements = $blueprint->toSql(getConnection(), getGrammar());
 
-    $this->assertCount(1, $statements);
-    $this->assertSame('alter table "users" add column "foo" varchar(100) not null', $statements[0]);
+    expect($statements)->toHaveCount(1);
+    expect($statements[0])->toBe('alter table "users" add column "foo" varchar(100) not null');
 
     $blueprint = new Blueprint('users');
     $blueprint->string('foo', 100)->nullable()->default('bar');
     $statements = $blueprint->toSql(getConnection(), getGrammar());
 
-    $this->assertCount(1, $statements);
-    $this->assertSame('alter table "users" add column "foo" varchar(100) null default \'bar\'', $statements[0]);
+    expect($statements)->toHaveCount(1);
+    expect($statements[0])->toBe('alter table "users" add column "foo" varchar(100) null default \'bar\'');
 });
 
 test('adding text', function () {
@@ -363,8 +363,8 @@ test('adding text', function () {
     $blueprint->text('foo');
     $statements = $blueprint->toSql(getConnection(), getGrammar());
 
-    $this->assertCount(1, $statements);
-    $this->assertSame('alter table "users" add column "foo" text not null', $statements[0]);
+    expect($statements)->toHaveCount(1);
+    expect($statements[0])->toBe('alter table "users" add column "foo" text not null');
 });
 
 test('adding big integer', function () {
@@ -372,15 +372,15 @@ test('adding big integer', function () {
     $blueprint->bigInteger('foo');
     $statements = $blueprint->toSql(getConnection(), getGrammar());
 
-    $this->assertCount(1, $statements);
-    $this->assertSame('alter table "users" add column "foo" bigint not null', $statements[0]);
+    expect($statements)->toHaveCount(1);
+    expect($statements[0])->toBe('alter table "users" add column "foo" bigint not null');
 
     $blueprint = new Blueprint('users');
     $blueprint->bigInteger('foo', true);
     $statements = $blueprint->toSql(getConnection(), getGrammar());
 
-    $this->assertCount(1, $statements);
-    $this->assertSame('alter table "users" add column "foo" bigserial primary key not null', $statements[0]);
+    expect($statements)->toHaveCount(1);
+    expect($statements[0])->toBe('alter table "users" add column "foo" bigserial primary key not null');
 });
 
 test('adding integer', function () {
@@ -388,15 +388,15 @@ test('adding integer', function () {
     $blueprint->integer('foo');
     $statements = $blueprint->toSql(getConnection(), getGrammar());
 
-    $this->assertCount(1, $statements);
-    $this->assertSame('alter table "users" add column "foo" integer not null', $statements[0]);
+    expect($statements)->toHaveCount(1);
+    expect($statements[0])->toBe('alter table "users" add column "foo" integer not null');
 
     $blueprint = new Blueprint('users');
     $blueprint->integer('foo', true);
     $statements = $blueprint->toSql(getConnection(), getGrammar());
 
-    $this->assertCount(1, $statements);
-    $this->assertSame('alter table "users" add column "foo" serial primary key not null', $statements[0]);
+    expect($statements)->toHaveCount(1);
+    expect($statements[0])->toBe('alter table "users" add column "foo" serial primary key not null');
 });
 
 test('adding medium integer', function () {
@@ -404,15 +404,15 @@ test('adding medium integer', function () {
     $blueprint->mediumInteger('foo');
     $statements = $blueprint->toSql(getConnection(), getGrammar());
 
-    $this->assertCount(1, $statements);
-    $this->assertSame('alter table "users" add column "foo" integer not null', $statements[0]);
+    expect($statements)->toHaveCount(1);
+    expect($statements[0])->toBe('alter table "users" add column "foo" integer not null');
 
     $blueprint = new Blueprint('users');
     $blueprint->mediumInteger('foo', true);
     $statements = $blueprint->toSql(getConnection(), getGrammar());
 
-    $this->assertCount(1, $statements);
-    $this->assertSame('alter table "users" add column "foo" serial primary key not null', $statements[0]);
+    expect($statements)->toHaveCount(1);
+    expect($statements[0])->toBe('alter table "users" add column "foo" serial primary key not null');
 });
 
 test('adding tiny integer', function () {
@@ -420,15 +420,15 @@ test('adding tiny integer', function () {
     $blueprint->tinyInteger('foo');
     $statements = $blueprint->toSql(getConnection(), getGrammar());
 
-    $this->assertCount(1, $statements);
-    $this->assertSame('alter table "users" add column "foo" smallint not null', $statements[0]);
+    expect($statements)->toHaveCount(1);
+    expect($statements[0])->toBe('alter table "users" add column "foo" smallint not null');
 
     $blueprint = new Blueprint('users');
     $blueprint->tinyInteger('foo', true);
     $statements = $blueprint->toSql(getConnection(), getGrammar());
 
-    $this->assertCount(1, $statements);
-    $this->assertSame('alter table "users" add column "foo" smallserial primary key not null', $statements[0]);
+    expect($statements)->toHaveCount(1);
+    expect($statements[0])->toBe('alter table "users" add column "foo" smallserial primary key not null');
 });
 
 test('adding small integer', function () {
@@ -436,15 +436,15 @@ test('adding small integer', function () {
     $blueprint->smallInteger('foo');
     $statements = $blueprint->toSql(getConnection(), getGrammar());
 
-    $this->assertCount(1, $statements);
-    $this->assertSame('alter table "users" add column "foo" smallint not null', $statements[0]);
+    expect($statements)->toHaveCount(1);
+    expect($statements[0])->toBe('alter table "users" add column "foo" smallint not null');
 
     $blueprint = new Blueprint('users');
     $blueprint->smallInteger('foo', true);
     $statements = $blueprint->toSql(getConnection(), getGrammar());
 
-    $this->assertCount(1, $statements);
-    $this->assertSame('alter table "users" add column "foo" smallserial primary key not null', $statements[0]);
+    expect($statements)->toHaveCount(1);
+    expect($statements[0])->toBe('alter table "users" add column "foo" smallserial primary key not null');
 });
 
 test('adding float', function () {
@@ -452,8 +452,8 @@ test('adding float', function () {
     $blueprint->float('foo', 5, 2);
     $statements = $blueprint->toSql(getConnection(), getGrammar());
 
-    $this->assertCount(1, $statements);
-    $this->assertSame('alter table "users" add column "foo" double precision not null', $statements[0]);
+    expect($statements)->toHaveCount(1);
+    expect($statements[0])->toBe('alter table "users" add column "foo" double precision not null');
 });
 
 test('adding double', function () {
@@ -461,8 +461,8 @@ test('adding double', function () {
     $blueprint->double('foo', 15, 8);
     $statements = $blueprint->toSql(getConnection(), getGrammar());
 
-    $this->assertCount(1, $statements);
-    $this->assertSame('alter table "users" add column "foo" double precision not null', $statements[0]);
+    expect($statements)->toHaveCount(1);
+    expect($statements[0])->toBe('alter table "users" add column "foo" double precision not null');
 });
 
 test('adding decimal', function () {
@@ -470,8 +470,8 @@ test('adding decimal', function () {
     $blueprint->decimal('foo', 5, 2);
     $statements = $blueprint->toSql(getConnection(), getGrammar());
 
-    $this->assertCount(1, $statements);
-    $this->assertSame('alter table "users" add column "foo" decimal(5, 2) not null', $statements[0]);
+    expect($statements)->toHaveCount(1);
+    expect($statements[0])->toBe('alter table "users" add column "foo" decimal(5, 2) not null');
 });
 
 test('adding boolean', function () {
@@ -479,8 +479,8 @@ test('adding boolean', function () {
     $blueprint->boolean('foo');
     $statements = $blueprint->toSql(getConnection(), getGrammar());
 
-    $this->assertCount(1, $statements);
-    $this->assertSame('alter table "users" add column "foo" boolean not null', $statements[0]);
+    expect($statements)->toHaveCount(1);
+    expect($statements[0])->toBe('alter table "users" add column "foo" boolean not null');
 });
 
 test('adding enum', function () {
@@ -488,8 +488,8 @@ test('adding enum', function () {
     $blueprint->enum('role', ['member', 'admin']);
     $statements = $blueprint->toSql(getConnection(), getGrammar());
 
-    $this->assertCount(1, $statements);
-    $this->assertSame('alter table "users" add column "role" varchar(255) check ("role" in (\'member\', \'admin\')) not null', $statements[0]);
+    expect($statements)->toHaveCount(1);
+    expect($statements[0])->toBe('alter table "users" add column "role" varchar(255) check ("role" in (\'member\', \'admin\')) not null');
 });
 
 test('adding date', function () {
@@ -497,16 +497,16 @@ test('adding date', function () {
     $blueprint->date('foo');
     $statements = $blueprint->toSql(getConnection(), getGrammar());
 
-    $this->assertCount(1, $statements);
-    $this->assertSame('alter table "users" add column "foo" date not null', $statements[0]);
+    expect($statements)->toHaveCount(1);
+    expect($statements[0])->toBe('alter table "users" add column "foo" date not null');
 });
 
 test('adding year', function () {
     $blueprint = new Blueprint('users');
     $blueprint->year('birth_year');
     $statements = $blueprint->toSql(getConnection(), getGrammar());
-    $this->assertCount(1, $statements);
-    $this->assertSame('alter table "users" add column "birth_year" integer not null', $statements[0]);
+    expect($statements)->toHaveCount(1);
+    expect($statements[0])->toBe('alter table "users" add column "birth_year" integer not null');
 });
 
 test('adding json', function () {
@@ -514,8 +514,8 @@ test('adding json', function () {
     $blueprint->json('foo');
     $statements = $blueprint->toSql(getConnection(), getGrammar());
 
-    $this->assertCount(1, $statements);
-    $this->assertSame('alter table "users" add column "foo" json not null', $statements[0]);
+    expect($statements)->toHaveCount(1);
+    expect($statements[0])->toBe('alter table "users" add column "foo" json not null');
 });
 
 test('adding jsonb', function () {
@@ -523,168 +523,168 @@ test('adding jsonb', function () {
     $blueprint->jsonb('foo');
     $statements = $blueprint->toSql(getConnection(), getGrammar());
 
-    $this->assertCount(1, $statements);
-    $this->assertSame('alter table "users" add column "foo" jsonb not null', $statements[0]);
+    expect($statements)->toHaveCount(1);
+    expect($statements[0])->toBe('alter table "users" add column "foo" jsonb not null');
 });
 
 test('adding date time', function () {
     $blueprint = new Blueprint('users');
     $blueprint->dateTime('created_at');
     $statements = $blueprint->toSql(getConnection(), getGrammar());
-    $this->assertCount(1, $statements);
-    $this->assertSame('alter table "users" add column "created_at" timestamp(0) without time zone not null', $statements[0]);
+    expect($statements)->toHaveCount(1);
+    expect($statements[0])->toBe('alter table "users" add column "created_at" timestamp(0) without time zone not null');
 });
 
 test('adding date time with precision', function () {
     $blueprint = new Blueprint('users');
     $blueprint->dateTime('created_at', 1);
     $statements = $blueprint->toSql(getConnection(), getGrammar());
-    $this->assertCount(1, $statements);
-    $this->assertSame('alter table "users" add column "created_at" timestamp(1) without time zone not null', $statements[0]);
+    expect($statements)->toHaveCount(1);
+    expect($statements[0])->toBe('alter table "users" add column "created_at" timestamp(1) without time zone not null');
 });
 
 test('adding date time with null precision', function () {
     $blueprint = new Blueprint('users');
     $blueprint->dateTime('created_at', null);
     $statements = $blueprint->toSql(getConnection(), getGrammar());
-    $this->assertCount(1, $statements);
-    $this->assertSame('alter table "users" add column "created_at" timestamp without time zone not null', $statements[0]);
+    expect($statements)->toHaveCount(1);
+    expect($statements[0])->toBe('alter table "users" add column "created_at" timestamp without time zone not null');
 });
 
 test('adding date time tz', function () {
     $blueprint = new Blueprint('users');
     $blueprint->dateTimeTz('created_at');
     $statements = $blueprint->toSql(getConnection(), getGrammar());
-    $this->assertCount(1, $statements);
-    $this->assertSame('alter table "users" add column "created_at" timestamp(0) with time zone not null', $statements[0]);
+    expect($statements)->toHaveCount(1);
+    expect($statements[0])->toBe('alter table "users" add column "created_at" timestamp(0) with time zone not null');
 });
 
 test('adding date time tz with precision', function () {
     $blueprint = new Blueprint('users');
     $blueprint->dateTimeTz('created_at', 1);
     $statements = $blueprint->toSql(getConnection(), getGrammar());
-    $this->assertCount(1, $statements);
-    $this->assertSame('alter table "users" add column "created_at" timestamp(1) with time zone not null', $statements[0]);
+    expect($statements)->toHaveCount(1);
+    expect($statements[0])->toBe('alter table "users" add column "created_at" timestamp(1) with time zone not null');
 });
 
 test('adding date time tz with null precision', function () {
     $blueprint = new Blueprint('users');
     $blueprint->dateTimeTz('created_at', null);
     $statements = $blueprint->toSql(getConnection(), getGrammar());
-    $this->assertCount(1, $statements);
-    $this->assertSame('alter table "users" add column "created_at" timestamp with time zone not null', $statements[0]);
+    expect($statements)->toHaveCount(1);
+    expect($statements[0])->toBe('alter table "users" add column "created_at" timestamp with time zone not null');
 });
 
 test('adding time', function () {
     $blueprint = new Blueprint('users');
     $blueprint->time('created_at');
     $statements = $blueprint->toSql(getConnection(), getGrammar());
-    $this->assertCount(1, $statements);
-    $this->assertSame('alter table "users" add column "created_at" time(0) without time zone not null', $statements[0]);
+    expect($statements)->toHaveCount(1);
+    expect($statements[0])->toBe('alter table "users" add column "created_at" time(0) without time zone not null');
 });
 
 test('adding time with precision', function () {
     $blueprint = new Blueprint('users');
     $blueprint->time('created_at', 1);
     $statements = $blueprint->toSql(getConnection(), getGrammar());
-    $this->assertCount(1, $statements);
-    $this->assertSame('alter table "users" add column "created_at" time(1) without time zone not null', $statements[0]);
+    expect($statements)->toHaveCount(1);
+    expect($statements[0])->toBe('alter table "users" add column "created_at" time(1) without time zone not null');
 });
 
 test('adding time with null precision', function () {
     $blueprint = new Blueprint('users');
     $blueprint->time('created_at', null);
     $statements = $blueprint->toSql(getConnection(), getGrammar());
-    $this->assertCount(1, $statements);
-    $this->assertSame('alter table "users" add column "created_at" time without time zone not null', $statements[0]);
+    expect($statements)->toHaveCount(1);
+    expect($statements[0])->toBe('alter table "users" add column "created_at" time without time zone not null');
 });
 
 test('adding time tz', function () {
     $blueprint = new Blueprint('users');
     $blueprint->timeTz('created_at');
     $statements = $blueprint->toSql(getConnection(), getGrammar());
-    $this->assertCount(1, $statements);
-    $this->assertSame('alter table "users" add column "created_at" time(0) with time zone not null', $statements[0]);
+    expect($statements)->toHaveCount(1);
+    expect($statements[0])->toBe('alter table "users" add column "created_at" time(0) with time zone not null');
 });
 
 test('adding time tz with precision', function () {
     $blueprint = new Blueprint('users');
     $blueprint->timeTz('created_at', 1);
     $statements = $blueprint->toSql(getConnection(), getGrammar());
-    $this->assertCount(1, $statements);
-    $this->assertSame('alter table "users" add column "created_at" time(1) with time zone not null', $statements[0]);
+    expect($statements)->toHaveCount(1);
+    expect($statements[0])->toBe('alter table "users" add column "created_at" time(1) with time zone not null');
 });
 
 test('adding time tz with null precision', function () {
     $blueprint = new Blueprint('users');
     $blueprint->timeTz('created_at', null);
     $statements = $blueprint->toSql(getConnection(), getGrammar());
-    $this->assertCount(1, $statements);
-    $this->assertSame('alter table "users" add column "created_at" time with time zone not null', $statements[0]);
+    expect($statements)->toHaveCount(1);
+    expect($statements[0])->toBe('alter table "users" add column "created_at" time with time zone not null');
 });
 
 test('adding timestamp', function () {
     $blueprint = new Blueprint('users');
     $blueprint->timestamp('created_at');
     $statements = $blueprint->toSql(getConnection(), getGrammar());
-    $this->assertCount(1, $statements);
-    $this->assertSame('alter table "users" add column "created_at" timestamp(0) without time zone not null', $statements[0]);
+    expect($statements)->toHaveCount(1);
+    expect($statements[0])->toBe('alter table "users" add column "created_at" timestamp(0) without time zone not null');
 });
 
 test('adding timestamp with precision', function () {
     $blueprint = new Blueprint('users');
     $blueprint->timestamp('created_at', 1);
     $statements = $blueprint->toSql(getConnection(), getGrammar());
-    $this->assertCount(1, $statements);
-    $this->assertSame('alter table "users" add column "created_at" timestamp(1) without time zone not null', $statements[0]);
+    expect($statements)->toHaveCount(1);
+    expect($statements[0])->toBe('alter table "users" add column "created_at" timestamp(1) without time zone not null');
 });
 
 test('adding timestamp with null precision', function () {
     $blueprint = new Blueprint('users');
     $blueprint->timestamp('created_at', null);
     $statements = $blueprint->toSql(getConnection(), getGrammar());
-    $this->assertCount(1, $statements);
-    $this->assertSame('alter table "users" add column "created_at" timestamp without time zone not null', $statements[0]);
+    expect($statements)->toHaveCount(1);
+    expect($statements[0])->toBe('alter table "users" add column "created_at" timestamp without time zone not null');
 });
 
 test('adding timestamp tz', function () {
     $blueprint = new Blueprint('users');
     $blueprint->timestampTz('created_at');
     $statements = $blueprint->toSql(getConnection(), getGrammar());
-    $this->assertCount(1, $statements);
-    $this->assertSame('alter table "users" add column "created_at" timestamp(0) with time zone not null', $statements[0]);
+    expect($statements)->toHaveCount(1);
+    expect($statements[0])->toBe('alter table "users" add column "created_at" timestamp(0) with time zone not null');
 });
 
 test('adding timestamp tz with precision', function () {
     $blueprint = new Blueprint('users');
     $blueprint->timestampTz('created_at', 1);
     $statements = $blueprint->toSql(getConnection(), getGrammar());
-    $this->assertCount(1, $statements);
-    $this->assertSame('alter table "users" add column "created_at" timestamp(1) with time zone not null', $statements[0]);
+    expect($statements)->toHaveCount(1);
+    expect($statements[0])->toBe('alter table "users" add column "created_at" timestamp(1) with time zone not null');
 });
 
 test('adding timestamp tz with null precision', function () {
     $blueprint = new Blueprint('users');
     $blueprint->timestampTz('created_at', null);
     $statements = $blueprint->toSql(getConnection(), getGrammar());
-    $this->assertCount(1, $statements);
-    $this->assertSame('alter table "users" add column "created_at" timestamp with time zone not null', $statements[0]);
+    expect($statements)->toHaveCount(1);
+    expect($statements[0])->toBe('alter table "users" add column "created_at" timestamp with time zone not null');
 });
 
 test('adding timestamps', function () {
     $blueprint = new Blueprint('users');
     $blueprint->timestamps();
     $statements = $blueprint->toSql(getConnection(), getGrammar());
-    $this->assertCount(1, $statements);
-    $this->assertSame('alter table "users" add column "created_at" timestamp(0) without time zone null, add column "updated_at" timestamp(0) without time zone null', $statements[0]);
+    expect($statements)->toHaveCount(1);
+    expect($statements[0])->toBe('alter table "users" add column "created_at" timestamp(0) without time zone null, add column "updated_at" timestamp(0) without time zone null');
 });
 
 test('adding timestamps tz', function () {
     $blueprint = new Blueprint('users');
     $blueprint->timestampsTz();
     $statements = $blueprint->toSql(getConnection(), getGrammar());
-    $this->assertCount(1, $statements);
-    $this->assertSame('alter table "users" add column "created_at" timestamp(0) with time zone null, add column "updated_at" timestamp(0) with time zone null', $statements[0]);
+    expect($statements)->toHaveCount(1);
+    expect($statements[0])->toBe('alter table "users" add column "created_at" timestamp(0) with time zone null, add column "updated_at" timestamp(0) with time zone null');
 });
 
 test('adding binary', function () {
@@ -692,8 +692,8 @@ test('adding binary', function () {
     $blueprint->binary('foo');
     $statements = $blueprint->toSql(getConnection(), getGrammar());
 
-    $this->assertCount(1, $statements);
-    $this->assertSame('alter table "users" add column "foo" bytea not null', $statements[0]);
+    expect($statements)->toHaveCount(1);
+    expect($statements[0])->toBe('alter table "users" add column "foo" bytea not null');
 });
 
 test('adding uuid', function () {
@@ -701,8 +701,8 @@ test('adding uuid', function () {
     $blueprint->uuid('foo');
     $statements = $blueprint->toSql(getConnection(), getGrammar());
 
-    $this->assertCount(1, $statements);
-    $this->assertSame('alter table "users" add column "foo" uuid not null', $statements[0]);
+    expect($statements)->toHaveCount(1);
+    expect($statements[0])->toBe('alter table "users" add column "foo" uuid not null');
 });
 
 test('adding foreign uuid', function () {
@@ -715,7 +715,7 @@ test('adding foreign uuid', function () {
 
     $statements = $blueprint->toSql(getConnection(), getGrammar());
 
-    $this->assertInstanceOf(ForeignIdColumnDefinition::class, $foreignUuid);
+    expect($foreignUuid)->toBeInstanceOf(ForeignIdColumnDefinition::class);
     $this->assertSame([
         'alter table "users" add column "foo" uuid not null, add column "company_id" uuid not null, add column "laravel_idea_id" uuid not null, add column "team_id" uuid not null, add column "team_column_id" uuid not null',
         'alter table "users" add constraint "users_company_id_foreign" foreign key ("company_id") references "companies" ("id")',
@@ -729,26 +729,26 @@ test('adding generated as', function () {
     $blueprint = new Blueprint('users');
     $blueprint->increments('foo')->generatedAs();
     $statements = $blueprint->toSql(getConnection(), getGrammar());
-    $this->assertCount(1, $statements);
-    $this->assertSame('alter table "users" add column "foo" integer generated by default as identity primary key not null', $statements[0]);
+    expect($statements)->toHaveCount(1);
+    expect($statements[0])->toBe('alter table "users" add column "foo" integer generated by default as identity primary key not null');
     // With always modifier
     $blueprint = new Blueprint('users');
     $blueprint->increments('foo')->generatedAs()->always();
     $statements = $blueprint->toSql(getConnection(), getGrammar());
-    $this->assertCount(1, $statements);
-    $this->assertSame('alter table "users" add column "foo" integer generated always as identity primary key not null', $statements[0]);
+    expect($statements)->toHaveCount(1);
+    expect($statements[0])->toBe('alter table "users" add column "foo" integer generated always as identity primary key not null');
     // With sequence options
     $blueprint = new Blueprint('users');
     $blueprint->increments('foo')->generatedAs('increment by 10 start with 100');
     $statements = $blueprint->toSql(getConnection(), getGrammar());
-    $this->assertCount(1, $statements);
-    $this->assertSame('alter table "users" add column "foo" integer generated by default as identity (increment by 10 start with 100) primary key not null', $statements[0]);
+    expect($statements)->toHaveCount(1);
+    expect($statements[0])->toBe('alter table "users" add column "foo" integer generated by default as identity (increment by 10 start with 100) primary key not null');
     // Not a primary key
     $blueprint = new Blueprint('users');
     $blueprint->integer('foo')->generatedAs();
     $statements = $blueprint->toSql(getConnection(), getGrammar());
-    $this->assertCount(1, $statements);
-    $this->assertSame('alter table "users" add column "foo" integer generated by default as identity not null', $statements[0]);
+    expect($statements)->toHaveCount(1);
+    expect($statements[0])->toBe('alter table "users" add column "foo" integer generated by default as identity not null');
 });
 
 test('adding virtual as', function () {
@@ -756,8 +756,8 @@ test('adding virtual as', function () {
     $blueprint->integer('foo')->nullable();
     $blueprint->boolean('bar')->virtualAs('foo is not null');
     $statements = $blueprint->toSql(getConnection(), getGrammar());
-    $this->assertCount(1, $statements);
-    $this->assertSame('alter table "users" add column "foo" integer null, add column "bar" boolean not null generated always as (foo is not null)', $statements[0]);
+    expect($statements)->toHaveCount(1);
+    expect($statements[0])->toBe('alter table "users" add column "foo" integer null, add column "bar" boolean not null generated always as (foo is not null)');
 });
 
 test('adding stored as', function () {
@@ -765,8 +765,8 @@ test('adding stored as', function () {
     $blueprint->integer('foo')->nullable();
     $blueprint->boolean('bar')->storedAs('foo is not null');
     $statements = $blueprint->toSql(getConnection(), getGrammar());
-    $this->assertCount(1, $statements);
-    $this->assertSame('alter table "users" add column "foo" integer null, add column "bar" boolean not null generated always as (foo is not null) stored', $statements[0]);
+    expect($statements)->toHaveCount(1);
+    expect($statements[0])->toBe('alter table "users" add column "foo" integer null, add column "bar" boolean not null generated always as (foo is not null) stored');
 });
 
 test('adding ip address', function () {
@@ -774,8 +774,8 @@ test('adding ip address', function () {
     $blueprint->ipAddress('foo');
     $statements = $blueprint->toSql(getConnection(), getGrammar());
 
-    $this->assertCount(1, $statements);
-    $this->assertSame('alter table "users" add column "foo" inet not null', $statements[0]);
+    expect($statements)->toHaveCount(1);
+    expect($statements[0])->toBe('alter table "users" add column "foo" inet not null');
 });
 
 test('adding mac address', function () {
@@ -783,8 +783,8 @@ test('adding mac address', function () {
     $blueprint->macAddress('foo');
     $statements = $blueprint->toSql(getConnection(), getGrammar());
 
-    $this->assertCount(1, $statements);
-    $this->assertSame('alter table "users" add column "foo" macaddr not null', $statements[0]);
+    expect($statements)->toHaveCount(1);
+    expect($statements[0])->toBe('alter table "users" add column "foo" macaddr not null');
 });
 
 test('compile foreign', function () {
@@ -792,29 +792,29 @@ test('compile foreign', function () {
     $blueprint->foreign('parent_id')->references('id')->on('parents')->onDelete('cascade')->deferrable();
     $statements = $blueprint->toSql(getConnection(), getGrammar());
 
-    $this->assertCount(1, $statements);
-    $this->assertSame('alter table "users" add constraint "users_parent_id_foreign" foreign key ("parent_id") references "parents" ("id") on delete cascade deferrable', $statements[0]);
+    expect($statements)->toHaveCount(1);
+    expect($statements[0])->toBe('alter table "users" add constraint "users_parent_id_foreign" foreign key ("parent_id") references "parents" ("id") on delete cascade deferrable');
 
     $blueprint = new Blueprint('users');
     $blueprint->foreign('parent_id')->references('id')->on('parents')->onDelete('cascade')->deferrable(false)->initiallyImmediate();
     $statements = $blueprint->toSql(getConnection(), getGrammar());
 
-    $this->assertCount(1, $statements);
-    $this->assertSame('alter table "users" add constraint "users_parent_id_foreign" foreign key ("parent_id") references "parents" ("id") on delete cascade not deferrable', $statements[0]);
+    expect($statements)->toHaveCount(1);
+    expect($statements[0])->toBe('alter table "users" add constraint "users_parent_id_foreign" foreign key ("parent_id") references "parents" ("id") on delete cascade not deferrable');
 
     $blueprint = new Blueprint('users');
     $blueprint->foreign('parent_id')->references('id')->on('parents')->onDelete('cascade')->deferrable()->initiallyImmediate(false);
     $statements = $blueprint->toSql(getConnection(), getGrammar());
 
-    $this->assertCount(1, $statements);
-    $this->assertSame('alter table "users" add constraint "users_parent_id_foreign" foreign key ("parent_id") references "parents" ("id") on delete cascade deferrable initially deferred', $statements[0]);
+    expect($statements)->toHaveCount(1);
+    expect($statements[0])->toBe('alter table "users" add constraint "users_parent_id_foreign" foreign key ("parent_id") references "parents" ("id") on delete cascade deferrable initially deferred');
 
     $blueprint = new Blueprint('users');
     $blueprint->foreign('parent_id')->references('id')->on('parents')->onDelete('cascade')->deferrable()->notValid();
     $statements = $blueprint->toSql(getConnection(), getGrammar());
 
-    $this->assertCount(1, $statements);
-    $this->assertSame('alter table "users" add constraint "users_parent_id_foreign" foreign key ("parent_id") references "parents" ("id") on delete cascade deferrable not valid', $statements[0]);
+    expect($statements)->toHaveCount(1);
+    expect($statements[0])->toBe('alter table "users" add constraint "users_parent_id_foreign" foreign key ("parent_id") references "parents" ("id") on delete cascade deferrable not valid');
 });
 
 test('adding geometry', function () {
@@ -822,8 +822,8 @@ test('adding geometry', function () {
     $blueprint->geometry('coordinates');
     $statements = $blueprint->toSql(getConnection(), getGrammar());
 
-    $this->assertCount(1, $statements);
-    $this->assertSame('alter table "geo" add column "coordinates" geography(geometry, 4326) not null', $statements[0]);
+    expect($statements)->toHaveCount(1);
+    expect($statements[0])->toBe('alter table "geo" add column "coordinates" geography(geometry, 4326) not null');
 });
 
 test('adding point', function () {
@@ -831,8 +831,8 @@ test('adding point', function () {
     $blueprint->point('coordinates');
     $statements = $blueprint->toSql(getConnection(), getGrammar());
 
-    $this->assertCount(1, $statements);
-    $this->assertSame('alter table "geo" add column "coordinates" geography(point, 4326) not null', $statements[0]);
+    expect($statements)->toHaveCount(1);
+    expect($statements[0])->toBe('alter table "geo" add column "coordinates" geography(point, 4326) not null');
 });
 
 test('adding line string', function () {
@@ -840,8 +840,8 @@ test('adding line string', function () {
     $blueprint->linestring('coordinates');
     $statements = $blueprint->toSql(getConnection(), getGrammar());
 
-    $this->assertCount(1, $statements);
-    $this->assertSame('alter table "geo" add column "coordinates" geography(linestring, 4326) not null', $statements[0]);
+    expect($statements)->toHaveCount(1);
+    expect($statements[0])->toBe('alter table "geo" add column "coordinates" geography(linestring, 4326) not null');
 });
 
 test('adding polygon', function () {
@@ -849,8 +849,8 @@ test('adding polygon', function () {
     $blueprint->polygon('coordinates');
     $statements = $blueprint->toSql(getConnection(), getGrammar());
 
-    $this->assertCount(1, $statements);
-    $this->assertSame('alter table "geo" add column "coordinates" geography(polygon, 4326) not null', $statements[0]);
+    expect($statements)->toHaveCount(1);
+    expect($statements[0])->toBe('alter table "geo" add column "coordinates" geography(polygon, 4326) not null');
 });
 
 test('adding geometry collection', function () {
@@ -858,8 +858,8 @@ test('adding geometry collection', function () {
     $blueprint->geometrycollection('coordinates');
     $statements = $blueprint->toSql(getConnection(), getGrammar());
 
-    $this->assertCount(1, $statements);
-    $this->assertSame('alter table "geo" add column "coordinates" geography(geometrycollection, 4326) not null', $statements[0]);
+    expect($statements)->toHaveCount(1);
+    expect($statements[0])->toBe('alter table "geo" add column "coordinates" geography(geometrycollection, 4326) not null');
 });
 
 test('adding multi point', function () {
@@ -867,8 +867,8 @@ test('adding multi point', function () {
     $blueprint->multipoint('coordinates');
     $statements = $blueprint->toSql(getConnection(), getGrammar());
 
-    $this->assertCount(1, $statements);
-    $this->assertSame('alter table "geo" add column "coordinates" geography(multipoint, 4326) not null', $statements[0]);
+    expect($statements)->toHaveCount(1);
+    expect($statements[0])->toBe('alter table "geo" add column "coordinates" geography(multipoint, 4326) not null');
 });
 
 test('adding multi line string', function () {
@@ -876,8 +876,8 @@ test('adding multi line string', function () {
     $blueprint->multilinestring('coordinates');
     $statements = $blueprint->toSql(getConnection(), getGrammar());
 
-    $this->assertCount(1, $statements);
-    $this->assertSame('alter table "geo" add column "coordinates" geography(multilinestring, 4326) not null', $statements[0]);
+    expect($statements)->toHaveCount(1);
+    expect($statements[0])->toBe('alter table "geo" add column "coordinates" geography(multilinestring, 4326) not null');
 });
 
 test('adding multi polygon', function () {
@@ -885,8 +885,8 @@ test('adding multi polygon', function () {
     $blueprint->multipolygon('coordinates');
     $statements = $blueprint->toSql(getConnection(), getGrammar());
 
-    $this->assertCount(1, $statements);
-    $this->assertSame('alter table "geo" add column "coordinates" geography(multipolygon, 4326) not null', $statements[0]);
+    expect($statements)->toHaveCount(1);
+    expect($statements[0])->toBe('alter table "geo" add column "coordinates" geography(multipolygon, 4326) not null');
 });
 
 test('create database', function () {
@@ -928,19 +928,19 @@ test('drop database if exists', function () {
 test('drop all tables escapes table names', function () {
     $statement = getGrammar()->compileDropAllTables(['alpha', 'beta', 'gamma']);
 
-    $this->assertSame('drop table "alpha","beta","gamma" cascade', $statement);
+    expect($statement)->toBe('drop table "alpha","beta","gamma" cascade');
 });
 
 test('drop all views escapes table names', function () {
     $statement = getGrammar()->compileDropAllViews(['alpha', 'beta', 'gamma']);
 
-    $this->assertSame('drop view "alpha","beta","gamma" cascade', $statement);
+    expect($statement)->toBe('drop view "alpha","beta","gamma" cascade');
 });
 
 test('drop all types escapes table names', function () {
     $statement = getGrammar()->compileDropAllTypes(['alpha', 'beta', 'gamma']);
 
-    $this->assertSame('drop type "alpha","beta","gamma" cascade', $statement);
+    expect($statement)->toBe('drop type "alpha","beta","gamma" cascade');
 });
 
 test('grammars are macroable', function () {
@@ -951,7 +951,7 @@ test('grammars are macroable', function () {
 
     $c = getGrammar()::compileReplace();
 
-    $this->assertTrue($c);
+    expect($c)->toBeTrue();
 });
 
 // Helpers

@@ -19,8 +19,8 @@ test('basic create and retrieve', function () {
 
     User::create(['name' => Str::random()]);
 
-    $this->assertEquals([$mate1->id, $mate2->id], $user->teamMates->pluck('id')->toArray());
-    $this->assertEquals([$user->id], User::has('teamMates')->pluck('id')->toArray());
+    expect($user->teamMates->pluck('id')->toArray())->toEqual([$mate1->id, $mate2->id]);
+    expect(User::has('teamMates')->pluck('id')->toArray())->toEqual([$user->id]);
 
     $result = $user->teamMates()->first();
     $this->assertEquals(
@@ -44,7 +44,7 @@ test('global scope columns', function () {
 
     $teamMates = $user->teamMatesWithGlobalScope;
 
-    $this->assertEquals(['id' => 2, 'laravel_through_key' => 1], $teamMates[0]->getAttributes());
+    expect($teamMates[0]->getAttributes())->toEqual(['id' => 2, 'laravel_through_key' => 1]);
 });
 
 test('has self', function () {
@@ -56,7 +56,7 @@ test('has self', function () {
 
     $users = User::has('teamMates')->get();
 
-    $this->assertCount(1, $users);
+    expect($users)->toHaveCount(1);
 });
 
 test('has self custom owner key', function () {
@@ -68,7 +68,7 @@ test('has self custom owner key', function () {
 
     $users = User::has('teamMatesBySlug')->get();
 
-    $this->assertCount(1, $users);
+    expect($users)->toHaveCount(1);
 });
 
 test('has same parent and through parent table', function () {
@@ -82,7 +82,7 @@ test('has same parent and through parent table', function () {
 
     $categories = Category::has('subProducts')->get();
 
-    $this->assertEquals([1], $categories->pluck('id')->all());
+    expect($categories->pluck('id')->all())->toEqual([1]);
 });
 
 // Helpers

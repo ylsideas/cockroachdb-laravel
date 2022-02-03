@@ -15,9 +15,9 @@ test('load missing', function () {
 
     $posts->loadMissing('comments.parent.revisions:revisions.comment_id', 'user:id');
 
-    $this->assertCount(2, DB::getQueryLog());
-    $this->assertTrue($posts[0]->comments[0]->relationLoaded('parent'));
-    $this->assertTrue($posts[0]->comments[1]->parent->relationLoaded('revisions'));
+    expect(DB::getQueryLog())->toHaveCount(2);
+    expect($posts[0]->comments[0]->relationLoaded('parent'))->toBeTrue();
+    expect($posts[0]->comments[1]->parent->relationLoaded('revisions'))->toBeTrue();
     $this->assertArrayNotHasKey('id', $posts[0]->comments[1]->parent->revisions[0]->getAttributes());
 });
 
@@ -30,8 +30,8 @@ test('load missing with closure', function () {
         $query->select('id');
     }]);
 
-    $this->assertCount(1, DB::getQueryLog());
-    $this->assertTrue($posts[0]->comments[0]->relationLoaded('parent'));
+    expect(DB::getQueryLog())->toHaveCount(1);
+    expect($posts[0]->comments[0]->relationLoaded('parent'))->toBeTrue();
     $this->assertArrayNotHasKey('post_id', $posts[0]->comments[1]->parent->getAttributes());
 });
 
@@ -42,22 +42,22 @@ test('load missing with duplicate relation name', function () {
 
     $posts->loadMissing('comments.parent.parent');
 
-    $this->assertCount(2, DB::getQueryLog());
-    $this->assertTrue($posts[0]->comments[0]->relationLoaded('parent'));
-    $this->assertTrue($posts[0]->comments[1]->parent->relationLoaded('parent'));
+    expect(DB::getQueryLog())->toHaveCount(2);
+    expect($posts[0]->comments[0]->relationLoaded('parent'))->toBeTrue();
+    expect($posts[0]->comments[1]->parent->relationLoaded('parent'))->toBeTrue();
 });
 
 test('load missing without initial load', function () {
     $user = User::first();
     $user->loadMissing('posts.postRelation.postSubRelations.postSubSubRelations');
 
-    $this->assertEquals(2, $user->posts->count());
-    $this->assertNull($user->posts[0]->postRelation);
-    $this->assertInstanceOf(PostRelation::class, $user->posts[1]->postRelation);
-    $this->assertEquals(1, $user->posts[1]->postRelation->postSubRelations->count());
-    $this->assertInstanceOf(PostSubRelation::class, $user->posts[1]->postRelation->postSubRelations[0]);
-    $this->assertEquals(1, $user->posts[1]->postRelation->postSubRelations[0]->postSubSubRelations->count());
-    $this->assertInstanceOf(PostSubSubRelation::class, $user->posts[1]->postRelation->postSubRelations[0]->postSubSubRelations[0]);
+    expect($user->posts->count())->toEqual(2);
+    expect($user->posts[0]->postRelation)->toBeNull();
+    expect($user->posts[1]->postRelation)->toBeInstanceOf(PostRelation::class);
+    expect($user->posts[1]->postRelation->postSubRelations->count())->toEqual(1);
+    expect($user->posts[1]->postRelation->postSubRelations[0])->toBeInstanceOf(PostSubRelation::class);
+    expect($user->posts[1]->postRelation->postSubRelations[0]->postSubSubRelations->count())->toEqual(1);
+    expect($user->posts[1]->postRelation->postSubRelations[0]->postSubSubRelations[0])->toBeInstanceOf(PostSubSubRelation::class);
 });
 
 // Helpers

@@ -15,10 +15,10 @@ test('with morph count loading', function () {
         }])
         ->get();
 
-    $this->assertTrue($comments[0]->relationLoaded('commentable'));
-    $this->assertEquals(2, $comments[0]->commentable->likes_count);
-    $this->assertTrue($comments[1]->relationLoaded('commentable'));
-    $this->assertNull($comments[1]->commentable->views_count);
+    expect($comments[0]->relationLoaded('commentable'))->toBeTrue();
+    expect($comments[0]->commentable->likes_count)->toEqual(2);
+    expect($comments[1]->relationLoaded('commentable'))->toBeTrue();
+    expect($comments[1]->commentable->views_count)->toBeNull();
 });
 
 test('with morph count loading with single relation', function () {
@@ -28,8 +28,8 @@ test('with morph count loading with single relation', function () {
         }])
         ->get();
 
-    $this->assertTrue($comments[0]->relationLoaded('commentable'));
-    $this->assertEquals(2, $comments[0]->commentable->likes_count);
+    expect($comments[0]->relationLoaded('commentable'))->toBeTrue();
+    expect($comments[0]->commentable->likes_count)->toEqual(2);
 });
 
 // Helpers

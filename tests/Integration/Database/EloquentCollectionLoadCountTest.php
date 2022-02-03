@@ -17,10 +17,10 @@ test('load count', function () {
 
     $posts->loadCount('comments');
 
-    $this->assertCount(1, DB::getQueryLog());
-    $this->assertEquals('2', $posts[0]->comments_count);
-    $this->assertEquals('0', $posts[1]->comments_count);
-    $this->assertEquals('2', $posts[0]->getOriginal('comments_count'));
+    expect(DB::getQueryLog())->toHaveCount(1);
+    expect($posts[0]->comments_count)->toEqual('2');
+    expect($posts[1]->comments_count)->toEqual('0');
+    expect($posts[0]->getOriginal('comments_count'))->toEqual('2');
 });
 
 test('load count with same models', function () {
@@ -30,10 +30,10 @@ test('load count with same models', function () {
 
     $posts->loadCount('comments');
 
-    $this->assertCount(1, DB::getQueryLog());
-    $this->assertEquals('2', $posts[0]->comments_count);
-    $this->assertEquals('0', $posts[1]->comments_count);
-    $this->assertEquals('2', $posts[2]->comments_count);
+    expect(DB::getQueryLog())->toHaveCount(1);
+    expect($posts[0]->comments_count)->toEqual('2');
+    expect($posts[1]->comments_count)->toEqual('0');
+    expect($posts[2]->comments_count)->toEqual('2');
 });
 
 test('load count on deleted models', function () {
@@ -43,9 +43,9 @@ test('load count on deleted models', function () {
 
     $posts->loadCount('comments');
 
-    $this->assertCount(1, DB::getQueryLog());
-    $this->assertEquals('2', $posts[0]->comments_count);
-    $this->assertEquals('0', $posts[1]->comments_count);
+    expect(DB::getQueryLog())->toHaveCount(1);
+    expect($posts[0]->comments_count)->toEqual('2');
+    expect($posts[1]->comments_count)->toEqual('0');
 });
 
 test('load count with array of relations', function () {
@@ -55,11 +55,11 @@ test('load count with array of relations', function () {
 
     $posts->loadCount(['comments', 'likes']);
 
-    $this->assertCount(1, DB::getQueryLog());
-    $this->assertEquals('2', $posts[0]->comments_count);
-    $this->assertEquals('1', $posts[0]->likes_count);
-    $this->assertEquals('0', $posts[1]->comments_count);
-    $this->assertEquals('0', $posts[1]->likes_count);
+    expect(DB::getQueryLog())->toHaveCount(1);
+    expect($posts[0]->comments_count)->toEqual('2');
+    expect($posts[0]->likes_count)->toEqual('1');
+    expect($posts[1]->comments_count)->toEqual('0');
+    expect($posts[1]->likes_count)->toEqual('0');
 });
 
 test('load count does not override attributes with default value', function () {
@@ -68,8 +68,8 @@ test('load count does not override attributes with default value', function () {
 
     Collection::make([$post])->loadCount('comments');
 
-    $this->assertSame(200, $post->some_default_value);
-    $this->assertEquals('2', $post->comments_count);
+    expect($post->some_default_value)->toBe(200);
+    expect($post->comments_count)->toEqual('2');
 });
 
 // Helpers

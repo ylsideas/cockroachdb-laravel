@@ -14,10 +14,10 @@ test('dates are immutable castable', function () {
         'datetime_field' => '2019-10-01 10:15:20',
     ]);
 
-    $this->assertSame('2019-10-01T00:00:00.000000Z', $model->toArray()['date_field']);
-    $this->assertSame('2019-10-01T10:15:20.000000Z', $model->toArray()['datetime_field']);
-    $this->assertInstanceOf(CarbonImmutable::class, $model->date_field);
-    $this->assertInstanceOf(CarbonImmutable::class, $model->datetime_field);
+    expect($model->toArray()['date_field'])->toBe('2019-10-01T00:00:00.000000Z');
+    expect($model->toArray()['datetime_field'])->toBe('2019-10-01T10:15:20.000000Z');
+    expect($model->date_field)->toBeInstanceOf(CarbonImmutable::class);
+    expect($model->datetime_field)->toBeInstanceOf(CarbonImmutable::class);
 });
 
 test('dates are immutable and custom castable', function () {
@@ -26,10 +26,10 @@ test('dates are immutable and custom castable', function () {
         'datetime_field' => '2019-10-01 10:15:20',
     ]);
 
-    $this->assertSame('2019-10', $model->toArray()['date_field']);
-    $this->assertSame('2019-10 10:15', $model->toArray()['datetime_field']);
-    $this->assertInstanceOf(CarbonImmutable::class, $model->date_field);
-    $this->assertInstanceOf(CarbonImmutable::class, $model->datetime_field);
+    expect($model->toArray()['date_field'])->toBe('2019-10');
+    expect($model->toArray()['datetime_field'])->toBe('2019-10 10:15');
+    expect($model->date_field)->toBeInstanceOf(CarbonImmutable::class);
+    expect($model->datetime_field)->toBeInstanceOf(CarbonImmutable::class);
 });
 
 // Helpers

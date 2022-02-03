@@ -11,42 +11,42 @@ test('lock can have a separate connection', function () {
     app()['config']->set('cache.stores.database.lock_connection', 'test');
     app()['config']->set('database.connections.test', app()['config']->get('database.connections.mysql'));
 
-    $this->assertSame('test', Cache::driver('database')->lock('foo')->getConnectionName());
+    expect(Cache::driver('database')->lock('foo')->getConnectionName())->toBe('test');
 });
 
 test('lock can be acquired', function () {
     $lock = Cache::driver('database')->lock('foo');
-    $this->assertTrue($lock->get());
+    expect($lock->get())->toBeTrue();
 
     $otherLock = Cache::driver('database')->lock('foo');
-    $this->assertFalse($otherLock->get());
+    expect($otherLock->get())->toBeFalse();
 
     $lock->release();
 
     $otherLock = Cache::driver('database')->lock('foo');
-    $this->assertTrue($otherLock->get());
+    expect($otherLock->get())->toBeTrue();
 
     $otherLock->release();
 });
 
 test('lock can be force released', function () {
     $lock = Cache::driver('database')->lock('foo');
-    $this->assertTrue($lock->get());
+    expect($lock->get())->toBeTrue();
 
     $otherLock = Cache::driver('database')->lock('foo');
     $otherLock->forceRelease();
-    $this->assertTrue($otherLock->get());
+    expect($otherLock->get())->toBeTrue();
 
     $otherLock->release();
 });
 
 test('expired lock can be retrieved', function () {
     $lock = Cache::driver('database')->lock('foo');
-    $this->assertTrue($lock->get());
+    expect($lock->get())->toBeTrue();
     DB::table('cache_locks')->update(['expiration' => now()->subDays(1)->getTimestamp()]);
 
     $otherLock = Cache::driver('database')->lock('foo');
-    $this->assertTrue($otherLock->get());
+    expect($otherLock->get())->toBeTrue();
 
     $otherLock->release();
 });

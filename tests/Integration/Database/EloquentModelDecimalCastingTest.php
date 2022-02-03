@@ -13,19 +13,19 @@ test('decimals are castable', function () {
         'decimal_field_4' => '1234',
     ]);
 
-    $this->assertSame('12.00', $user->toArray()['decimal_field_2']);
-    $this->assertSame('1234.0000', $user->toArray()['decimal_field_4']);
+    expect($user->toArray()['decimal_field_2'])->toBe('12.00');
+    expect($user->toArray()['decimal_field_4'])->toBe('1234.0000');
 
     $user->decimal_field_2 = 12;
     $user->decimal_field_4 = '1234';
 
-    $this->assertSame('12.00', $user->toArray()['decimal_field_2']);
-    $this->assertSame('1234.0000', $user->toArray()['decimal_field_4']);
+    expect($user->toArray()['decimal_field_2'])->toBe('12.00');
+    expect($user->toArray()['decimal_field_4'])->toBe('1234.0000');
 
-    $this->assertFalse($user->isDirty());
+    expect($user->isDirty())->toBeFalse();
 
     $user->decimal_field_4 = '1234.1234';
-    $this->assertTrue($user->isDirty());
+    expect($user->isDirty())->toBeTrue();
 });
 
 // Helpers

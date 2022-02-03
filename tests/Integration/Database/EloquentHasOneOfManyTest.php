@@ -25,7 +25,7 @@ it('only eager loads required models', function () {
 
     User::with('latest_login')->get();
 
-    $this->assertSame(2, $this->retrievedLogins);
+    expect($this->retrievedLogins)->toBe(2);
 });
 
 // Helpers

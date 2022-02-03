@@ -24,7 +24,7 @@ beforeEach(function () {
 });
 
 test('realpath migration has properly executed', function () {
-    $this->assertTrue(Schema::hasTable('members'));
+    expect(Schema::hasTable('members'))->toBeTrue();
 });
 
 test('migrations has the migrated table', function () {

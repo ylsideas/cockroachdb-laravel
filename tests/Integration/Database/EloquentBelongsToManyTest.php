@@ -28,17 +28,17 @@ test('basic create and retrieve', function () {
     ]);
 
     // Tags with flag = exclude should be excluded
-    $this->assertCount(2, $post->tags);
-    $this->assertInstanceOf(Collection::class, $post->tags);
-    $this->assertEquals($tag->name, $post->tags[0]->name);
-    $this->assertEquals($tag2->name, $post->tags[1]->name);
+    expect($post->tags)->toHaveCount(2);
+    expect($post->tags)->toBeInstanceOf(Collection::class);
+    expect($post->tags[0]->name)->toEqual($tag->name);
+    expect($post->tags[1]->name)->toEqual($tag2->name);
 
     // Testing on the pivot model
-    $this->assertInstanceOf(Pivot::class, $post->tags[0]->pivot);
-    $this->assertEquals($post->id, $post->tags[0]->pivot->post_id);
-    $this->assertSame('post_id', $post->tags[0]->pivot->getForeignKey());
-    $this->assertSame('tag_id', $post->tags[0]->pivot->getOtherKey());
-    $this->assertSame('posts_tags', $post->tags[0]->pivot->getTable());
+    expect($post->tags[0]->pivot)->toBeInstanceOf(Pivot::class);
+    expect($post->tags[0]->pivot->post_id)->toEqual($post->id);
+    expect($post->tags[0]->pivot->getForeignKey())->toBe('post_id');
+    expect($post->tags[0]->pivot->getOtherKey())->toBe('tag_id');
+    expect($post->tags[0]->pivot->getTable())->toBe('posts_tags');
     $this->assertEquals(
         [
             'post_id' => '1', 'tag_id' => '1', 'flag' => 'taylor',
@@ -62,17 +62,17 @@ test('refresh on other model works', function () {
 
     $tag->update(['name' => 'newName']);
 
-    $this->assertEquals($tagName, $loadedTag->name);
+    expect($loadedTag->name)->toEqual($tagName);
 
-    $this->assertEquals($tagName, $post->tags[0]->name);
+    expect($post->tags[0]->name)->toEqual($tagName);
 
     $loadedTag->refresh();
 
-    $this->assertSame('newName', $loadedTag->name);
+    expect($loadedTag->name)->toBe('newName');
 
     $post->refresh();
 
-    $this->assertSame('newName', $post->tags[0]->name);
+    expect($post->tags[0]->name)->toBe('newName');
 });
 
 test('custom pivot class', function () {
@@ -84,11 +84,11 @@ test('custom pivot class', function () {
 
     $post->tagsWithCustomPivot()->attach($tag->id);
 
-    $this->assertInstanceOf(PostTagPivot::class, $post->tagsWithCustomPivot[0]->pivot);
-    $this->assertEquals('1507630210', $post->tagsWithCustomPivot[0]->pivot->created_at);
+    expect($post->tagsWithCustomPivot[0]->pivot)->toBeInstanceOf(PostTagPivot::class);
+    expect($post->tagsWithCustomPivot[0]->pivot->created_at)->toEqual('1507630210');
 
-    $this->assertInstanceOf(PostTagPivot::class, $post->tagsWithCustomPivotClass[0]->pivot);
-    $this->assertSame('posts_tags', $post->tagsWithCustomPivotClass()->getTable());
+    expect($post->tagsWithCustomPivotClass[0]->pivot)->toBeInstanceOf(PostTagPivot::class);
+    expect($post->tagsWithCustomPivotClass()->getTable())->toBe('posts_tags');
 
     $this->assertEquals([
         'post_id' => '1',
@@ -99,9 +99,9 @@ test('custom pivot class', function () {
     $pivot->tag_id = 2;
     $pivot->save();
 
-    $this->assertEquals(1, PostTagPivot::count());
-    $this->assertEquals(1, PostTagPivot::first()->post_id);
-    $this->assertEquals(2, PostTagPivot::first()->tag_id);
+    expect(PostTagPivot::count())->toEqual(1);
+    expect(PostTagPivot::first()->post_id)->toEqual(1);
+    expect(PostTagPivot::first()->tag_id)->toEqual(2);
 });
 
 test('custom pivot class using sync', function () {
@@ -121,7 +121,7 @@ test('custom pivot class using sync', function () {
         $tag->id => ['flag' => 1],
     ]);
 
-    $this->assertEmpty($results['updated']);
+    expect($results['updated'])->toBeEmpty();
 
     $results = $post->tagsWithCustomPivot()->sync([]);
 
@@ -144,7 +144,7 @@ test('custom pivot class using update existing pivot', function () {
         $post->tagsWithCustomExtraPivot()->updateExistingPivot($tag->id, ['flag' => 'exclude'])
     );
     foreach ($post->tagsWithCustomExtraPivot as $tag) {
-        $this->assertSame('exclude', $tag->pivot->flag);
+        expect($tag->pivot->flag)->toBe('exclude');
     }
 
     // Test on non-existent pivot
@@ -176,9 +176,9 @@ test('custom pivot class updates timestamps', function () {
         $post->tagsWithCustomExtraPivot()->updateExistingPivot($tag->id, ['flag' => 'exclude'])
     );
     foreach ($post->tagsWithCustomExtraPivot as $tag) {
-        $this->assertSame('exclude', $tag->pivot->flag);
-        $this->assertEquals('2017-10-10 10:10:10', $tag->pivot->getAttributes()['created_at']);
-        $this->assertEquals('2017-10-10 10:10:20', $tag->pivot->getAttributes()['updated_at']); // +10 seconds
+        expect($tag->pivot->flag)->toBe('exclude');
+        expect($tag->pivot->getAttributes()['created_at'])->toEqual('2017-10-10 10:10:10');
+        expect($tag->pivot->getAttributes()['updated_at'])->toEqual('2017-10-10 10:10:20'); // +10 seconds
     }
 })->group('SkipMSSQL');
 
@@ -195,30 +195,30 @@ test('attach method', function () {
     $tag8 = Tag::create(['name' => Str::random()]);
 
     $post->tags()->attach($tag->id);
-    $this->assertEquals($tag->name, $post->tags[0]->name);
+    expect($post->tags[0]->name)->toEqual($tag->name);
     $this->assertNotNull($post->tags[0]->pivot->created_at);
 
     $post->tags()->attach($tag2->id, ['flag' => 'taylor']);
     $post->load('tags');
-    $this->assertEquals($tag2->name, $post->tags[1]->name);
-    $this->assertSame('taylor', $post->tags[1]->pivot->flag);
+    expect($post->tags[1]->name)->toEqual($tag2->name);
+    expect($post->tags[1]->pivot->flag)->toBe('taylor');
 
     $post->tags()->attach([$tag3->id, $tag4->id]);
     $post->load('tags');
-    $this->assertEquals($tag3->name, $post->tags[2]->name);
-    $this->assertEquals($tag4->name, $post->tags[3]->name);
+    expect($post->tags[2]->name)->toEqual($tag3->name);
+    expect($post->tags[3]->name)->toEqual($tag4->name);
 
     $post->tags()->attach([$tag5->id => ['flag' => 'mohamed'], $tag6->id => ['flag' => 'adam']]);
     $post->load('tags');
-    $this->assertEquals($tag5->name, $post->tags[4]->name);
-    $this->assertSame('mohamed', $post->tags[4]->pivot->flag);
-    $this->assertEquals($tag6->name, $post->tags[5]->name);
-    $this->assertSame('adam', $post->tags[5]->pivot->flag);
+    expect($post->tags[4]->name)->toEqual($tag5->name);
+    expect($post->tags[4]->pivot->flag)->toBe('mohamed');
+    expect($post->tags[5]->name)->toEqual($tag6->name);
+    expect($post->tags[5]->pivot->flag)->toBe('adam');
 
     $post->tags()->attach(new Collection([$tag7, $tag8]));
     $post->load('tags');
-    $this->assertEquals($tag7->name, $post->tags[6]->name);
-    $this->assertEquals($tag8->name, $post->tags[7]->name);
+    expect($post->tags[6]->name)->toEqual($tag7->name);
+    expect($post->tags[7]->name)->toEqual($tag8->name);
 });
 
 test('detach method', function () {
@@ -234,7 +234,7 @@ test('detach method', function () {
 
     $post->tags()->attach(Tag::all());
 
-    $this->assertEquals(Tag::pluck('name'), $post->tags->pluck('name'));
+    expect($post->tags->pluck('name'))->toEqual(Tag::pluck('name'));
 
     $post->tags()->detach($tag->id);
     $post->load('tags');
@@ -257,10 +257,10 @@ test('detach method', function () {
         $post->tags->pluck('name')
     );
 
-    $this->assertCount(2, $post->tags);
+    expect($post->tags)->toHaveCount(2);
     $post->tags()->detach();
     $post->load('tags');
-    $this->assertCount(0, $post->tags);
+    expect($post->tags)->toHaveCount(0);
 });
 
 test('first method', function () {
@@ -270,7 +270,7 @@ test('first method', function () {
 
     $post->tags()->attach(Tag::all());
 
-    $this->assertEquals($tag->name, $post->tags()->first()->name);
+    expect($post->tags()->first()->name)->toEqual($tag->name);
 });
 
 test('first or fail method', function () {
@@ -289,11 +289,11 @@ test('find method', function () {
 
     $post->tags()->attach(Tag::all());
 
-    $this->assertEquals($tag2->name, $post->tags()->find($tag2->id)->name);
-    $this->assertCount(0, $post->tags()->findMany([]));
-    $this->assertCount(2, $post->tags()->findMany([$tag->id, $tag2->id]));
-    $this->assertCount(0, $post->tags()->findMany(new Collection()));
-    $this->assertCount(2, $post->tags()->findMany(new Collection([$tag->id, $tag2->id])));
+    expect($post->tags()->find($tag2->id)->name)->toEqual($tag2->name);
+    expect($post->tags()->findMany([]))->toHaveCount(0);
+    expect($post->tags()->findMany([$tag->id, $tag2->id]))->toHaveCount(2);
+    expect($post->tags()->findMany(new Collection()))->toHaveCount(0);
+    expect($post->tags()->findMany(new Collection([$tag->id, $tag2->id])))->toHaveCount(2);
 });
 
 test('find or fail method', function () {
@@ -342,10 +342,10 @@ test('find or new method', function () {
 
     $post->tags()->attach(Tag::all());
 
-    $this->assertEquals($tag->id, $post->tags()->findOrNew($tag->id)->id);
+    expect($post->tags()->findOrNew($tag->id)->id)->toEqual($tag->id);
 
-    $this->assertNull($post->tags()->findOrNew(666)->id);
-    $this->assertInstanceOf(Tag::class, $post->tags()->findOrNew(666));
+    expect($post->tags()->findOrNew(666)->id)->toBeNull();
+    expect($post->tags()->findOrNew(666))->toBeInstanceOf(Tag::class);
 });
 
 test('first or new method', function () {
@@ -355,10 +355,10 @@ test('first or new method', function () {
 
     $post->tags()->attach(Tag::all());
 
-    $this->assertEquals($tag->id, $post->tags()->firstOrNew(['id' => $tag->id])->id);
+    expect($post->tags()->firstOrNew(['id' => $tag->id])->id)->toEqual($tag->id);
 
-    $this->assertFalse($post->tags()->firstOrNew(['id' => 666])->exists);
-    $this->assertInstanceOf(Tag::class, $post->tags()->firstOrNew(['id' => 666]));
+    expect($post->tags()->firstOrNew(['id' => 666])->exists)->toBeFalse();
+    expect($post->tags()->firstOrNew(['id' => 666]))->toBeInstanceOf(Tag::class);
 });
 
 test('first or create method', function () {
@@ -368,10 +368,10 @@ test('first or create method', function () {
 
     $post->tags()->attach(Tag::all());
 
-    $this->assertEquals($tag->id, $post->tags()->firstOrCreate(['name' => $tag->name])->id);
+    expect($post->tags()->firstOrCreate(['name' => $tag->name])->id)->toEqual($tag->id);
 
     $new = $post->tags()->firstOrCreate(['name' => 'wavez']);
-    $this->assertSame('wavez', $new->name);
+    expect($new->name)->toBe('wavez');
     $this->assertNotNull($new->id);
 });
 
@@ -383,7 +383,7 @@ test('update or create method', function () {
     $post->tags()->attach(Tag::all());
 
     $post->tags()->updateOrCreate(['id' => $tag->id], ['name' => 'wavez']);
-    $this->assertSame('wavez', $tag->fresh()->name);
+    expect($tag->fresh()->name)->toBe('wavez');
 
     $post->tags()->updateOrCreate(['id' => 666], ['name' => 'dives']);
     $this->assertNotNull($post->tags()->whereName('dives')->first());
@@ -418,17 +418,17 @@ test('sync method', function () {
     ], $output);
 
     $post->tags()->sync([]);
-    $this->assertEmpty($post->load('tags')->tags);
+    expect($post->load('tags')->tags)->toBeEmpty();
 
     $post->tags()->sync([
         $tag->id => ['flag' => 'taylor'],
         $tag2->id => ['flag' => 'mohamed'],
     ]);
     $post->load('tags');
-    $this->assertEquals($tag->name, $post->tags[0]->name);
-    $this->assertSame('taylor', $post->tags[0]->pivot->flag);
-    $this->assertEquals($tag2->name, $post->tags[1]->name);
-    $this->assertSame('mohamed', $post->tags[1]->pivot->flag);
+    expect($post->tags[0]->name)->toEqual($tag->name);
+    expect($post->tags[0]->pivot->flag)->toBe('taylor');
+    expect($post->tags[1]->name)->toEqual($tag2->name);
+    expect($post->tags[1]->pivot->flag)->toBe('mohamed');
 });
 
 test('sync without detaching method', function () {
@@ -478,7 +478,7 @@ test('toggle method', function () {
         Tag::whereIn('id', [$tag->id])->pluck('name'),
         $post->tags->pluck('name')
     );
-    $this->assertSame('taylor', $post->tags[0]->pivot->flag);
+    expect($post->tags[0]->pivot->flag)->toBe('taylor');
 });
 
 test('touching parent', function () {
@@ -496,7 +496,7 @@ test('touching parent', function () {
     $this->assertNotSame('2017-10-10 10:10:10', $post->fresh()->updated_at->toDateTimeString());
 
     $tag->update(['name' => Str::random()]);
-    $this->assertSame('2017-10-10 10:10:10', $post->fresh()->updated_at->toDateTimeString());
+    expect($post->fresh()->updated_at->toDateTimeString())->toBe('2017-10-10 10:10:10');
 });
 
 test('touching related models on sync', function () {
@@ -511,8 +511,8 @@ test('touching related models on sync', function () {
 
     $tag->posts()->sync([$post->id]);
 
-    $this->assertSame('2017-10-10 10:10:10', $post->fresh()->updated_at->toDateTimeString());
-    $this->assertSame('2017-10-10 10:10:10', $tag->fresh()->updated_at->toDateTimeString());
+    expect($post->fresh()->updated_at->toDateTimeString())->toBe('2017-10-10 10:10:10');
+    expect($tag->fresh()->updated_at->toDateTimeString())->toBe('2017-10-10 10:10:10');
 });
 
 test('no touching happens if not configured', function () {
@@ -546,7 +546,7 @@ test('can retrieve related ids', function () {
         ['post_id' => $post->id, 'tag_id' => 400, 'flag' => ''],
     ]);
 
-    $this->assertEquals([200, 400], $post->tags()->allRelatedIds()->toArray());
+    expect($post->tags()->allRelatedIds()->toArray())->toEqual([200, 400]);
 })->group('SkipMSSQL');
 
 /**/
@@ -569,7 +569,7 @@ test('can touch related models', function () {
     $post->tags()->touch();
 
     foreach ($post->tags()->pluck('tags.updated_at') as $date) {
-        $this->assertSame('2017-10-10 10:10:10', $date);
+        expect($date)->toBe('2017-10-10 10:10:10');
     }
 
     $this->assertNotSame('2017-10-10 10:10:10', Tag::find(300)->updated_at);
@@ -585,10 +585,10 @@ test('where pivot on string', function () {
     ]);
 
     $relationTag = $post->tags()->wherePivot('flag', 'foo')->first();
-    $this->assertEquals($relationTag->getAttributes(), $tag->getAttributes());
+    expect($tag->getAttributes())->toEqual($relationTag->getAttributes());
 
     $relationTag = $post->tags()->wherePivot('flag', '=', 'foo')->first();
-    $this->assertEquals($relationTag->getAttributes(), $tag->getAttributes());
+    expect($tag->getAttributes())->toEqual($relationTag->getAttributes());
 })->group('SkipMSSQL');
 
 /**/
@@ -601,10 +601,10 @@ test('first where', function () {
     ]);
 
     $relationTag = $post->tags()->firstWhere('name', 'foo');
-    $this->assertEquals($relationTag->getAttributes(), $tag->getAttributes());
+    expect($tag->getAttributes())->toEqual($relationTag->getAttributes());
 
     $relationTag = $post->tags()->firstWhere('name', '=', 'foo');
-    $this->assertEquals($relationTag->getAttributes(), $tag->getAttributes());
+    expect($tag->getAttributes())->toEqual($relationTag->getAttributes());
 })->group('SkipMSSQL');
 
 /**/
@@ -617,10 +617,10 @@ test('where pivot on boolean', function () {
     ]);
 
     $relationTag = $post->tags()->wherePivot('flag', true)->first();
-    $this->assertEquals($relationTag->getAttributes(), $tag->getAttributes());
+    expect($tag->getAttributes())->toEqual($relationTag->getAttributes());
 
     $relationTag = $post->tags()->wherePivot('flag', '=', true)->first();
-    $this->assertEquals($relationTag->getAttributes(), $tag->getAttributes());
+    expect($tag->getAttributes())->toEqual($relationTag->getAttributes());
 })->group('SkipMSSQL');
 
 /**/
@@ -633,7 +633,7 @@ test('where pivot in method', function () {
     ]);
 
     $relationTag = $post->tags()->wherePivotIn('flag', ['foo'])->first();
-    $this->assertEquals($relationTag->getAttributes(), $tag->getAttributes());
+    expect($tag->getAttributes())->toEqual($relationTag->getAttributes());
 })->group('SkipMSSQL');
 
 test('or where pivot in method', function () {
@@ -653,7 +653,7 @@ test('or where pivot in method', function () {
     ]);
 
     $relationTags = $post->tags()->wherePivotIn('flag', ['foo'])->orWherePivotIn('flag', ['baz'])->get();
-    $this->assertEquals($relationTags->pluck('id')->toArray(), [$tag1->id, $tag3->id]);
+    expect([$tag1->id, $tag3->id])->toEqual($relationTags->pluck('id')->toArray());
 });
 
 /**/
@@ -670,7 +670,7 @@ test('where pivot not in method', function () {
     ]);
 
     $relationTag = $post->tags()->wherePivotNotIn('flag', ['foo'])->first();
-    $this->assertEquals($relationTag->getAttributes(), $tag2->getAttributes());
+    expect($tag2->getAttributes())->toEqual($relationTag->getAttributes());
 })->group('SkipMSSQL');
 
 test('or where pivot not in method', function () {
@@ -690,7 +690,7 @@ test('or where pivot not in method', function () {
     ]);
 
     $relationTags = $post->tags()->wherePivotIn('flag', ['foo'])->orWherePivotNotIn('flag', ['baz'])->get();
-    $this->assertEquals($relationTags->pluck('id')->toArray(), [$tag1->id, $tag2->id]);
+    expect([$tag1->id, $tag2->id])->toEqual($relationTags->pluck('id')->toArray());
 });
 
 /**/
@@ -707,7 +707,7 @@ test('where pivot null method', function () {
     ]);
 
     $relationTag = $post->tagsWithExtraPivot()->wherePivotNull('flag')->first();
-    $this->assertEquals($relationTag->getAttributes(), $tag2->getAttributes());
+    expect($tag2->getAttributes())->toEqual($relationTag->getAttributes());
 })->group('SkipMSSQL');
 
 /**/
@@ -724,7 +724,7 @@ test('where pivot not null method', function () {
     ]);
 
     $relationTag = $post->tagsWithExtraPivot()->wherePivotNotNull('flag')->first();
-    $this->assertEquals($relationTag->getAttributes(), $tag1->getAttributes());
+    expect($tag1->getAttributes())->toEqual($relationTag->getAttributes());
 })->group('SkipMSSQL');
 
 test('can update existing pivot', function () {
@@ -738,7 +738,7 @@ test('can update existing pivot', function () {
     $post->tagsWithExtraPivot()->updateExistingPivot($tag->id, ['flag' => 'exclude']);
 
     foreach ($post->tagsWithExtraPivot as $tag) {
-        $this->assertSame('exclude', $tag->pivot->flag);
+        expect($tag->pivot->flag)->toBe('exclude');
     }
 });
 
@@ -757,7 +757,7 @@ test('can update existing pivot using arrayable of ids', function () {
     $post->tagsWithExtraPivot()->updateExistingPivot($tags, ['flag' => 'exclude']);
 
     foreach ($post->tagsWithExtraPivot as $tag) {
-        $this->assertSame('exclude', $tag->pivot->flag);
+        expect($tag->pivot->flag)->toBe('exclude');
     }
 });
 
@@ -772,7 +772,7 @@ test('can update existing pivot using model', function () {
     $post->tagsWithExtraPivot()->updateExistingPivot($tag, ['flag' => 'exclude']);
 
     foreach ($post->tagsWithExtraPivot as $tag) {
-        $this->assertSame('exclude', $tag->pivot->flag);
+        expect($tag->pivot->flag)->toBe('exclude');
     }
 });
 
@@ -780,20 +780,20 @@ test('custom related key', function () {
     $post = Post::create(['title' => Str::random()]);
 
     $tag = $post->tagsWithCustomRelatedKey()->create(['name' => Str::random()]);
-    $this->assertEquals($tag->name, $post->tagsWithCustomRelatedKey()->first()->pivot->tag_name);
+    expect($post->tagsWithCustomRelatedKey()->first()->pivot->tag_name)->toEqual($tag->name);
 
     $post->tagsWithCustomRelatedKey()->detach($tag);
 
     $post->tagsWithCustomRelatedKey()->attach($tag);
-    $this->assertEquals($tag->name, $post->tagsWithCustomRelatedKey()->first()->pivot->tag_name);
+    expect($post->tagsWithCustomRelatedKey()->first()->pivot->tag_name)->toEqual($tag->name);
 
     $post->tagsWithCustomRelatedKey()->detach(new Collection([$tag]));
 
     $post->tagsWithCustomRelatedKey()->attach(new Collection([$tag]));
-    $this->assertEquals($tag->name, $post->tagsWithCustomRelatedKey()->first()->pivot->tag_name);
+    expect($post->tagsWithCustomRelatedKey()->first()->pivot->tag_name)->toEqual($tag->name);
 
     $post->tagsWithCustomRelatedKey()->updateExistingPivot($tag, ['flag' => 'exclude']);
-    $this->assertSame('exclude', $post->tagsWithCustomRelatedKey()->first()->pivot->flag);
+    expect($post->tagsWithCustomRelatedKey()->first()->pivot->flag)->toBe('exclude');
 });
 
 test('global scope columns', function () {
@@ -806,7 +806,7 @@ test('global scope columns', function () {
 
     $tags = $post->tagsWithGlobalScope;
 
-    $this->assertEquals(['id' => 1], $tags[0]->getAttributes());
+    expect($tags[0]->getAttributes())->toEqual(['id' => 1]);
 });
 
 test('pivot doesnt have primary key', function () {
@@ -815,17 +815,17 @@ test('pivot doesnt have primary key', function () {
     $post2 = Post::create(['title' => Str::random()]);
 
     $user->postsWithCustomPivot()->sync([$post1->uuid]);
-    $this->assertEquals($user->uuid, $user->postsWithCustomPivot()->first()->pivot->user_uuid);
-    $this->assertEquals($post1->uuid, $user->postsWithCustomPivot()->first()->pivot->post_uuid);
-    $this->assertEquals(1, $user->postsWithCustomPivot()->first()->pivot->is_draft);
+    expect($user->postsWithCustomPivot()->first()->pivot->user_uuid)->toEqual($user->uuid);
+    expect($user->postsWithCustomPivot()->first()->pivot->post_uuid)->toEqual($post1->uuid);
+    expect($user->postsWithCustomPivot()->first()->pivot->is_draft)->toEqual(1);
 
     $user->postsWithCustomPivot()->sync([$post2->uuid]);
-    $this->assertEquals($user->uuid, $user->postsWithCustomPivot()->first()->pivot->user_uuid);
-    $this->assertEquals($post2->uuid, $user->postsWithCustomPivot()->first()->pivot->post_uuid);
-    $this->assertEquals(1, $user->postsWithCustomPivot()->first()->pivot->is_draft);
+    expect($user->postsWithCustomPivot()->first()->pivot->user_uuid)->toEqual($user->uuid);
+    expect($user->postsWithCustomPivot()->first()->pivot->post_uuid)->toEqual($post2->uuid);
+    expect($user->postsWithCustomPivot()->first()->pivot->is_draft)->toEqual(1);
 
     $user->postsWithCustomPivot()->updateExistingPivot($post2->uuid, ['is_draft' => 0]);
-    $this->assertEquals(0, $user->postsWithCustomPivot()->first()->pivot->is_draft);
+    expect($user->postsWithCustomPivot()->first()->pivot->is_draft)->toEqual(0);
 });
 
 /**/
@@ -844,10 +844,10 @@ test('order by pivot method', function () {
     ]);
 
     $relationTag1 = $post->tagsWithCustomExtraPivot()->orderByPivot('flag', 'asc')->first();
-    $this->assertEquals($relationTag1->getAttributes(), $tag2->getAttributes());
+    expect($tag2->getAttributes())->toEqual($relationTag1->getAttributes());
 
     $relationTag2 = $post->tagsWithCustomExtraPivot()->orderByPivot('flag', 'desc')->first();
-    $this->assertEquals($relationTag2->getAttributes(), $tag3->getAttributes());
+    expect($tag3->getAttributes())->toEqual($relationTag2->getAttributes());
 })->group('SkipMSSQL');
 
 // Helpers

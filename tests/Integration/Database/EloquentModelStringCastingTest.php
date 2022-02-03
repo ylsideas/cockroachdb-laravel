@@ -16,16 +16,16 @@ test('saving casted attributes to database', function () {
         'json_attributes' => ['json_key' => 'json_value'],
         'object_attributes' => ['json_key' => 'json_value'],
     ]);
-    $this->assertSame(['key1' => 'value1'], $model->getOriginal('array_attributes'));
-    $this->assertSame(['key1' => 'value1'], $model->getAttribute('array_attributes'));
+    expect($model->getOriginal('array_attributes'))->toBe(['key1' => 'value1']);
+    expect($model->getAttribute('array_attributes'))->toBe(['key1' => 'value1']);
 
-    $this->assertSame(['json_key' => 'json_value'], $model->getOriginal('json_attributes'));
-    $this->assertSame(['json_key' => 'json_value'], $model->getAttribute('json_attributes'));
+    expect($model->getOriginal('json_attributes'))->toBe(['json_key' => 'json_value']);
+    expect($model->getAttribute('json_attributes'))->toBe(['json_key' => 'json_value']);
 
     $stdClass = new stdClass();
     $stdClass->json_key = 'json_value';
-    $this->assertEquals($stdClass, $model->getOriginal('object_attributes'));
-    $this->assertEquals($stdClass, $model->getAttribute('object_attributes'));
+    expect($model->getOriginal('object_attributes'))->toEqual($stdClass);
+    expect($model->getAttribute('object_attributes'))->toEqual($stdClass);
 });
 
 test('saving casted empty attributes to database', function () {
@@ -35,14 +35,14 @@ test('saving casted empty attributes to database', function () {
         'json_attributes' => [],
         'object_attributes' => [],
     ]);
-    $this->assertSame([], $model->getOriginal('array_attributes'));
-    $this->assertSame([], $model->getAttribute('array_attributes'));
+    expect($model->getOriginal('array_attributes'))->toBe([]);
+    expect($model->getAttribute('array_attributes'))->toBe([]);
 
-    $this->assertSame([], $model->getOriginal('json_attributes'));
-    $this->assertSame([], $model->getAttribute('json_attributes'));
+    expect($model->getOriginal('json_attributes'))->toBe([]);
+    expect($model->getAttribute('json_attributes'))->toBe([]);
 
-    $this->assertSame([], $model->getOriginal('object_attributes'));
-    $this->assertSame([], $model->getAttribute('object_attributes'));
+    expect($model->getOriginal('object_attributes'))->toBe([]);
+    expect($model->getAttribute('object_attributes'))->toBe([]);
 });
 
 // Helpers

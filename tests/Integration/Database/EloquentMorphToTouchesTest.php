@@ -14,7 +14,7 @@ test('not null', function () {
 
     $comment->save();
 
-    $this->assertCount(2, DB::getQueryLog());
+    expect(DB::getQueryLog())->toHaveCount(2);
 });
 
 test('null', function () {
@@ -22,7 +22,7 @@ test('null', function () {
 
     Comment::create();
 
-    $this->assertCount(1, DB::getQueryLog());
+    expect(DB::getQueryLog())->toHaveCount(1);
 });
 
 // Helpers

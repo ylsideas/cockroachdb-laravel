@@ -54,8 +54,8 @@ test('prunes records', function () {
 
     $count = (new MassPrunableTestModel())->pruneAll();
 
-    $this->assertEquals(1500, $count);
-    $this->assertEquals(3500, MassPrunableTestModel::count());
+    expect($count)->toEqual(1500);
+    expect(MassPrunableTestModel::count())->toEqual(3500);
 });
 
 test('prunes soft deleted records', function () {
@@ -72,9 +72,9 @@ test('prunes soft deleted records', function () {
 
     $count = (new MassPrunableSoftDeleteTestModel())->pruneAll();
 
-    $this->assertEquals(3000, $count);
-    $this->assertEquals(0, MassPrunableSoftDeleteTestModel::count());
-    $this->assertEquals(2000, MassPrunableSoftDeleteTestModel::withTrashed()->count());
+    expect($count)->toEqual(3000);
+    expect(MassPrunableSoftDeleteTestModel::count())->toEqual(0);
+    expect(MassPrunableSoftDeleteTestModel::withTrashed()->count())->toEqual(2000);
 });
 
 // Helpers

@@ -13,7 +13,7 @@ test('pagination on top of columns', function () {
         ]);
     }
 
-    $this->assertCount(15, PostPagination::paginate(15, ['id', 'title']));
+    expect(PostPagination::paginate(15, ['id', 'title']))->toHaveCount(15);
 });
 
 test('pagination with distinct', function () {
@@ -24,9 +24,9 @@ test('pagination with distinct', function () {
 
     $query = PostPagination::query()->distinct();
 
-    $this->assertEquals(6, $query->get()->count());
-    $this->assertEquals(6, $query->count());
-    $this->assertEquals(6, $query->paginate()->total());
+    expect($query->get()->count())->toEqual(6);
+    expect($query->count())->toEqual(6);
+    expect($query->paginate()->total())->toEqual(6);
 });
 
 test('pagination with distinct and select', function () {
@@ -38,9 +38,9 @@ test('pagination with distinct and select', function () {
 
     $query = PostPagination::query()->distinct()->select('title');
 
-    $this->assertEquals(2, $query->get()->count());
-    $this->assertEquals(6, $query->count());
-    $this->assertEquals(6, $query->paginate()->total());
+    expect($query->get()->count())->toEqual(2);
+    expect($query->count())->toEqual(6);
+    expect($query->paginate()->total())->toEqual(6);
 });
 
 test('pagination with distinct columns and select', function () {
@@ -51,9 +51,9 @@ test('pagination with distinct columns and select', function () {
 
     $query = PostPagination::query()->distinct('title')->select('title');
 
-    $this->assertEquals(2, $query->get()->count());
-    $this->assertEquals(2, $query->count());
-    $this->assertEquals(2, $query->paginate()->total());
+    expect($query->get()->count())->toEqual(2);
+    expect($query->count())->toEqual(2);
+    expect($query->paginate()->total())->toEqual(2);
 });
 
 test('pagination with distinct columns and select and join', function () {
@@ -70,9 +70,9 @@ test('pagination with distinct columns and select and join', function () {
     $query = UserPagination::query()->join('posts', 'posts.user_id', '=', 'users.id')
         ->distinct('users.id')->select('users.*');
 
-    $this->assertEquals(5, $query->get()->count());
-    $this->assertEquals(5, $query->count());
-    $this->assertEquals(5, $query->paginate()->total());
+    expect($query->get()->count())->toEqual(5);
+    expect($query->count())->toEqual(5);
+    expect($query->paginate()->total())->toEqual(5);
 });
 
 // Helpers

@@ -7,13 +7,13 @@ uses(DatabaseTestCase::class);
 test('model has scope', function () {
     $model = new TestScopeModel1();
 
-    $this->assertTrue($model->hasNamedScope('exists'));
+    expect($model->hasNamedScope('exists'))->toBeTrue();
 });
 
 test('model does not have scope', function () {
     $model = new TestScopeModel1();
 
-    $this->assertFalse($model->hasNamedScope('doesNotExist'));
+    expect($model->hasNamedScope('doesNotExist'))->toBeFalse();
 });
 
 // Helpers

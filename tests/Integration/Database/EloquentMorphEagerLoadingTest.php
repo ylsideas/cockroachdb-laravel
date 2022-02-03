@@ -15,9 +15,9 @@ test('with morph loading', function () {
         }])
         ->get();
 
-    $this->assertTrue($comments[0]->relationLoaded('commentable'));
-    $this->assertTrue($comments[0]->commentable->relationLoaded('user'));
-    $this->assertTrue($comments[1]->relationLoaded('commentable'));
+    expect($comments[0]->relationLoaded('commentable'))->toBeTrue();
+    expect($comments[0]->commentable->relationLoaded('user'))->toBeTrue();
+    expect($comments[1]->relationLoaded('commentable'))->toBeTrue();
 });
 
 test('with morph loading with single relation', function () {
@@ -27,8 +27,8 @@ test('with morph loading with single relation', function () {
         }])
         ->get();
 
-    $this->assertTrue($comments[0]->relationLoaded('commentable'));
-    $this->assertTrue($comments[0]->commentable->relationLoaded('user'));
+    expect($comments[0]->relationLoaded('commentable'))->toBeTrue();
+    expect($comments[0]->commentable->relationLoaded('user'))->toBeTrue();
 });
 
 // Helpers

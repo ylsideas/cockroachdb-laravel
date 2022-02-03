@@ -21,7 +21,7 @@ test('flush listeners clears custom events', function () {
 
     TestModel1::create();
 
-    $this->assertFalse($_SERVER['fired_event']);
+    expect($_SERVER['fired_event'])->toBeFalse();
 });
 
 test('custom event listeners are fired', function () {
@@ -29,7 +29,7 @@ test('custom event listeners are fired', function () {
 
     TestModel1::create();
 
-    $this->assertTrue($_SERVER['fired_event']);
+    expect($_SERVER['fired_event'])->toBeTrue();
 });
 
 // Helpers

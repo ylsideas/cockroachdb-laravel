@@ -19,7 +19,7 @@ test('casts are respected on attach', function () {
     $project->collaborators()->attach($user, ['permissions' => ['foo' => 'bar']]);
     $project = $project->fresh();
 
-    $this->assertEquals(['foo' => 'bar'], $project->collaborators[0]->pivot->permissions);
+    expect($project->collaborators[0]->pivot->permissions)->toEqual(['foo' => 'bar']);
 });
 
 test('casts are respected on attach array', function () {
@@ -41,8 +41,8 @@ test('casts are respected on attach array', function () {
     ]);
     $project = $project->fresh();
 
-    $this->assertEquals(['foo' => 'bar'], $project->collaborators[0]->pivot->permissions);
-    $this->assertEquals(['baz' => 'bar'], $project->collaborators[1]->pivot->permissions);
+    expect($project->collaborators[0]->pivot->permissions)->toEqual(['foo' => 'bar']);
+    expect($project->collaborators[1]->pivot->permissions)->toEqual(['baz' => 'bar']);
 });
 
 test('casts are respected on sync', function () {
@@ -57,7 +57,7 @@ test('casts are respected on sync', function () {
     $project->collaborators()->sync([$user->id => ['permissions' => ['foo' => 'bar']]]);
     $project = $project->fresh();
 
-    $this->assertEquals(['foo' => 'bar'], $project->collaborators[0]->pivot->permissions);
+    expect($project->collaborators[0]->pivot->permissions)->toEqual(['foo' => 'bar']);
 });
 
 test('casts are respected on sync array', function () {
@@ -79,8 +79,8 @@ test('casts are respected on sync array', function () {
     ]);
     $project = $project->fresh();
 
-    $this->assertEquals(['foo' => 'bar'], $project->collaborators[0]->pivot->permissions);
-    $this->assertEquals(['baz' => 'bar'], $project->collaborators[1]->pivot->permissions);
+    expect($project->collaborators[0]->pivot->permissions)->toEqual(['foo' => 'bar']);
+    expect($project->collaborators[1]->pivot->permissions)->toEqual(['baz' => 'bar']);
 });
 
 test('casts are respected on sync array while updating existing', function () {
@@ -108,8 +108,8 @@ test('casts are respected on sync array while updating existing', function () {
 
     $project = $project->fresh();
 
-    $this->assertEquals(['foo1' => 'bar1'], $project->collaborators[0]->pivot->permissions);
-    $this->assertEquals(['baz2' => 'bar2'], $project->collaborators[1]->pivot->permissions);
+    expect($project->collaborators[0]->pivot->permissions)->toEqual(['foo1' => 'bar1']);
+    expect($project->collaborators[1]->pivot->permissions)->toEqual(['baz2' => 'bar2']);
 });
 
 // Helpers

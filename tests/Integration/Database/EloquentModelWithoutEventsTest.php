@@ -11,11 +11,11 @@ test('without events registers booted listeners for later', function () {
         return AutoFilledModel::create();
     });
 
-    $this->assertNull($model->project);
+    expect($model->project)->toBeNull();
 
     $model->save();
 
-    $this->assertSame('Laravel', $model->project);
+    expect($model->project)->toBe('Laravel');
 });
 
 // Helpers

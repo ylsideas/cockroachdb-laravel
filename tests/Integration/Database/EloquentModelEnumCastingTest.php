@@ -29,8 +29,8 @@ test('enums are castable', function () {
 
     $model = EloquentModelEnumCastingTestModel::first();
 
-    $this->assertEquals(StringStatus::pending, $model->string_status);
-    $this->assertEquals(IntegerStatus::pending, $model->integer_status);
+    expect($model->string_status)->toEqual(StringStatus::pending);
+    expect($model->integer_status)->toEqual(IntegerStatus::pending);
 });
 
 test('enums return null when null', function () {
@@ -41,8 +41,8 @@ test('enums return null when null', function () {
 
     $model = EloquentModelEnumCastingTestModel::first();
 
-    $this->assertEquals(null, $model->string_status);
-    $this->assertEquals(null, $model->integer_status);
+    expect($model->string_status)->toEqual(null);
+    expect($model->integer_status)->toEqual(null);
 });
 
 test('enums are castable to array', function () {
@@ -109,8 +109,8 @@ test('enums accept backed value on save', function () {
 
     $model = EloquentModelEnumCastingTestModel::first();
 
-    $this->assertEquals(StringStatus::pending, $model->string_status);
-    $this->assertEquals(IntegerStatus::pending, $model->integer_status);
+    expect($model->string_status)->toEqual(StringStatus::pending);
+    expect($model->integer_status)->toEqual(IntegerStatus::pending);
 });
 
 test('first or new', function () {
@@ -127,12 +127,12 @@ test('first or new', function () {
         'string_status' => StringStatus::done,
     ]);
 
-    $this->assertTrue($model->exists);
-    $this->assertFalse($model2->exists);
+    expect($model->exists)->toBeTrue();
+    expect($model2->exists)->toBeFalse();
 
     $model2->save();
 
-    $this->assertEquals(StringStatus::done, $model2->string_status);
+    expect($model2->string_status)->toEqual(StringStatus::done);
 });
 
 test('first or create', function () {
@@ -149,8 +149,8 @@ test('first or create', function () {
         'string_status' => StringStatus::done,
     ]);
 
-    $this->assertEquals(StringStatus::pending, $model->string_status);
-    $this->assertEquals(StringStatus::done, $model2->string_status);
+    expect($model->string_status)->toEqual(StringStatus::pending);
+    expect($model2->string_status)->toEqual(StringStatus::done);
 });
 
 // Helpers

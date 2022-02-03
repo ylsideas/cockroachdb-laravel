@@ -18,19 +18,19 @@ test('pivot will trigger events to be fired', function () {
     $project = PivotEventsTestProject::forceCreate(['name' => 'Test Project']);
 
     $project->collaborators()->attach($user);
-    $this->assertEquals(['saving', 'creating', 'created', 'saved'], PivotEventsTestCollaborator::$eventsCalled);
+    expect(PivotEventsTestCollaborator::$eventsCalled)->toEqual(['saving', 'creating', 'created', 'saved']);
 
     PivotEventsTestCollaborator::$eventsCalled = [];
     $project->collaborators()->sync([$user2->id]);
-    $this->assertEquals(['deleting', 'deleted', 'saving', 'creating', 'created', 'saved'], PivotEventsTestCollaborator::$eventsCalled);
+    expect(PivotEventsTestCollaborator::$eventsCalled)->toEqual(['deleting', 'deleted', 'saving', 'creating', 'created', 'saved']);
 
     PivotEventsTestCollaborator::$eventsCalled = [];
     $project->collaborators()->sync([$user->id => ['role' => 'owner'], $user2->id => ['role' => 'contributor']]);
-    $this->assertEquals(['saving', 'creating', 'created', 'saved', 'saving', 'updating', 'updated', 'saved'], PivotEventsTestCollaborator::$eventsCalled);
+    expect(PivotEventsTestCollaborator::$eventsCalled)->toEqual(['saving', 'creating', 'created', 'saved', 'saving', 'updating', 'updated', 'saved']);
 
     PivotEventsTestCollaborator::$eventsCalled = [];
     $project->collaborators()->detach($user);
-    $this->assertEquals(['deleting', 'deleted'], PivotEventsTestCollaborator::$eventsCalled);
+    expect(PivotEventsTestCollaborator::$eventsCalled)->toEqual(['deleting', 'deleted']);
 });
 
 test('pivot with pivot criteria trigger events to be fired on create update none on detach', function () {
@@ -39,11 +39,11 @@ test('pivot with pivot criteria trigger events to be fired on create update none
     $project = PivotEventsTestProject::forceCreate(['name' => 'Test Project']);
 
     $project->contributors()->sync([$user->id, $user2->id]);
-    $this->assertEquals(['saving', 'creating', 'created', 'saved', 'saving', 'creating', 'created', 'saved'], PivotEventsTestCollaborator::$eventsCalled);
+    expect(PivotEventsTestCollaborator::$eventsCalled)->toEqual(['saving', 'creating', 'created', 'saved', 'saving', 'creating', 'created', 'saved']);
 
     PivotEventsTestCollaborator::$eventsCalled = [];
     $project->contributors()->detach($user->id);
-    $this->assertEquals([], PivotEventsTestCollaborator::$eventsCalled);
+    expect(PivotEventsTestCollaborator::$eventsCalled)->toEqual([]);
 });
 
 test('custom pivot update event has existing attributes', function () {
@@ -89,7 +89,7 @@ test('custom pivot update event has dirty correct', function () {
 
     $project->collaborators()->updateExistingPivot($user->id, ['role' => 'Lead Developer']);
 
-    $this->assertSame(['role' => 'Lead Developer'], $_SERVER['pivot_dirty_attributes']);
+    expect($_SERVER['pivot_dirty_attributes'])->toBe(['role' => 'Lead Developer']);
 });
 
 // Helpers

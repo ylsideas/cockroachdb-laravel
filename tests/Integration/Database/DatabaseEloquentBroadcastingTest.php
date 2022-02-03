@@ -33,7 +33,7 @@ test('basic broadcasting', function () {
 test('channel route formatting', function () {
     $model = new TestEloquentBroadcastUser();
 
-    $this->assertEquals('YlsIdeas.CockroachDb.Tests.Integration.Database.TestEloquentBroadcastUser.{testEloquentBroadcastUser}', $model->broadcastChannelRoute());
+    expect($model->broadcastChannelRoute())->toEqual('YlsIdeas.CockroachDb.Tests.Integration.Database.TestEloquentBroadcastUser.{testEloquentBroadcastUser}');
 });
 
 test('broadcasting on model trashing', function () {

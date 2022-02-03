@@ -15,8 +15,8 @@ test('load missing', function () {
 
     $post->loadMissing('comments.parent');
 
-    $this->assertCount(1, DB::getQueryLog());
-    $this->assertTrue($post->comments[0]->relationLoaded('parent'));
+    expect(DB::getQueryLog())->toHaveCount(1);
+    expect($post->comments[0]->relationLoaded('parent'))->toBeTrue();
 });
 
 // Helpers

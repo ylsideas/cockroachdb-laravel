@@ -29,7 +29,7 @@ test('strict mode doesnt throw an exception on lazy loading with single model', 
 
     $models = EloquentStrictLoadingTestModel1::get();
 
-    $this->assertInstanceOf(Collection::class, $models);
+    expect($models)->toBeInstanceOf(Collection::class);
 });
 
 test('strict mode doesnt throw an exception on attributes', function () {
@@ -37,7 +37,7 @@ test('strict mode doesnt throw an exception on attributes', function () {
 
     $models = EloquentStrictLoadingTestModel1::get(['id']);
 
-    $this->assertNull($models[0]->number);
+    expect($models[0]->number)->toBeNull();
 });
 
 test('strict mode doesnt throw an exception on eager loading', function () {
@@ -48,7 +48,7 @@ test('strict mode doesnt throw an exception on eager loading', function () {
 
     $models = EloquentStrictLoadingTestModel1::with('modelTwos')->get();
 
-    $this->assertInstanceOf(Collection::class, $models[0]->modelTwos);
+    expect($models[0]->modelTwos)->toBeInstanceOf(Collection::class);
 });
 
 test('strict mode doesnt throw an exception on lazy eager loading', function () {
@@ -59,7 +59,7 @@ test('strict mode doesnt throw an exception on lazy eager loading', function () 
 
     $models->load('modelTwos');
 
-    $this->assertInstanceOf(Collection::class, $models[0]->modelTwos);
+    expect($models[0]->modelTwos)->toBeInstanceOf(Collection::class);
 });
 
 test('strict mode doesnt throw an exception on single model loading', function () {
@@ -67,7 +67,7 @@ test('strict mode doesnt throw an exception on single model loading', function (
 
     $model = EloquentStrictLoadingTestModel1::find($model->id);
 
-    $this->assertInstanceOf(Collection::class, $model->modelTwos);
+    expect($model->modelTwos)->toBeInstanceOf(Collection::class);
 });
 
 test('strict mode throws an exception on lazy loading in relations', function () {

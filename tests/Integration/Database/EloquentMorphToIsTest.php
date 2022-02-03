@@ -11,16 +11,16 @@ test('parent is not null', function () {
     $child = Comment::first();
     $parent = null;
 
-    $this->assertFalse($child->commentable()->is($parent));
-    $this->assertTrue($child->commentable()->isNot($parent));
+    expect($child->commentable()->is($parent))->toBeFalse();
+    expect($child->commentable()->isNot($parent))->toBeTrue();
 });
 
 test('parent is model', function () {
     $child = Comment::first();
     $parent = Post::first();
 
-    $this->assertTrue($child->commentable()->is($parent));
-    $this->assertFalse($child->commentable()->isNot($parent));
+    expect($child->commentable()->is($parent))->toBeTrue();
+    expect($child->commentable()->isNot($parent))->toBeFalse();
 });
 
 test('parent is not another model', function () {
@@ -28,8 +28,8 @@ test('parent is not another model', function () {
     $parent = new Post();
     $parent->id = 2;
 
-    $this->assertFalse($child->commentable()->is($parent));
-    $this->assertTrue($child->commentable()->isNot($parent));
+    expect($child->commentable()->is($parent))->toBeFalse();
+    expect($child->commentable()->isNot($parent))->toBeTrue();
 });
 
 test('null parent is not model', function () {
@@ -37,8 +37,8 @@ test('null parent is not model', function () {
     $child->commentable()->dissociate();
     $parent = Post::first();
 
-    $this->assertFalse($child->commentable()->is($parent));
-    $this->assertTrue($child->commentable()->isNot($parent));
+    expect($child->commentable()->is($parent))->toBeFalse();
+    expect($child->commentable()->isNot($parent))->toBeTrue();
 });
 
 test('parent is not model with another table', function () {
@@ -46,8 +46,8 @@ test('parent is not model with another table', function () {
     $parent = Post::first();
     $parent->setTable('foo');
 
-    $this->assertFalse($child->commentable()->is($parent));
-    $this->assertTrue($child->commentable()->isNot($parent));
+    expect($child->commentable()->is($parent))->toBeFalse();
+    expect($child->commentable()->isNot($parent))->toBeTrue();
 });
 
 test('parent is not model with another connection', function () {
@@ -55,8 +55,8 @@ test('parent is not model with another connection', function () {
     $parent = Post::first();
     $parent->setConnection('foo');
 
-    $this->assertFalse($child->commentable()->is($parent));
-    $this->assertTrue($child->commentable()->isNot($parent));
+    expect($child->commentable()->is($parent))->toBeFalse();
+    expect($child->commentable()->isNot($parent))->toBeTrue();
 });
 
 // Helpers

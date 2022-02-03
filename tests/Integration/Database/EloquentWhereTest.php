@@ -24,13 +24,13 @@ test('where and where or behavior', function () {
         'address' => 'test-address1',
     ]);
 
-    $this->assertTrue($firstUser->is(UserWhereTest::where('name', '=', $firstUser->name)->first()));
-    $this->assertTrue($firstUser->is(UserWhereTest::where('name', $firstUser->name)->first()));
-    $this->assertTrue($firstUser->is(UserWhereTest::where('name', $firstUser->name)->where('email', $firstUser->email)->first()));
-    $this->assertNull(UserWhereTest::where('name', $firstUser->name)->where('email', $secondUser->email)->first());
-    $this->assertTrue($secondUser->is(UserWhereTest::where('name', 'wrong-name')->orWhere('email', $secondUser->email)->first()));
-    $this->assertTrue($firstUser->is(UserWhereTest::where(['name' => 'test-name', 'email' => 'test-email'])->first()));
-    $this->assertNull(UserWhereTest::where(['name' => 'test-name', 'email' => 'test-email1'])->first());
+    expect($firstUser->is(UserWhereTest::where('name', '=', $firstUser->name)->first()))->toBeTrue();
+    expect($firstUser->is(UserWhereTest::where('name', $firstUser->name)->first()))->toBeTrue();
+    expect($firstUser->is(UserWhereTest::where('name', $firstUser->name)->where('email', $firstUser->email)->first()))->toBeTrue();
+    expect(UserWhereTest::where('name', $firstUser->name)->where('email', $secondUser->email)->first())->toBeNull();
+    expect($secondUser->is(UserWhereTest::where('name', 'wrong-name')->orWhere('email', $secondUser->email)->first()))->toBeTrue();
+    expect($firstUser->is(UserWhereTest::where(['name' => 'test-name', 'email' => 'test-email'])->first()))->toBeTrue();
+    expect(UserWhereTest::where(['name' => 'test-name', 'email' => 'test-email1'])->first())->toBeNull();
     $this->assertTrue(
         $secondUser->is(
             UserWhereTest::where(['name' => 'wrong-name', 'email' => 'test-email1'], null, null, 'or')->first()
@@ -67,12 +67,12 @@ test('first where', function () {
         'address' => 'test-address1',
     ]);
 
-    $this->assertTrue($firstUser->is(UserWhereTest::firstWhere('name', '=', $firstUser->name)));
-    $this->assertTrue($firstUser->is(UserWhereTest::firstWhere('name', $firstUser->name)));
-    $this->assertTrue($firstUser->is(UserWhereTest::where('name', $firstUser->name)->firstWhere('email', $firstUser->email)));
-    $this->assertNull(UserWhereTest::where('name', $firstUser->name)->firstWhere('email', $secondUser->email));
-    $this->assertTrue($firstUser->is(UserWhereTest::firstWhere(['name' => 'test-name', 'email' => 'test-email'])));
-    $this->assertNull(UserWhereTest::firstWhere(['name' => 'test-name', 'email' => 'test-email1']));
+    expect($firstUser->is(UserWhereTest::firstWhere('name', '=', $firstUser->name)))->toBeTrue();
+    expect($firstUser->is(UserWhereTest::firstWhere('name', $firstUser->name)))->toBeTrue();
+    expect($firstUser->is(UserWhereTest::where('name', $firstUser->name)->firstWhere('email', $firstUser->email)))->toBeTrue();
+    expect(UserWhereTest::where('name', $firstUser->name)->firstWhere('email', $secondUser->email))->toBeNull();
+    expect($firstUser->is(UserWhereTest::firstWhere(['name' => 'test-name', 'email' => 'test-email'])))->toBeTrue();
+    expect(UserWhereTest::firstWhere(['name' => 'test-name', 'email' => 'test-email1']))->toBeNull();
     $this->assertTrue(
         $secondUser->is(
             UserWhereTest::firstWhere(['name' => 'wrong-name', 'email' => 'test-email1'], null, null, 'or')
@@ -87,7 +87,7 @@ test('sole', function () {
         'address' => 'test-address',
     ]);
 
-    $this->assertTrue($expected->is(UserWhereTest::where('name', 'test-name')->sole()));
+    expect($expected->is(UserWhereTest::where('name', 'test-name')->sole()))->toBeTrue();
 });
 
 test('sole fails for multiple records', function () {
@@ -115,7 +115,7 @@ test('sole fails if no records', function () {
         //
     }
 
-    $this->assertSame(UserWhereTest::class, $exception->getModel());
+    expect($exception->getModel())->toBe(UserWhereTest::class);
 });
 
 test('chunk map', function () {
@@ -137,10 +137,10 @@ test('chunk map', function () {
         return $user->name;
     }, 1);
 
-    $this->assertCount(2, $results);
-    $this->assertSame('first-name', $results[0]);
-    $this->assertSame('second-name', $results[1]);
-    $this->assertCount(3, DB::getQueryLog());
+    expect($results)->toHaveCount(2);
+    expect($results[0])->toBe('first-name');
+    expect($results[1])->toBe('second-name');
+    expect(DB::getQueryLog())->toHaveCount(3);
 });
 
 // Helpers

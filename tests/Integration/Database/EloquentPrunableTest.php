@@ -33,8 +33,8 @@ test('prunes records', function () {
 
     $count = (new PrunableTestModel())->pruneAll();
 
-    $this->assertEquals(1500, $count);
-    $this->assertEquals(3500, PrunableTestModel::count());
+    expect($count)->toEqual(1500);
+    expect(PrunableTestModel::count())->toEqual(3500);
 
     Event::assertDispatched(ModelsPruned::class, 2);
 });
@@ -50,9 +50,9 @@ test('prunes soft deleted records', function () {
 
     $count = (new PrunableSoftDeleteTestModel())->pruneAll();
 
-    $this->assertEquals(3000, $count);
-    $this->assertEquals(0, PrunableSoftDeleteTestModel::count());
-    $this->assertEquals(2000, PrunableSoftDeleteTestModel::withTrashed()->count());
+    expect($count)->toEqual(3000);
+    expect(PrunableSoftDeleteTestModel::count())->toEqual(0);
+    expect(PrunableSoftDeleteTestModel::withTrashed()->count())->toEqual(2000);
 
     Event::assertDispatched(ModelsPruned::class, 3);
 });
@@ -68,10 +68,10 @@ test('prune with custom prune method', function () {
 
     $count = (new PrunableWithCustomPruneMethodTestModel())->pruneAll();
 
-    $this->assertEquals(1000, $count);
-    $this->assertTrue((bool) PrunableWithCustomPruneMethodTestModel::first()->pruned);
-    $this->assertFalse((bool) PrunableWithCustomPruneMethodTestModel::orderBy('id', 'desc')->first()->pruned);
-    $this->assertEquals(5000, PrunableWithCustomPruneMethodTestModel::count());
+    expect($count)->toEqual(1000);
+    expect((bool) PrunableWithCustomPruneMethodTestModel::first()->pruned)->toBeTrue();
+    expect((bool) PrunableWithCustomPruneMethodTestModel::orderBy('id', 'desc')->first()->pruned)->toBeFalse();
+    expect(PrunableWithCustomPruneMethodTestModel::count())->toEqual(5000);
 
     Event::assertDispatched(ModelsPruned::class, 1);
 });

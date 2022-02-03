@@ -15,8 +15,8 @@ test('load count single relation', function () {
 
     $model->loadCount('related1');
 
-    $this->assertCount(1, DB::getQueryLog());
-    $this->assertEquals(2, $model->related1_count);
+    expect(DB::getQueryLog())->toHaveCount(1);
+    expect($model->related1_count)->toEqual(2);
 });
 
 test('load count multiple relations', function () {
@@ -26,29 +26,29 @@ test('load count multiple relations', function () {
 
     $model->loadCount(['related1', 'related2']);
 
-    $this->assertCount(1, DB::getQueryLog());
-    $this->assertEquals(2, $model->related1_count);
-    $this->assertEquals(1, $model->related2_count);
+    expect(DB::getQueryLog())->toHaveCount(1);
+    expect($model->related1_count)->toEqual(2);
+    expect($model->related2_count)->toEqual(1);
 });
 
 test('load count deleted relations', function () {
     $model = BaseModel::first();
 
-    $this->assertNull($model->deletedrelated_count);
+    expect($model->deletedrelated_count)->toBeNull();
 
     $model->loadCount('deletedrelated');
 
-    $this->assertEquals(1, $model->deletedrelated_count);
+    expect($model->deletedrelated_count)->toEqual(1);
 
     DeletedRelated::first()->delete();
 
     $model = BaseModel::first();
 
-    $this->assertNull($model->deletedrelated_count);
+    expect($model->deletedrelated_count)->toBeNull();
 
     $model->loadCount('deletedrelated');
 
-    $this->assertEquals(0, $model->deletedrelated_count);
+    expect($model->deletedrelated_count)->toEqual(0);
 });
 
 // Helpers

@@ -14,10 +14,10 @@ test('lazy eager loading', function () {
 
     $comments->load('commentable');
 
-    $this->assertCount(3, DB::getQueryLog());
-    $this->assertTrue($comments[0]->relationLoaded('commentable'));
-    $this->assertTrue($comments[0]->commentable->relationLoaded('user'));
-    $this->assertTrue($comments[1]->relationLoaded('commentable'));
+    expect(DB::getQueryLog())->toHaveCount(3);
+    expect($comments[0]->relationLoaded('commentable'))->toBeTrue();
+    expect($comments[0]->commentable->relationLoaded('user'))->toBeTrue();
+    expect($comments[1]->relationLoaded('commentable'))->toBeTrue();
 });
 
 // Helpers

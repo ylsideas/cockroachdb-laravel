@@ -14,8 +14,8 @@ test('lazy eager loading', function () {
         Post::class => ['user'],
     ]);
 
-    $this->assertTrue($comment->relationLoaded('commentable'));
-    $this->assertTrue($comment->commentable->relationLoaded('user'));
+    expect($comment->relationLoaded('commentable'))->toBeTrue();
+    expect($comment->commentable->relationLoaded('user'))->toBeTrue();
 });
 
 // Helpers

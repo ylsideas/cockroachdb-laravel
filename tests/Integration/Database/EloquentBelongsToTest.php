@@ -11,13 +11,13 @@ uses(DatabaseTestCase::class);
 test('has self', function () {
     $users = User::has('parent')->get();
 
-    $this->assertCount(1, $users);
+    expect($users)->toHaveCount(1);
 });
 
 test('has self custom owner key', function () {
     $users = User::has('parentBySlug')->get();
 
-    $this->assertCount(1, $users);
+    expect($users)->toHaveCount(1);
 });
 
 test('associate with model', function () {
@@ -26,8 +26,8 @@ test('associate with model', function () {
 
     $parent->parent()->associate($child);
 
-    $this->assertEquals($child->id, $parent->parent_id);
-    $this->assertEquals($child->id, $parent->parent->id);
+    expect($parent->parent_id)->toEqual($child->id);
+    expect($parent->parent->id)->toEqual($child->id);
 });
 
 test('associate with id', function () {
@@ -36,8 +36,8 @@ test('associate with id', function () {
 
     $parent->parent()->associate($child->id);
 
-    $this->assertEquals($child->id, $parent->parent_id);
-    $this->assertEquals($child->id, $parent->parent->id);
+    expect($parent->parent_id)->toEqual($child->id);
+    expect($parent->parent->id)->toEqual($child->id);
 });
 
 test('associate with id unsets loaded relation', function () {
@@ -46,24 +46,24 @@ test('associate with id unsets loaded relation', function () {
     // Overwrite the (loaded) parent relation
     $child->parent()->associate($child->id);
 
-    $this->assertEquals($child->id, $child->parent_id);
-    $this->assertFalse($child->relationLoaded('parent'));
+    expect($child->parent_id)->toEqual($child->id);
+    expect($child->relationLoaded('parent'))->toBeFalse();
 });
 
 test('parent is not null', function () {
     $child = User::has('parent')->first();
     $parent = null;
 
-    $this->assertFalse($child->parent()->is($parent));
-    $this->assertTrue($child->parent()->isNot($parent));
+    expect($child->parent()->is($parent))->toBeFalse();
+    expect($child->parent()->isNot($parent))->toBeTrue();
 });
 
 test('parent is model', function () {
     $child = User::has('parent')->first();
     $parent = User::doesntHave('parent')->first();
 
-    $this->assertTrue($child->parent()->is($parent));
-    $this->assertFalse($child->parent()->isNot($parent));
+    expect($child->parent()->is($parent))->toBeTrue();
+    expect($child->parent()->isNot($parent))->toBeFalse();
 });
 
 test('parent is not another model', function () {
@@ -71,8 +71,8 @@ test('parent is not another model', function () {
     $parent = new User();
     $parent->id = 3;
 
-    $this->assertFalse($child->parent()->is($parent));
-    $this->assertTrue($child->parent()->isNot($parent));
+    expect($child->parent()->is($parent))->toBeFalse();
+    expect($child->parent()->isNot($parent))->toBeTrue();
 });
 
 test('null parent is not model', function () {
@@ -80,8 +80,8 @@ test('null parent is not model', function () {
     $child->parent()->dissociate();
     $parent = User::doesntHave('parent')->first();
 
-    $this->assertFalse($child->parent()->is($parent));
-    $this->assertTrue($child->parent()->isNot($parent));
+    expect($child->parent()->is($parent))->toBeFalse();
+    expect($child->parent()->isNot($parent))->toBeTrue();
 });
 
 test('parent is not model with another table', function () {
@@ -89,8 +89,8 @@ test('parent is not model with another table', function () {
     $parent = User::doesntHave('parent')->first();
     $parent->setTable('foo');
 
-    $this->assertFalse($child->parent()->is($parent));
-    $this->assertTrue($child->parent()->isNot($parent));
+    expect($child->parent()->is($parent))->toBeFalse();
+    expect($child->parent()->isNot($parent))->toBeTrue();
 });
 
 test('parent is not model with another connection', function () {
@@ -98,8 +98,8 @@ test('parent is not model with another connection', function () {
     $parent = User::doesntHave('parent')->first();
     $parent->setConnection('foo');
 
-    $this->assertFalse($child->parent()->is($parent));
-    $this->assertTrue($child->parent()->isNot($parent));
+    expect($child->parent()->is($parent))->toBeFalse();
+    expect($child->parent()->isNot($parent))->toBeTrue();
 });
 
 // Helpers

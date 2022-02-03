@@ -11,7 +11,7 @@ uses(DatabaseTestCase::class);
 test('basic create and retrieve', function () {
     $post = Post::create(['title' => Str::random(), 'updated_at' => '2016-10-10 10:10:10']);
 
-    $this->assertSame('2016-10-10', $post->fresh()->updated_at->toDateString());
+    expect($post->fresh()->updated_at->toDateString())->toBe('2016-10-10');
 
     $post->comments()->create(['title' => Str::random()]);
 

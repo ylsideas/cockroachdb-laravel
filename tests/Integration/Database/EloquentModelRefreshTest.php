@@ -20,11 +20,11 @@ it('refreshes a soft deleted model', function () {
 
     Post::find($post->id)->delete();
 
-    $this->assertFalse($post->trashed());
+    expect($post->trashed())->toBeFalse();
 
     $post->refresh();
 
-    $this->assertTrue($post->trashed());
+    expect($post->trashed())->toBeTrue();
 });
 
 it('syncs original on refresh', function () {
@@ -34,9 +34,9 @@ it('syncs original on refresh', function () {
 
     $post->refresh();
 
-    $this->assertEmpty($post->getDirty());
+    expect($post->getDirty())->toBeEmpty();
 
-    $this->assertSame('patrick', $post->getOriginal('title'));
+    expect($post->getOriginal('title'))->toBe('patrick');
 });
 
 test('as pivot', function () {
@@ -51,7 +51,7 @@ test('as pivot', function () {
 
     $post->children()->attach($child->getKey());
 
-    $this->assertEquals(1, $post->children->count());
+    expect($post->children->count())->toEqual(1);
 
     $post->children->first()->refresh();
 });

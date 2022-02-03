@@ -15,10 +15,10 @@ test('dates are custom castable', function () {
         'datetime_field' => '2019-10-01 10:15:20',
     ]);
 
-    $this->assertSame('2019-10', $user->toArray()['date_field']);
-    $this->assertSame('2019-10 10:15', $user->toArray()['datetime_field']);
-    $this->assertInstanceOf(Carbon::class, $user->date_field);
-    $this->assertInstanceOf(Carbon::class, $user->datetime_field);
+    expect($user->toArray()['date_field'])->toBe('2019-10');
+    expect($user->toArray()['datetime_field'])->toBe('2019-10 10:15');
+    expect($user->date_field)->toBeInstanceOf(Carbon::class);
+    expect($user->datetime_field)->toBeInstanceOf(Carbon::class);
 });
 
 test('dates formatted attribute bindings', function () {
@@ -35,7 +35,7 @@ test('dates formatted attribute bindings', function () {
         'immutable_datetime_field' => '2019-10-01 10:15',
     ]);
 
-    $this->assertSame(['2019-10-01', '2019-10-01 10:15:20', '2019-10-01', '2019-10-01 10:15'], $bindings);
+    expect($bindings)->toBe(['2019-10-01', '2019-10-01 10:15:20', '2019-10-01', '2019-10-01 10:15']);
 });
 
 test('dates formatted array and json', function () {
@@ -55,8 +55,8 @@ test('dates formatted array and json', function () {
         'immutable_datetime_field' => '2019-10 10:15',
     ];
 
-    $this->assertSame($expected, $user->toArray());
-    $this->assertSame(json_encode($expected), $user->toJson());
+    expect($user->toArray())->toBe($expected);
+    expect($user->toJson())->toBe(json_encode($expected));
 });
 
 test('custom date casts are compared as dates for carbon instances', function () {

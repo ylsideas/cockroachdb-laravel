@@ -20,8 +20,8 @@ test('pivot can be serialized and restored', function () {
     $class = new PivotSerializationTestClass($project->collaborators->first()->pivot);
     $class = unserialize(serialize($class));
 
-    $this->assertEquals($project->collaborators->first()->pivot->user_id, $class->pivot->user_id);
-    $this->assertEquals($project->collaborators->first()->pivot->project_id, $class->pivot->project_id);
+    expect($class->pivot->user_id)->toEqual($project->collaborators->first()->pivot->user_id);
+    expect($class->pivot->project_id)->toEqual($project->collaborators->first()->pivot->project_id);
 
     $class->pivot->save();
 });
@@ -36,9 +36,9 @@ test('morph pivot can be serialized and restored', function () {
     $class = new PivotSerializationTestClass($project->tags->first()->pivot);
     $class = unserialize(serialize($class));
 
-    $this->assertEquals($project->tags->first()->pivot->tag_id, $class->pivot->tag_id);
-    $this->assertEquals($project->tags->first()->pivot->taggable_id, $class->pivot->taggable_id);
-    $this->assertEquals($project->tags->first()->pivot->taggable_type, $class->pivot->taggable_type);
+    expect($class->pivot->tag_id)->toEqual($project->tags->first()->pivot->tag_id);
+    expect($class->pivot->taggable_id)->toEqual($project->tags->first()->pivot->taggable_id);
+    expect($class->pivot->taggable_type)->toEqual($project->tags->first()->pivot->taggable_type);
 
     $class->pivot->save();
 });
@@ -56,8 +56,8 @@ test('collection of pivots can be serialized and restored', function () {
     $class = new PivotSerializationTestCollectionClass(DatabaseCollection::make($project->collaborators->map->pivot));
     $class = unserialize(serialize($class));
 
-    $this->assertEquals($project->collaborators[0]->pivot->user_id, $class->pivots[0]->user_id);
-    $this->assertEquals($project->collaborators[1]->pivot->project_id, $class->pivots[1]->project_id);
+    expect($class->pivots[0]->user_id)->toEqual($project->collaborators[0]->pivot->user_id);
+    expect($class->pivots[1]->project_id)->toEqual($project->collaborators[1]->pivot->project_id);
 });
 
 test('collection of morph pivots can be serialized and restored', function () {
@@ -73,13 +73,13 @@ test('collection of morph pivots can be serialized and restored', function () {
     $class = new PivotSerializationTestCollectionClass(DatabaseCollection::make($project->tags->map->pivot));
     $class = unserialize(serialize($class));
 
-    $this->assertEquals($project->tags[0]->pivot->tag_id, $class->pivots[0]->tag_id);
-    $this->assertEquals($project->tags[0]->pivot->taggable_id, $class->pivots[0]->taggable_id);
-    $this->assertEquals($project->tags[0]->pivot->taggable_type, $class->pivots[0]->taggable_type);
+    expect($class->pivots[0]->tag_id)->toEqual($project->tags[0]->pivot->tag_id);
+    expect($class->pivots[0]->taggable_id)->toEqual($project->tags[0]->pivot->taggable_id);
+    expect($class->pivots[0]->taggable_type)->toEqual($project->tags[0]->pivot->taggable_type);
 
-    $this->assertEquals($project->tags[1]->pivot->tag_id, $class->pivots[1]->tag_id);
-    $this->assertEquals($project->tags[1]->pivot->taggable_id, $class->pivots[1]->taggable_id);
-    $this->assertEquals($project->tags[1]->pivot->taggable_type, $class->pivots[1]->taggable_type);
+    expect($class->pivots[1]->tag_id)->toEqual($project->tags[1]->pivot->tag_id);
+    expect($class->pivots[1]->taggable_id)->toEqual($project->tags[1]->pivot->taggable_id);
+    expect($class->pivots[1]->taggable_type)->toEqual($project->tags[1]->pivot->taggable_type);
 });
 
 // Helpers

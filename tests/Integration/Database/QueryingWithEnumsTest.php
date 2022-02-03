@@ -33,8 +33,8 @@ test('can query with enums', function () {
     $this->assertNotNull($record);
     $this->assertNotNull($record2);
     $this->assertNotNull($record3);
-    $this->assertEquals('pending', $record->string_status);
-    $this->assertEquals(1, $record2->integer_status);
+    expect($record->string_status)->toEqual('pending');
+    expect($record2->integer_status)->toEqual(1);
 });
 
 test('can insert with enums', function () {
@@ -46,8 +46,8 @@ test('can insert with enums', function () {
     $record = DB::table('enum_casts')->where('string_status', StringStatus::pending)->first();
 
     $this->assertNotNull($record);
-    $this->assertEquals('pending', $record->string_status);
-    $this->assertEquals(1, $record->integer_status);
+    expect($record->string_status)->toEqual('pending');
+    expect($record->integer_status)->toEqual(1);
 });
 
 // Helpers

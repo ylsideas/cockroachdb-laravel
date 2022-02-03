@@ -14,16 +14,16 @@ it('basic', function () {
 
     $model = Model1::find($one->id);
 
-    $this->assertTrue($model->relationLoaded('twos'));
-    $this->assertFalse($model->relationLoaded('threes'));
+    expect($model->relationLoaded('twos'))->toBeTrue();
+    expect($model->relationLoaded('threes'))->toBeFalse();
 
     DB::enableQueryLog();
 
     $model->load('threes');
 
-    $this->assertCount(1, DB::getQueryLog());
+    expect(DB::getQueryLog())->toHaveCount(1);
 
-    $this->assertTrue($model->relationLoaded('threes'));
+    expect($model->relationLoaded('threes'))->toBeTrue();
 });
 
 // Helpers

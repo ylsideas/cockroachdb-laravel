@@ -17,19 +17,19 @@ test('basic custom casting', function () {
     $model = new TestEloquentModelWithCustomCast();
     $model->uppercase = 'taylor';
 
-    $this->assertSame('TAYLOR', $model->uppercase);
-    $this->assertSame('TAYLOR', $model->getAttributes()['uppercase']);
-    $this->assertSame('TAYLOR', $model->toArray()['uppercase']);
+    expect($model->uppercase)->toBe('TAYLOR');
+    expect($model->getAttributes()['uppercase'])->toBe('TAYLOR');
+    expect($model->toArray()['uppercase'])->toBe('TAYLOR');
 
     $unserializedModel = unserialize(serialize($model));
 
-    $this->assertSame('TAYLOR', $unserializedModel->uppercase);
-    $this->assertSame('TAYLOR', $unserializedModel->getAttributes()['uppercase']);
-    $this->assertSame('TAYLOR', $unserializedModel->toArray()['uppercase']);
+    expect($unserializedModel->uppercase)->toBe('TAYLOR');
+    expect($unserializedModel->getAttributes()['uppercase'])->toBe('TAYLOR');
+    expect($unserializedModel->toArray()['uppercase'])->toBe('TAYLOR');
 
     $model->syncOriginal();
     $model->uppercase = 'dries';
-    $this->assertSame('TAYLOR', $model->getOriginal('uppercase'));
+    expect($model->getOriginal('uppercase'))->toBe('TAYLOR');
 
     $model = new TestEloquentModelWithCustomCast();
     $model->uppercase = 'taylor';
@@ -37,13 +37,13 @@ test('basic custom casting', function () {
     $model->uppercase = 'dries';
     $model->getOriginal();
 
-    $this->assertSame('DRIES', $model->uppercase);
+    expect($model->uppercase)->toBe('DRIES');
 
     $model = new TestEloquentModelWithCustomCast();
 
     $model->address = $address = new Address('110 Kingsbrook St.', 'My Childhood House');
     $address->lineOne = '117 Spencer St.';
-    $this->assertSame('117 Spencer St.', $model->getAttributes()['address_line_one']);
+    expect($model->getAttributes()['address_line_one'])->toBe('117 Spencer St.');
 
     $model = new TestEloquentModelWithCustomCast();
 
@@ -52,44 +52,44 @@ test('basic custom casting', function () {
         'address_line_two' => 'My Childhood House',
     ]);
 
-    $this->assertSame('110 Kingsbrook St.', $model->address->lineOne);
-    $this->assertSame('My Childhood House', $model->address->lineTwo);
+    expect($model->address->lineOne)->toBe('110 Kingsbrook St.');
+    expect($model->address->lineTwo)->toBe('My Childhood House');
 
-    $this->assertSame('110 Kingsbrook St.', $model->toArray()['address_line_one']);
-    $this->assertSame('My Childhood House', $model->toArray()['address_line_two']);
+    expect($model->toArray()['address_line_one'])->toBe('110 Kingsbrook St.');
+    expect($model->toArray()['address_line_two'])->toBe('My Childhood House');
 
     $model->address->lineOne = '117 Spencer St.';
 
-    $this->assertFalse(isset($model->toArray()['address']));
-    $this->assertSame('117 Spencer St.', $model->toArray()['address_line_one']);
-    $this->assertSame('My Childhood House', $model->toArray()['address_line_two']);
+    expect(isset($model->toArray()['address']))->toBeFalse();
+    expect($model->toArray()['address_line_one'])->toBe('117 Spencer St.');
+    expect($model->toArray()['address_line_two'])->toBe('My Childhood House');
 
-    $this->assertSame('117 Spencer St.', json_decode($model->toJson(), true)['address_line_one']);
-    $this->assertSame('My Childhood House', json_decode($model->toJson(), true)['address_line_two']);
+    expect(json_decode($model->toJson(), true)['address_line_one'])->toBe('117 Spencer St.');
+    expect(json_decode($model->toJson(), true)['address_line_two'])->toBe('My Childhood House');
 
     $model->address = null;
 
-    $this->assertNull($model->toArray()['address_line_one']);
-    $this->assertNull($model->toArray()['address_line_two']);
+    expect($model->toArray()['address_line_one'])->toBeNull();
+    expect($model->toArray()['address_line_two'])->toBeNull();
 
     $model->options = ['foo' => 'bar'];
-    $this->assertEquals(['foo' => 'bar'], $model->options);
-    $this->assertEquals(['foo' => 'bar'], $model->options);
+    expect($model->options)->toEqual(['foo' => 'bar']);
+    expect($model->options)->toEqual(['foo' => 'bar']);
     $model->options = ['foo' => 'bar'];
     $model->options = ['foo' => 'bar'];
-    $this->assertEquals(['foo' => 'bar'], $model->options);
-    $this->assertEquals(['foo' => 'bar'], $model->options);
+    expect($model->options)->toEqual(['foo' => 'bar']);
+    expect($model->options)->toEqual(['foo' => 'bar']);
 
-    $this->assertSame(json_encode(['foo' => 'bar']), $model->getAttributes()['options']);
+    expect($model->getAttributes()['options'])->toBe(json_encode(['foo' => 'bar']));
 
     $model = new TestEloquentModelWithCustomCast(['options' => []]);
     $model->syncOriginal();
     $model->options = ['foo' => 'bar'];
-    $this->assertTrue($model->isDirty('options'));
+    expect($model->isDirty('options'))->toBeTrue();
 
     $model = new TestEloquentModelWithCustomCast();
     $model->birthday_at = now();
-    $this->assertIsString($model->toArray()['birthday_at']);
+    expect($model->toArray()['birthday_at'])->toBeString();
 });
 
 test('get original with cast value objects', function () {
@@ -101,9 +101,9 @@ test('get original with cast value objects', function () {
 
     $model->address = new Address('117 Spencer St.', 'Another house.');
 
-    $this->assertSame('117 Spencer St.', $model->address->lineOne);
-    $this->assertSame('110 Kingsbrook St.', $model->getOriginal('address')->lineOne);
-    $this->assertSame('117 Spencer St.', $model->address->lineOne);
+    expect($model->address->lineOne)->toBe('117 Spencer St.');
+    expect($model->getOriginal('address')->lineOne)->toBe('110 Kingsbrook St.');
+    expect($model->address->lineOne)->toBe('117 Spencer St.');
 
     $model = new TestEloquentModelWithCustomCast([
         'address' => new Address('110 Kingsbrook St.', 'My Childhood House'),
@@ -113,10 +113,10 @@ test('get original with cast value objects', function () {
 
     $model->address = new Address('117 Spencer St.', 'Another house.');
 
-    $this->assertSame('117 Spencer St.', $model->address->lineOne);
-    $this->assertSame('110 Kingsbrook St.', $model->getOriginal()['address_line_one']);
-    $this->assertSame('117 Spencer St.', $model->address->lineOne);
-    $this->assertSame('110 Kingsbrook St.', $model->getOriginal()['address_line_one']);
+    expect($model->address->lineOne)->toBe('117 Spencer St.');
+    expect($model->getOriginal()['address_line_one'])->toBe('110 Kingsbrook St.');
+    expect($model->address->lineOne)->toBe('117 Spencer St.');
+    expect($model->getOriginal()['address_line_one'])->toBe('110 Kingsbrook St.');
 
     $model = new TestEloquentModelWithCustomCast([
         'address' => new Address('110 Kingsbrook St.', 'My Childhood House'),
@@ -126,9 +126,9 @@ test('get original with cast value objects', function () {
 
     $model->address = null;
 
-    $this->assertNull($model->address);
-    $this->assertInstanceOf(Address::class, $model->getOriginal('address'));
-    $this->assertNull($model->address);
+    expect($model->address)->toBeNull();
+    expect($model->getOriginal('address'))->toBeInstanceOf(Address::class);
+    expect($model->address)->toBeNull();
 });
 
 test('deviable casts', function () {
@@ -138,11 +138,11 @@ test('deviable casts', function () {
 
     $model->increment('price', '530.865');
 
-    $this->assertSame((new Decimal('654.321'))->getValue(), $model->price->getValue());
+    expect($model->price->getValue())->toBe((new Decimal('654.321'))->getValue());
 
     $model->decrement('price', '333.333');
 
-    $this->assertSame((new Decimal('320.988'))->getValue(), $model->price->getValue());
+    expect($model->price->getValue())->toBe((new Decimal('320.988'))->getValue());
 });
 
 test('serializable casts', function () {
@@ -151,15 +151,15 @@ test('serializable casts', function () {
 
     $expectedValue = (new Decimal('123.456'))->getValue();
 
-    $this->assertSame($expectedValue, $model->price->getValue());
-    $this->assertSame('123.456', $model->getAttributes()['price']);
-    $this->assertSame('123.456', $model->toArray()['price']);
+    expect($model->price->getValue())->toBe($expectedValue);
+    expect($model->getAttributes()['price'])->toBe('123.456');
+    expect($model->toArray()['price'])->toBe('123.456');
 
     $unserializedModel = unserialize(serialize($model));
 
-    $this->assertSame($expectedValue, $unserializedModel->price->getValue());
-    $this->assertSame('123.456', $unserializedModel->getAttributes()['price']);
-    $this->assertSame('123.456', $unserializedModel->toArray()['price']);
+    expect($unserializedModel->price->getValue())->toBe($expectedValue);
+    expect($unserializedModel->getAttributes()['price'])->toBe('123.456');
+    expect($unserializedModel->toArray()['price'])->toBe('123.456');
 });
 
 test('one way casting', function () {
@@ -168,17 +168,17 @@ test('one way casting', function () {
 
     $model->password = 'secret';
 
-    $this->assertEquals(hash('sha256', 'secret'), $model->password);
-    $this->assertEquals(hash('sha256', 'secret'), $model->getAttributes()['password']);
-    $this->assertEquals(hash('sha256', 'secret'), $model->getAttributes()['password']);
-    $this->assertEquals(hash('sha256', 'secret'), $model->password);
+    expect($model->password)->toEqual(hash('sha256', 'secret'));
+    expect($model->getAttributes()['password'])->toEqual(hash('sha256', 'secret'));
+    expect($model->getAttributes()['password'])->toEqual(hash('sha256', 'secret'));
+    expect($model->password)->toEqual(hash('sha256', 'secret'));
 
     $model->password = 'secret2';
 
-    $this->assertEquals(hash('sha256', 'secret2'), $model->password);
-    $this->assertEquals(hash('sha256', 'secret2'), $model->getAttributes()['password']);
-    $this->assertEquals(hash('sha256', 'secret2'), $model->getAttributes()['password']);
-    $this->assertEquals(hash('sha256', 'secret2'), $model->password);
+    expect($model->password)->toEqual(hash('sha256', 'secret2'));
+    expect($model->getAttributes()['password'])->toEqual(hash('sha256', 'secret2'));
+    expect($model->getAttributes()['password'])->toEqual(hash('sha256', 'secret2'));
+    expect($model->password)->toEqual(hash('sha256', 'secret2'));
 });
 
 test('setting raw attributes clears the cast cache', function () {
@@ -189,14 +189,14 @@ test('setting raw attributes clears the cast cache', function () {
         'address_line_two' => 'My Childhood House',
     ]);
 
-    $this->assertSame('110 Kingsbrook St.', $model->address->lineOne);
+    expect($model->address->lineOne)->toBe('110 Kingsbrook St.');
 
     $model->setRawAttributes([
         'address_line_one' => '117 Spencer St.',
         'address_line_two' => 'My Childhood House',
     ]);
 
-    $this->assertSame('117 Spencer St.', $model->address->lineOne);
+    expect($model->address->lineOne)->toBe('117 Spencer St.');
 });
 
 test('with castable interface', function () {
@@ -206,20 +206,20 @@ test('with castable interface', function () {
         'value_object_with_caster' => serialize(new ValueObject('hello')),
     ]);
 
-    $this->assertInstanceOf(ValueObject::class, $model->value_object_with_caster);
-    $this->assertSame(serialize(new ValueObject('hello')), $model->toArray()['value_object_with_caster']);
+    expect($model->value_object_with_caster)->toBeInstanceOf(ValueObject::class);
+    expect($model->toArray()['value_object_with_caster'])->toBe(serialize(new ValueObject('hello')));
 
     $model->setRawAttributes([
         'value_object_caster_with_argument' => null,
     ]);
 
-    $this->assertSame('argument', $model->value_object_caster_with_argument);
+    expect($model->value_object_caster_with_argument)->toBe('argument');
 
     $model->setRawAttributes([
         'value_object_caster_with_caster_instance' => serialize(new ValueObject('hello')),
     ]);
 
-    $this->assertInstanceOf(ValueObject::class, $model->value_object_caster_with_caster_instance);
+    expect($model->value_object_caster_with_caster_instance)->toBeInstanceOf(ValueObject::class);
 });
 
 test('get from undefined cast', function () {
@@ -233,7 +233,7 @@ test('set to undefined cast', function () {
     $this->expectException(InvalidCastException::class);
 
     $model = new TestEloquentModelWithCustomCast();
-    $this->assertTrue($model->hasCast('undefined_cast_column'));
+    expect($model->hasCast('undefined_cast_column'))->toBeTrue();
 
     $model->undefined_cast_column = 'Glāžšķūņu rūķīši';
 });

@@ -25,9 +25,9 @@ test('custom casting', function () {
 
     $model = $model->fresh();
 
-    $this->assertEquals(['name' => 'Taylor'], $model->array_object->toArray());
-    $this->assertEquals(['name' => 'Taylor'], $model->collection->toArray());
-    $this->assertEquals('Taylor', (string) $model->stringable);
+    expect($model->array_object->toArray())->toEqual(['name' => 'Taylor']);
+    expect($model->collection->toArray())->toEqual(['name' => 'Taylor']);
+    expect((string) $model->stringable)->toEqual('Taylor');
 
     $model->array_object['age'] = 34;
     $model->array_object['meta']['title'] = 'Developer';

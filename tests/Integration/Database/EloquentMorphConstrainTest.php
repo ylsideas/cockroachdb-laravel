@@ -22,10 +22,10 @@ test('morph constraints', function () {
         }])
         ->get();
 
-    $this->assertTrue($comments[0]->commentable->post_visible);
-    $this->assertNull($comments[1]->commentable);
-    $this->assertTrue($comments[2]->commentable->video_visible);
-    $this->assertNull($comments[3]->commentable);
+    expect($comments[0]->commentable->post_visible)->toBeTrue();
+    expect($comments[1]->commentable)->toBeNull();
+    expect($comments[2]->commentable->video_visible)->toBeTrue();
+    expect($comments[3]->commentable)->toBeNull();
 });
 
 // Helpers

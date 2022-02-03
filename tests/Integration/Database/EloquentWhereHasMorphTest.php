@@ -15,7 +15,7 @@ test('where has morph', function () {
         $query->where('title', 'foo');
     })->orderBy('id')->get();
 
-    $this->assertEquals([1, 4], $comments->pluck('id')->all());
+    expect($comments->pluck('id')->all())->toEqual([1, 4]);
 });
 
 test('where has morph with morph map', function () {
@@ -28,7 +28,7 @@ test('where has morph with morph map', function () {
             $query->where('title', 'foo');
         })->orderBy('id')->get();
 
-        $this->assertEquals([1, 4], $comments->pluck('id')->all());
+        expect($comments->pluck('id')->all())->toEqual([1, 4]);
     } finally {
         Relation::morphMap([], false);
     }
@@ -43,7 +43,7 @@ test('where has morph with wildcard', function () {
             $query->where('title', 'foo');
         })->orderBy('id')->get();
 
-    $this->assertEquals([1, 4], $comments->pluck('id')->all());
+    expect($comments->pluck('id')->all())->toEqual([1, 4]);
 });
 
 test('where has morph with wildcard and morph map', function () {
@@ -56,7 +56,7 @@ test('where has morph with wildcard and morph map', function () {
             $query->where('title', 'foo');
         })->orderBy('id')->get();
 
-        $this->assertEquals([1, 4], $comments->pluck('id')->all());
+        expect($comments->pluck('id')->all())->toEqual([1, 4]);
     } finally {
         Relation::morphMap([], false);
     }
@@ -67,7 +67,7 @@ test('where has morph with relation constraint', function () {
         $query->where('title', 'like', 'ba%');
     })->orderBy('id')->get();
 
-    $this->assertEquals([5], $comments->pluck('id')->all());
+    expect($comments->pluck('id')->all())->toEqual([5]);
 });
 
 test('where has morph wit different constraints', function () {
@@ -81,7 +81,7 @@ test('where has morph wit different constraints', function () {
         }
     })->orderBy('id')->get();
 
-    $this->assertEquals([1, 5], $comments->pluck('id')->all());
+    expect($comments->pluck('id')->all())->toEqual([1, 5]);
 });
 
 test('where has morph with owner key', function () {
@@ -109,31 +109,31 @@ test('where has morph with owner key', function () {
         $query->where('title', 'foo');
     })->orderBy('id')->get();
 
-    $this->assertEquals([1], $comments->pluck('id')->all());
+    expect($comments->pluck('id')->all())->toEqual([1]);
 });
 
 test('has morph', function () {
     $comments = Comment::hasMorph('commentable', Post::class)->orderBy('id')->get();
 
-    $this->assertEquals([1, 2], $comments->pluck('id')->all());
+    expect($comments->pluck('id')->all())->toEqual([1, 2]);
 });
 
 test('or has morph', function () {
     $comments = Comment::where('id', 1)->orHasMorph('commentable', Video::class)->orderBy('id')->get();
 
-    $this->assertEquals([1, 4, 5, 6], $comments->pluck('id')->all());
+    expect($comments->pluck('id')->all())->toEqual([1, 4, 5, 6]);
 });
 
 test('doesnt have morph', function () {
     $comments = Comment::doesntHaveMorph('commentable', Post::class)->orderBy('id')->get();
 
-    $this->assertEquals([3], $comments->pluck('id')->all());
+    expect($comments->pluck('id')->all())->toEqual([3]);
 });
 
 test('or doesnt have morph', function () {
     $comments = Comment::where('id', 1)->orDoesntHaveMorph('commentable', Post::class)->orderBy('id')->get();
 
-    $this->assertEquals([1, 3], $comments->pluck('id')->all());
+    expect($comments->pluck('id')->all())->toEqual([1, 3]);
 });
 
 test('or where has morph', function () {
@@ -142,7 +142,7 @@ test('or where has morph', function () {
             $query->where('title', 'foo');
         })->orderBy('id')->get();
 
-    $this->assertEquals([1, 4], $comments->pluck('id')->all());
+    expect($comments->pluck('id')->all())->toEqual([1, 4]);
 });
 
 test('where doesnt have morph', function () {
@@ -150,7 +150,7 @@ test('where doesnt have morph', function () {
         $query->where('title', 'foo');
     })->orderBy('id')->get();
 
-    $this->assertEquals([2, 3], $comments->pluck('id')->all());
+    expect($comments->pluck('id')->all())->toEqual([2, 3]);
 });
 
 test('or where doesnt have morph', function () {
@@ -159,7 +159,7 @@ test('or where doesnt have morph', function () {
             $query->where('title', 'foo');
         })->orderBy('id')->get();
 
-    $this->assertEquals([1, 2, 3], $comments->pluck('id')->all());
+    expect($comments->pluck('id')->all())->toEqual([1, 2, 3]);
 });
 
 test('model scopes are accessible', function () {
@@ -167,7 +167,7 @@ test('model scopes are accessible', function () {
         $query->someSharedModelScope();
     })->orderBy('id')->get();
 
-    $this->assertEquals([1, 4], $comments->pluck('id')->all());
+    expect($comments->pluck('id')->all())->toEqual([1, 4]);
 });
 
 // Helpers

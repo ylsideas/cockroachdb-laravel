@@ -70,8 +70,8 @@ function migrateRefreshWith(array $options)
 
     test()->artisan('migrate:refresh', $options);
     DB::table('members')->insert(['name' => 'foo', 'email' => 'foo@bar', 'password' => 'secret']);
-    test()->assertEquals(1, DB::table('members')->count());
+    expect(DB::table('members')->count())->toEqual(1);
 
     test()->artisan('migrate:refresh', $options);
-    test()->assertEquals(0, DB::table('members')->count());
+    expect(DB::table('members')->count())->toEqual(0);
 }

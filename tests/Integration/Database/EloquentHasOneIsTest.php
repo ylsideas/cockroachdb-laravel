@@ -11,16 +11,16 @@ test('child is not null', function () {
     $parent = Post::first();
     $child = null;
 
-    $this->assertFalse($parent->attachment()->is($child));
-    $this->assertTrue($parent->attachment()->isNot($child));
+    expect($parent->attachment()->is($child))->toBeFalse();
+    expect($parent->attachment()->isNot($child))->toBeTrue();
 });
 
 test('child is model', function () {
     $parent = Post::first();
     $child = Attachment::first();
 
-    $this->assertTrue($parent->attachment()->is($child));
-    $this->assertFalse($parent->attachment()->isNot($child));
+    expect($parent->attachment()->is($child))->toBeTrue();
+    expect($parent->attachment()->isNot($child))->toBeFalse();
 });
 
 test('child is not another model', function () {
@@ -28,8 +28,8 @@ test('child is not another model', function () {
     $child = new Attachment();
     $child->id = 2;
 
-    $this->assertFalse($parent->attachment()->is($child));
-    $this->assertTrue($parent->attachment()->isNot($child));
+    expect($parent->attachment()->is($child))->toBeFalse();
+    expect($parent->attachment()->isNot($child))->toBeTrue();
 });
 
 test('null child is not model', function () {
@@ -37,8 +37,8 @@ test('null child is not model', function () {
     $child = Attachment::first();
     $child->post_id = null;
 
-    $this->assertFalse($parent->attachment()->is($child));
-    $this->assertTrue($parent->attachment()->isNot($child));
+    expect($parent->attachment()->is($child))->toBeFalse();
+    expect($parent->attachment()->isNot($child))->toBeTrue();
 });
 
 test('child is not model with another table', function () {
@@ -46,8 +46,8 @@ test('child is not model with another table', function () {
     $child = Attachment::first();
     $child->setTable('foo');
 
-    $this->assertFalse($parent->attachment()->is($child));
-    $this->assertTrue($parent->attachment()->isNot($child));
+    expect($parent->attachment()->is($child))->toBeFalse();
+    expect($parent->attachment()->isNot($child))->toBeTrue();
 });
 
 test('child is not model with another connection', function () {
@@ -55,8 +55,8 @@ test('child is not model with another connection', function () {
     $child = Attachment::first();
     $child->setConnection('foo');
 
-    $this->assertFalse($parent->attachment()->is($child));
-    $this->assertTrue($parent->attachment()->isNot($child));
+    expect($parent->attachment()->is($child))->toBeFalse();
+    expect($parent->attachment()->isNot($child))->toBeTrue();
 });
 
 // Helpers

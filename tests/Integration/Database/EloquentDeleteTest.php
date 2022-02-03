@@ -17,7 +17,7 @@ test('delete with limit', function () {
     }
 
     PostDelete::latest('id')->limit(1)->delete();
-    $this->assertCount(9, PostDelete::all());
+    expect(PostDelete::all())->toHaveCount(9);
 
     PostDelete::query()
         ->whereIn(
@@ -30,20 +30,20 @@ test('delete with limit', function () {
         ->orderBy('posts.id')
         ->limit(1)
         ->delete();
-    $this->assertCount(8, PostDelete::all());
+    expect(PostDelete::all())->toHaveCount(8);
 })->group('SkipMSSQL');
 
 test('force deleted event is fired', function () {
     $role = Role::create([]);
-    $this->assertInstanceOf(Role::class, $role);
+    expect($role)->toBeInstanceOf(Role::class);
     Role::observe(new RoleObserver());
 
     $role->delete();
-    $this->assertNull(RoleObserver::$model);
+    expect(RoleObserver::$model)->toBeNull();
 
     $role->forceDelete();
 
-    $this->assertEquals($role->id, RoleObserver::$model->id);
+    expect(RoleObserver::$model->id)->toEqual($role->id);
 });
 
 // Helpers

@@ -21,12 +21,12 @@ test('push method saves the relationships recursively', function () {
     $user->posts[0]->comments[0]->comment = 'Test comment 1';
     $user->push();
 
-    $this->assertSame(1, UserX::count());
-    $this->assertSame('Test 1', UserX::firstOrFail()->name);
-    $this->assertSame(1, PostX::count());
-    $this->assertSame('Test title 1', PostX::firstOrFail()->title);
-    $this->assertSame(1, CommentX::count());
-    $this->assertSame('Test comment 1', CommentX::firstOrFail()->comment);
+    expect(UserX::count())->toBe(1);
+    expect(UserX::firstOrFail()->name)->toBe('Test 1');
+    expect(PostX::count())->toBe(1);
+    expect(PostX::firstOrFail()->title)->toBe('Test title 1');
+    expect(CommentX::count())->toBe(1);
+    expect(CommentX::firstOrFail()->comment)->toBe('Test comment 1');
 });
 
 // Helpers

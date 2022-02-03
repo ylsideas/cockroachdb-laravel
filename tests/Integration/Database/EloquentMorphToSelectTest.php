@@ -9,7 +9,7 @@ uses(DatabaseTestCase::class);
 test('select', function () {
     $comments = CommentMorphTest::with('commentable:id')->get();
 
-    $this->assertEquals(['id' => 1], $comments[0]->commentable->getAttributes());
+    expect($comments[0]->commentable->getAttributes())->toEqual(['id' => 1]);
 });
 
 test('select raw', function () {
@@ -17,7 +17,7 @@ test('select raw', function () {
         $query->selectRaw('id');
     }])->get();
 
-    $this->assertEquals(['id' => 1], $comments[0]->commentable->getAttributes());
+    expect($comments[0]->commentable->getAttributes())->toEqual(['id' => 1]);
 });
 
 test('select sub', function () {
@@ -27,7 +27,7 @@ test('select sub', function () {
         }, 'id');
     }])->get();
 
-    $this->assertEquals(['id' => 1], $comments[0]->commentable->getAttributes());
+    expect($comments[0]->commentable->getAttributes())->toEqual(['id' => 1]);
 });
 
 test('add select', function () {
@@ -35,14 +35,14 @@ test('add select', function () {
         $query->addSelect('id');
     }])->get();
 
-    $this->assertEquals(['id' => 1], $comments[0]->commentable->getAttributes());
+    expect($comments[0]->commentable->getAttributes())->toEqual(['id' => 1]);
 });
 
 test('lazy loading', function () {
     $comment = CommentMorphTest::first();
     $post = $comment->commentable()->select('id')->first();
 
-    $this->assertEquals(['id' => 1], $post->getAttributes());
+    expect($post->getAttributes())->toEqual(['id' => 1]);
 });
 
 // Helpers

@@ -14,7 +14,7 @@ test('update model with default with count', function () {
 
     $post->update(['title' => 'new name']);
 
-    $this->assertSame('new name', $post->title);
+    expect($post->title)->toBe('new name');
 });
 
 test('self referencing existence query', function () {
@@ -26,7 +26,7 @@ test('self referencing existence query', function () {
 
     $comments = Comment::has('replies')->get();
 
-    $this->assertEquals([1], $comments->pluck('id')->all());
+    expect($comments->pluck('id')->all())->toEqual([1]);
 });
 
 // Helpers

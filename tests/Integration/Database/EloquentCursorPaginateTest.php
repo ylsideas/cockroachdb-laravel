@@ -15,7 +15,7 @@ test('cursor pagination on top of columns', function () {
         ]);
     }
 
-    $this->assertCount(15, TestPost::cursorPaginate(15, ['id', 'title']));
+    expect(TestPost::cursorPaginate(15, ['id', 'title']))->toHaveCount(15);
 });
 
 test('pagination with distinct', function () {
@@ -26,9 +26,9 @@ test('pagination with distinct', function () {
 
     $query = TestPost::query()->distinct();
 
-    $this->assertEquals(6, $query->get()->count());
-    $this->assertEquals(6, $query->count());
-    $this->assertCount(6, $query->cursorPaginate()->items());
+    expect($query->get()->count())->toEqual(6);
+    expect($query->count())->toEqual(6);
+    expect($query->cursorPaginate()->items())->toHaveCount(6);
 });
 
 test('pagination with where clause', function () {
@@ -39,9 +39,9 @@ test('pagination with where clause', function () {
 
     $query = TestPost::query()->whereNull('user_id');
 
-    $this->assertEquals(3, $query->get()->count());
-    $this->assertEquals(3, $query->count());
-    $this->assertCount(3, $query->cursorPaginate()->items());
+    expect($query->get()->count())->toEqual(3);
+    expect($query->count())->toEqual(3);
+    expect($query->cursorPaginate()->items())->toHaveCount(3);
 });
 
 /**/
@@ -55,9 +55,9 @@ test('pagination with has clause', function () {
 
     $query = TestUser::query()->has('posts');
 
-    $this->assertEquals(2, $query->get()->count());
-    $this->assertEquals(2, $query->count());
-    $this->assertCount(2, $query->cursorPaginate()->items());
+    expect($query->get()->count())->toEqual(2);
+    expect($query->count())->toEqual(2);
+    expect($query->cursorPaginate()->items())->toHaveCount(2);
 })->group('SkipMSSQL');
 
 /**/
@@ -73,9 +73,9 @@ test('pagination with where has clause', function () {
         $query->where('title', 'Howdy');
     });
 
-    $this->assertEquals(1, $query->get()->count());
-    $this->assertEquals(1, $query->count());
-    $this->assertCount(1, $query->cursorPaginate()->items());
+    expect($query->get()->count())->toEqual(1);
+    expect($query->count())->toEqual(1);
+    expect($query->cursorPaginate()->items())->toHaveCount(1);
 })->group('SkipMSSQL');
 
 /**/
@@ -93,9 +93,9 @@ test('pagination with where exists clause', function () {
             ->whereColumn('test_posts.user_id', 'test_users.id');
     });
 
-    $this->assertEquals(2, $query->get()->count());
-    $this->assertEquals(2, $query->count());
-    $this->assertCount(2, $query->cursorPaginate()->items());
+    expect($query->get()->count())->toEqual(2);
+    expect($query->count())->toEqual(2);
+    expect($query->cursorPaginate()->items())->toHaveCount(2);
 })->group('SkipMSSQL');
 
 /**/
@@ -119,10 +119,10 @@ test('pagination with multiple where clauses', function () {
     $clonedQuery = $query->clone();
     $anotherQuery = $query->clone();
 
-    $this->assertEquals(2, $query->get()->count());
-    $this->assertEquals(2, $query->count());
-    $this->assertCount(2, $query->cursorPaginate()->items());
-    $this->assertCount(1, $clonedQuery->cursorPaginate(1)->items());
+    expect($query->get()->count())->toEqual(2);
+    expect($query->count())->toEqual(2);
+    expect($query->cursorPaginate()->items())->toHaveCount(2);
+    expect($clonedQuery->cursorPaginate(1)->items())->toHaveCount(1);
     $this->assertCount(
         1,
         $anotherQuery->cursorPaginate(5, ['*'], 'cursor', new Cursor(['id' => 3]))
@@ -140,10 +140,10 @@ test('pagination with aliased order by', function () {
     $clonedQuery = $query->clone();
     $anotherQuery = $query->clone();
 
-    $this->assertEquals(6, $query->get()->count());
-    $this->assertEquals(6, $query->count());
-    $this->assertCount(6, $query->cursorPaginate()->items());
-    $this->assertCount(3, $clonedQuery->cursorPaginate(3)->items());
+    expect($query->get()->count())->toEqual(6);
+    expect($query->count())->toEqual(6);
+    expect($query->cursorPaginate()->items())->toHaveCount(6);
+    expect($clonedQuery->cursorPaginate(3)->items())->toHaveCount(3);
     $this->assertCount(
         4,
         $anotherQuery->cursorPaginate(10, ['*'], 'cursor', new Cursor(['user_id' => 2]))
@@ -159,9 +159,9 @@ test('pagination with distinct columns and select', function () {
 
     $query = TestPost::query()->orderBy('title')->distinct('title')->select('title');
 
-    $this->assertEquals(2, $query->get()->count());
-    $this->assertEquals(2, $query->count());
-    $this->assertCount(2, $query->cursorPaginate()->items());
+    expect($query->get()->count())->toEqual(2);
+    expect($query->count())->toEqual(2);
+    expect($query->cursorPaginate()->items())->toHaveCount(2);
 });
 
 test('pagination with distinct columns and select and join', function () {
@@ -178,9 +178,9 @@ test('pagination with distinct columns and select and join', function () {
     $query = TestUser::query()->join('test_posts', 'test_posts.user_id', '=', 'test_users.id')
         ->distinct('test_users.id')->select('test_users.*');
 
-    $this->assertEquals(5, $query->get()->count());
-    $this->assertEquals(5, $query->count());
-    $this->assertCount(5, $query->cursorPaginate()->items());
+    expect($query->get()->count())->toEqual(5);
+    expect($query->count())->toEqual(5);
+    expect($query->cursorPaginate()->items())->toHaveCount(5);
 });
 
 // Helpers

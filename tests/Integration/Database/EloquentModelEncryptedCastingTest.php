@@ -33,7 +33,7 @@ test('strings are castable', function () {
         'secret' => 'this is a secret string',
     ]);
 
-    $this->assertSame('this is a secret string', $subject->secret);
+    expect($subject->secret)->toBe('this is a secret string');
     $this->assertDatabaseHas('encrypted_casts', [
         'id' => $subject->id,
         'secret' => 'encrypted-secret-string',
@@ -53,7 +53,7 @@ test('arrays are castable', function () {
         'secret_array' => ['key1' => 'value1'],
     ]);
 
-    $this->assertSame(['key1' => 'value1'], $subject->secret_array);
+    expect($subject->secret_array)->toBe(['key1' => 'value1']);
     $this->assertDatabaseHas('encrypted_casts', [
         'id' => $subject->id,
         'secret_array' => 'encrypted-secret-array-string',
@@ -73,7 +73,7 @@ test('json is castable', function () {
         'secret_json' => ['key1' => 'value1'],
     ]);
 
-    $this->assertSame(['key1' => 'value1'], $subject->secret_json);
+    expect($subject->secret_json)->toBe(['key1' => 'value1']);
     $this->assertDatabaseHas('encrypted_casts', [
         'id' => $subject->id,
         'secret_json' => 'encrypted-secret-json-string',
@@ -102,7 +102,7 @@ test('json attribute is castable', function () {
     ]);
     $subject->save();
 
-    $this->assertSame(['key1' => 'value1', 'key2' => 'value2'], $subject->secret_json);
+    expect($subject->secret_json)->toBe(['key1' => 'value1', 'key2' => 'value2']);
     $this->assertDatabaseHas('encrypted_casts', [
         'id' => $subject->id,
         'secret_json' => 'encrypted-secret-json-string2',
@@ -126,8 +126,8 @@ test('object is castable', function () {
         'secret_object' => $object,
     ]);
 
-    $this->assertInstanceOf(stdClass::class, $object->secret_object);
-    $this->assertSame('value1', $object->secret_object->key1);
+    expect($object->secret_object)->toBeInstanceOf(stdClass::class);
+    expect($object->secret_object->key1)->toBe('value1');
     $this->assertDatabaseHas('encrypted_casts', [
         'id' => $object->id,
         'secret_object' => 'encrypted-secret-object-string',
@@ -148,8 +148,8 @@ test('collection is castable', function () {
         'secret_collection' => new Collection(['key1' => 'value1']),
     ]);
 
-    $this->assertInstanceOf(Collection::class, $subject->secret_collection);
-    $this->assertSame('value1', $subject->secret_collection->get('key1'));
+    expect($subject->secret_collection)->toBeInstanceOf(Collection::class);
+    expect($subject->secret_collection->get('key1'))->toBe('value1');
     $this->assertDatabaseHas('encrypted_casts', [
         'id' => $subject->id,
         'secret_collection' => 'encrypted-secret-collection-string',
@@ -183,9 +183,9 @@ test('as encrypted collection', function () {
 
     $subject->save();
 
-    $this->assertInstanceOf(Collection::class, $subject->secret_collection);
-    $this->assertSame('value1', $subject->secret_collection->get('key1'));
-    $this->assertSame('value2', $subject->secret_collection->get('key2'));
+    expect($subject->secret_collection)->toBeInstanceOf(Collection::class);
+    expect($subject->secret_collection->get('key1'))->toBe('value1');
+    expect($subject->secret_collection->get('key2'))->toBe('value2');
     $this->assertDatabaseHas('encrypted_casts', [
         'id' => $subject->id,
         'secret_collection' => 'encrypted-secret-collection-string-2',
@@ -193,20 +193,20 @@ test('as encrypted collection', function () {
 
     $subject = $subject->fresh();
 
-    $this->assertInstanceOf(Collection::class, $subject->secret_collection);
-    $this->assertSame('value1', $subject->secret_collection->get('key1'));
-    $this->assertSame('value2', $subject->secret_collection->get('key2'));
+    expect($subject->secret_collection)->toBeInstanceOf(Collection::class);
+    expect($subject->secret_collection->get('key1'))->toBe('value1');
+    expect($subject->secret_collection->get('key2'))->toBe('value2');
 
     $subject->secret_collection = null;
     $subject->save();
 
-    $this->assertNull($subject->secret_collection);
+    expect($subject->secret_collection)->toBeNull();
     $this->assertDatabaseHas('encrypted_casts', [
         'id' => $subject->id,
         'secret_collection' => null,
     ]);
 
-    $this->assertNull($subject->fresh()->secret_collection);
+    expect($subject->fresh()->secret_collection)->toBeNull();
 });
 
 test('as encrypted array object', function () {
@@ -240,9 +240,9 @@ test('as encrypted array object', function () {
 
     $subject->save();
 
-    $this->assertInstanceOf(ArrayObject::class, $subject->secret_array);
-    $this->assertSame('value1', $subject->secret_array['key1']);
-    $this->assertSame('value2', $subject->secret_array['key2']);
+    expect($subject->secret_array)->toBeInstanceOf(ArrayObject::class);
+    expect($subject->secret_array['key1'])->toBe('value1');
+    expect($subject->secret_array['key2'])->toBe('value2');
     $this->assertDatabaseHas('encrypted_casts', [
         'id' => $subject->id,
         'secret_array' => 'encrypted-secret-array-string-2',
@@ -250,30 +250,30 @@ test('as encrypted array object', function () {
 
     $subject = $subject->fresh();
 
-    $this->assertInstanceOf(ArrayObject::class, $subject->secret_array);
-    $this->assertSame('value1', $subject->secret_array['key1']);
-    $this->assertSame('value2', $subject->secret_array['key2']);
+    expect($subject->secret_array)->toBeInstanceOf(ArrayObject::class);
+    expect($subject->secret_array['key1'])->toBe('value1');
+    expect($subject->secret_array['key2'])->toBe('value2');
 
     $subject->secret_array = null;
     $subject->save();
 
-    $this->assertNull($subject->secret_array);
+    expect($subject->secret_array)->toBeNull();
     $this->assertDatabaseHas('encrypted_casts', [
         'id' => $subject->id,
         'secret_array' => null,
     ]);
 
-    $this->assertNull($subject->fresh()->secret_array);
+    expect($subject->fresh()->secret_array)->toBeNull();
 });
 
 test('custom encrypter can be specified', function () {
     $customEncrypter = $this->mock(Encrypter::class);
 
-    $this->assertNull(Model::$encrypter);
+    expect(Model::$encrypter)->toBeNull();
 
     Model::encryptUsing($customEncrypter);
 
-    $this->assertSame($customEncrypter, Model::$encrypter);
+    expect(Model::$encrypter)->toBe($customEncrypter);
 
     $this->encrypter->expects('encrypt')
         ->never();
@@ -291,7 +291,7 @@ test('custom encrypter can be specified', function () {
         'secret' => 'this is a secret string',
     ]);
 
-    $this->assertSame('this is a secret string', $subject->secret);
+    expect($subject->secret)->toBe('this is a secret string');
     $this->assertDatabaseHas('encrypted_casts', [
         'id' => $subject->id,
         'secret' => 'encrypted-secret-string',

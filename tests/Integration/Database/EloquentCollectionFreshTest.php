@@ -19,8 +19,8 @@ test('eloquent collection fresh', function () {
 
     $freshCollection = $collection->fresh();
 
-    $this->assertCount(1, $freshCollection);
-    $this->assertInstanceOf(EloquentCollection::class, $freshCollection);
+    expect($freshCollection)->toHaveCount(1);
+    expect($freshCollection)->toBeInstanceOf(EloquentCollection::class);
 });
 
 // Helpers

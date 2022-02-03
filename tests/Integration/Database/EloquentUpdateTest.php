@@ -16,7 +16,7 @@ test('basic update', function () {
 
     TestUpdateModel1::where('title', 'Ms.')->delete();
 
-    $this->assertCount(0, TestUpdateModel1::all());
+    expect(TestUpdateModel1::all())->toHaveCount(0);
 });
 
 /**/
@@ -27,7 +27,7 @@ test('update with limits and orders', function () {
 
     TestUpdateModel1::latest('id')->limit(3)->update(['title' => 'Dr.']);
 
-    $this->assertSame('Dr.', TestUpdateModel1::find(8)->title);
+    expect(TestUpdateModel1::find(8)->title)->toBe('Dr.');
     $this->assertNotSame('Dr.', TestUpdateModel1::find(7)->title);
 })->group('SkipMSSQL');
 
@@ -70,7 +70,7 @@ test('soft delete with joins', function () {
             ->where('test_model1.title', '=', 'Mr.');
     })->delete();
 
-    $this->assertCount(0, TestUpdateModel2::all());
+    expect(TestUpdateModel2::all())->toHaveCount(0);
 });
 
 test('increment', function () {
@@ -85,8 +85,8 @@ test('increment', function () {
     TestUpdateModel3::increment('counter');
 
     $models = TestUpdateModel3::withoutGlobalScopes()->orderBy('id')->get();
-    $this->assertEquals(1, $models[0]->counter);
-    $this->assertEquals(0, $models[1]->counter);
+    expect($models[0]->counter)->toEqual(1);
+    expect($models[1]->counter)->toEqual(0);
 });
 
 // Helpers

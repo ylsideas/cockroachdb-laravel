@@ -15,8 +15,8 @@ test('strings are castable', function () {
         'json_string_as_json_field' => '{"key1":"value1"}',
     ]);
 
-    $this->assertSame('this is a string', $object->basic_string_as_json_field);
-    $this->assertSame('{"key1":"value1"}', $object->json_string_as_json_field);
+    expect($object->basic_string_as_json_field)->toBe('this is a string');
+    expect($object->json_string_as_json_field)->toBe('{"key1":"value1"}');
 });
 
 test('arrays are castable', function () {
@@ -25,7 +25,7 @@ test('arrays are castable', function () {
         'array_as_json_field' => ['key1' => 'value1'],
     ]);
 
-    $this->assertEquals(['key1' => 'value1'], $object->array_as_json_field);
+    expect($object->array_as_json_field)->toEqual(['key1' => 'value1']);
 });
 
 test('objects are castable', function () {
@@ -37,8 +37,8 @@ test('objects are castable', function () {
         'object_as_json_field' => $object,
     ]);
 
-    $this->assertInstanceOf(stdClass::class, $user->object_as_json_field);
-    $this->assertSame('value1', $user->object_as_json_field->key1);
+    expect($user->object_as_json_field)->toBeInstanceOf(stdClass::class);
+    expect($user->object_as_json_field->key1)->toBe('value1');
 });
 
 test('collections are castable', function () {
@@ -47,8 +47,8 @@ test('collections are castable', function () {
         'collection_as_json_field' => new Collection(['key1' => 'value1']),
     ]);
 
-    $this->assertInstanceOf(Collection::class, $user->collection_as_json_field);
-    $this->assertSame('value1', $user->collection_as_json_field->get('key1'));
+    expect($user->collection_as_json_field)->toBeInstanceOf(Collection::class);
+    expect($user->collection_as_json_field->get('key1'))->toBe('value1');
 });
 
 // Helpers
