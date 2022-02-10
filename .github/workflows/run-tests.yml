@@ -3,7 +3,7 @@ name: run-tests
 on:
   push:
   pull_request:
-    branches: [main]
+    branches: [ main ]
 
 jobs:
   test:
@@ -12,12 +12,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest]
-        php: [8.0, 8.1]
-        laravel: [9.*, 8.*]
-        testbench: [^7.0, ^6.24]
-        stability: [prefer-stable, prefer-lowest]
-        includes:
+        os: [ ubuntu-latest ]
+        php: [ 8.0, 8.1 ]
+        laravel: [ 9.*, 8.* ]
+        stability: [ prefer-stable, prefer-lowest ]
+        include:
           - laravel: 9.*
             testbench: ^7.0
           - laravel: 8.*
@@ -47,8 +46,8 @@ jobs:
 
       - name: Install dependencies
         run: |
-          composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" --no-interaction --no-update
-          composer update --${{ matrix.stability }} --prefer-dist --no-interaction
+            composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" --no-interaction --no-update
+            composer update --${{ matrix.stability }} --prefer-dist --no-interaction
 
       - name: Configure Database
         run: |
