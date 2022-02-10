@@ -1,13 +1,11 @@
 <?php
 
-namespace YlsIdeas\CockroachDb\Tests\Integration\Database\EloquentMorphManyTest;
+namespace YlsIdeas\CockroachDb\Tests\Integration\Database;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
-use YlsIdeas\CockroachDb\Tests\Integration\Database\DatabaseTestCase;
 
 class EloquentMorphManyTest extends DatabaseTestCase
 {
@@ -26,13 +24,11 @@ class EloquentMorphManyTest extends DatabaseTestCase
             $table->string('commentable_type');
             $table->timestamps();
         });
-
-        Carbon::setTestNow(null);
     }
 
     public function testUpdateModelWithDefaultWithCount()
     {
-        $post = Post::create(['title' => Str::random()]);
+        $post = MorphManyPost::create(['title' => Str::random()]);
 
         $post->update(['title' => 'new name']);
 
@@ -41,19 +37,19 @@ class EloquentMorphManyTest extends DatabaseTestCase
 
     public function test_self_referencing_existence_query()
     {
-        $post = Post::create(['title' => 'foo']);
+        $post = MorphManyPost::create(['title' => 'foo']);
 
-        $comment = tap((new Comment(['id' => 1, 'name' => 'foo']))->commentable()->associate($post))->save();
+        $comment = tap((new MorphManyComment(['id' => 1, 'name' => 'foo']))->commentable()->associate($post))->save();
 
-        (new Comment(['id' => 2, 'name' => 'bar']))->commentable()->associate($comment)->save();
+        (new MorphManyComment(['id' => 2, 'name' => 'bar']))->commentable()->associate($comment)->save();
 
-        $comments = Comment::has('replies')->get();
+        $comments = MorphManyComment::has('replies')->get();
 
         $this->assertEquals([1], $comments->pluck('id')->all());
     }
 }
 
-class Post extends Model
+class MorphManyPost extends Model
 {
     public $table = 'posts';
     public $timestamps = true;
@@ -62,11 +58,11 @@ class Post extends Model
 
     public function comments()
     {
-        return $this->morphMany(Comment::class, 'commentable');
+        return $this->morphMany(MorphManyComment::class, 'commentable');
     }
 }
 
-class Comment extends Model
+class MorphManyComment extends Model
 {
     public $table = 'comments';
     public $timestamps = true;
