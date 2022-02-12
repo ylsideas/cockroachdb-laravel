@@ -12,9 +12,12 @@ use PHPUnit\Framework\TestCase;
 use YlsIdeas\CockroachDb\Exceptions\FeatureNotSupportedException;
 use YlsIdeas\CockroachDb\Processor\CockroachDbProcessor;
 use YlsIdeas\CockroachDb\Query\CockroachGrammar;
+use YlsIdeas\CockroachDb\Tests\WithMultipleApplicationVersions;
 
 class DatabaseCockroachDbQueryBuilderTest extends TestCase
 {
+    use WithMultipleApplicationVersions;
+    
     protected function tearDown(): void
     {
         m::close();
