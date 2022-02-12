@@ -31,7 +31,7 @@ class FulltextTest extends DatabaseTestCase
     protected function setUp(): void
     {
         $this->markTestSkipped('Not currently supported by CockroachDB');
-        
+
         parent::setUp();
 
         DB::table('articles')->insert([
