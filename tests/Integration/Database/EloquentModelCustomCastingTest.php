@@ -16,10 +16,10 @@ class EloquentModelCustomCastingTest extends TestCase
 {
     protected function setUp(): void
     {
-        if (!class_exists(\Illuminate\Tests\Integration\Database\CustomCasts::class)) {
+        if (! class_exists(\Illuminate\Tests\Integration\Database\CustomCasts::class)) {
             $this->markTestSkipped(sprintf(
-                    'Not included before 9.0',
-                    \Illuminate\Tests\Integration\Database\CustomCasts::class
+                'Not included before 9.0',
+                \Illuminate\Tests\Integration\Database\CustomCasts::class
             ));
         }
         $db = new DB();
