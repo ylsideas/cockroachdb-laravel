@@ -5,8 +5,10 @@ namespace YlsIdeas\CockroachDb\Tests\Database;
 use Illuminate\Database\Connection;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Schema\ForeignIdColumnDefinition;
+use Illuminate\Support\Fluent;
 use Mockery as m;
 use PHPUnit\Framework\TestCase;
+use YlsIdeas\CockroachDb\Exceptions\FeatureNotSupportedException;
 use YlsIdeas\CockroachDb\Schema\CockroachGrammar;
 
 class DatabaseCockroachDbSchemaGrammarTest extends TestCase
@@ -1034,6 +1036,14 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
         $statement = $this->getGrammar()->compileDropAllTypes(['alpha', 'beta', 'gamma']);
 
         $this->assertSame('drop type "alpha","beta","gamma" cascade', $statement);
+    }
+
+    public function testCreatingFulltextIndexesThrowsAnException()
+    {
+        $this->expectException(FeatureNotSupportedException::class);
+        $blueprint = new Blueprint('fulltext');
+        $fluent = new Fluent();
+        $this->getGrammar()->compileFulltext($blueprint, $fluent);
     }
 
     protected function getConnection()
