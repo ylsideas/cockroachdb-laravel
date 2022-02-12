@@ -76,8 +76,9 @@ method of the Query builder a `YlsIdeas\CockroachDb\Exceptions\FeatureNotSupport
 The tests try to closely follow the same functionality of the grammar provided by Laravel
 by lifting the tests straight from laravel/framework. This does provide some complications.
 Namely, cockroachdb is designed to be distributed so primary keys do not occur in sequence.
-Also deletes with joins do not work compared to other Laravel supported databases so the 
-delete with limit test uses a sub query instead.
+
+Tests should also try to be compatible with not just the latest version of Laravel but across
+Laravel 8 and 9, this requires some tests to be skipped.
 
 ```bash
 composer test
