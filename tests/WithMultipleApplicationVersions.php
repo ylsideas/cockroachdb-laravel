@@ -36,6 +36,6 @@ trait WithMultipleApplicationVersions
      */
     public function executeOnVersion(string $version, mixed $onTrue, mixed $onFalse, string $operator = '>=')
     {
-        return version_compare(App::version(), $version) ? value($onTrue) : value($onFalse);
+        return version_compare(App::version(), $version, $operator) ? value($onTrue) : value($onFalse);
     }
 }
