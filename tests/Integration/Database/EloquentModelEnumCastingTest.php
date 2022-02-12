@@ -4,7 +4,6 @@ namespace YlsIdeas\CockroachDb\Tests\Integration\Database;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use YlsIdeas\CockroachDb\Tests\WithMultipleApplicationVersions;
