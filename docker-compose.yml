@@ -5,7 +5,7 @@ services:
     ports:
       - "26257:26257"
       - "8080:8080"
-    command: start-single-node --insecure --store=type=mem,size=1 --advertise-addr=localhost
+    command: start-single-node --insecure --store=type=mem,size=0.9 --advertise-addr=localhost
 #    volumes:
 #      - crdb-volume:/cockroach/cockroach-data
     deploy:
