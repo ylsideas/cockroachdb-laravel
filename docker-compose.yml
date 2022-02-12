@@ -5,9 +5,17 @@ services:
     ports:
       - "26257:26257"
       - "8080:8080"
-    command: start-single-node --cluster-name=example-single-node --logtostderr=WARNING --log-file-verbosity=WARNING --insecure
-    volumes:
-      - crdb-volume:/cockroach/cockroach-data
+    command: start-single-node --insecure --store=type=mem,size=1 --advertise-addr=localhost
+#    volumes:
+#      - crdb-volume:/cockroach/cockroach-data
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 2G
+        reservations:
+          cpus: '0.25'
+          memory: 500M
 
-volumes:
-  crdb-volume:
+#volumes:
+#  crdb-volume:
