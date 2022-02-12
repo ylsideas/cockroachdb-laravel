@@ -16,6 +16,7 @@ class EloquentStrictLoadingTest extends DatabaseTestCase
     {
         parent::setUp();
 
+        ResetCustomLoading::resetCustomLazyLoadingEvent();
         Model::preventLazyLoading();
     }
 
@@ -144,6 +145,14 @@ class EloquentStrictLoadingTest extends DatabaseTestCase
         $models = EloquentStrictLoadingTestModel1WithCustomHandler::get();
 
         $models[0]->modelTwos;
+    }
+}
+
+class ResetCustomLoading extends Model
+{
+    public static function resetCustomLazyLoadingEvent()
+    {
+        Model::$lazyLoadingViolationCallback = null;
     }
 }
 
