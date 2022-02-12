@@ -10,9 +10,9 @@ is not 1 to 1 meaning you may run into issues, this driver hopes to resolve thos
 
 Laravel 8 and 9 are both supported and tested against CockroachDB 2.5.
 
-## Support
+### Supporting Open Source
 
-Peter Fox here, I just want to say this project has been my hardest yet. It's been a real labour of love to make and takes
+[Peter Fox](https://www.peterfox.me) here, I just want to say this project has been my hardest yet. It's been a real labour of love to make and takes
 up a lot of time trying to organise the test suite so that compatibility is maintained between Eloquent and CockroachDB.
 
 I see a lot of promise in using CockroachDB's serverless offering which is what compelled me to go down this route originally.
