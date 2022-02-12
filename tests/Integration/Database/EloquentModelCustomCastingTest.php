@@ -6,7 +6,6 @@ use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Database\Capsule\Manager as DB;
 use Illuminate\Database\Eloquent\Model as Eloquent;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\App;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
@@ -17,8 +16,11 @@ class EloquentModelCustomCastingTest extends TestCase
 {
     protected function setUp(): void
     {
-        if (version_compare(App::version(), '9.0', '<')) {
-            $this->markTestSkipped('Not included before 9.0');
+        if (! class_exists(\Illuminate\Tests\Integration\Database\CustomCasts::class)) {
+            $this->markTestSkipped(sprintf(
+                'Not included before 9.0',
+                \Illuminate\Tests\Integration\Database\CustomCasts::class
+            ));
         }
         $db = new DB();
 
