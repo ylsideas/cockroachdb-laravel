@@ -2,18 +2,18 @@
 
 namespace YlsIdeas\CockroachDb\Tests\Database;
 
-use Illuminate\Database\Query\Builder;
 use Illuminate\Database\ConnectionInterface;
+use Illuminate\Database\Query\Builder;
+use Illuminate\Database\Query\Expression as Raw;
 use Illuminate\Database\Query\Grammars\Grammar;
 use Illuminate\Database\Query\Processors\Processor;
 use Mockery as m;
-use Illuminate\Database\Query\Expression as Raw;
 use PHPUnit\Framework\TestCase;
 use YlsIdeas\CockroachDb\Exceptions\FeatureNotSupportedException;
 use YlsIdeas\CockroachDb\Processor\CockroachDbProcessor;
 use YlsIdeas\CockroachDb\Query\CockroachGrammar;
 
-class DatabaseCockroachDbQueryBuilderTest  extends TestCase
+class DatabaseCockroachDbQueryBuilderTest extends TestCase
 {
     protected function tearDown(): void
     {
@@ -102,7 +102,7 @@ class DatabaseCockroachDbQueryBuilderTest  extends TestCase
 
     public function testUpdateMethodWithJoins()
     {
-        $builder =  $this->getCockroachDbBuilder();
+        $builder = $this->getCockroachDbBuilder();
         $builder->getConnection()
             ->shouldReceive('update')
             ->once()
@@ -141,7 +141,7 @@ class DatabaseCockroachDbQueryBuilderTest  extends TestCase
 
     protected function getBuilder()
     {
-        $grammar = new Grammar;
+        $grammar = new Grammar();
         $processor = m::mock(Processor::class);
 
         return new Builder($this->getConnection(), $grammar, $processor);
