@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use YlsIdeas\CockroachDb\Exceptions\FeatureNotSupportedException;
 use YlsIdeas\CockroachDb\Tests\Integration\Database\DatabaseTestCase;
+use YlsIdeas\CockroachDb\Tests\WithMultipleApplicationVersions;
 
 /**
  * @requires extension pdo_pgsql
@@ -14,6 +15,8 @@ use YlsIdeas\CockroachDb\Tests\Integration\Database\DatabaseTestCase;
  */
 class FulltextTest extends DatabaseTestCase
 {
+    use WithMultipleApplicationVersions;
+
     protected function defineDatabaseMigrationsAfterDatabaseRefreshed()
     {
         Schema::create('articles', function (Blueprint $table) {
@@ -30,6 +33,8 @@ class FulltextTest extends DatabaseTestCase
 
     public function testWhereFulltext()
     {
+        $this->skipIfNewerThan('8.79');
+
         DB::table('articles')->insert([
             ['title' => 'PostgreSQL Tutorial', 'body' => 'DBMS stands for DataBase ...'],
             ['title' => 'How To Use PostgreSQL Well', 'body' => 'After you went through a ...'],

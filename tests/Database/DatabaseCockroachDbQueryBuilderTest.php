@@ -125,6 +125,8 @@ class DatabaseCockroachDbQueryBuilderTest extends TestCase
 
     public function testWhereFullTextThrowsExceptionCockroachDb()
     {
+        $this->skipIfNewerThan('8.79');
+
         $this->expectException(FeatureNotSupportedException::class);
         $builder = $this->getCockroachDbBuilder();
         $builder->select('*')->from('users')->whereFullText('description', 'should contain');
