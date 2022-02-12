@@ -17,7 +17,7 @@ use YlsIdeas\CockroachDb\Tests\WithMultipleApplicationVersions;
 class DatabaseCockroachDbQueryBuilderTest extends TestCase
 {
     use WithMultipleApplicationVersions;
-    
+
     protected function tearDown(): void
     {
         m::close();
