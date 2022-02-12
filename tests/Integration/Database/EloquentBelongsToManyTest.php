@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
@@ -442,6 +443,10 @@ class EloquentBelongsToManyTest extends DatabaseTestCase
 
     public function testFirstOrNewMethodWithValues()
     {
+        if (version_compare(App::version(), '9.0', '<')) {
+            $this->markTestSkipped('Not included before 9.0');
+        }
+
         $post = Post::create(['title' => Str::random()]);
         $tag = Tag::create(['name' => Str::random()]);
         $post->tags()->attach(Tag::all());
@@ -472,6 +477,10 @@ class EloquentBelongsToManyTest extends DatabaseTestCase
 
     public function testFirstOrCreateMethodWithValues()
     {
+        if (version_compare(App::version(), '9.0', '<')) {
+            $this->markTestSkipped('Not included before 9.0');
+        }
+
         $post = Post::create(['title' => Str::random()]);
         $tag = Tag::create(['name' => Str::random()]);
         $post->tags()->attach(Tag::all());
@@ -502,8 +511,31 @@ class EloquentBelongsToManyTest extends DatabaseTestCase
         $this->assertNotNull($new->id);
     }
 
+    public function testUpdateOrCreateMethodCreateLegacy()
+    {
+        if (version_compare(App::version(), '9.0', '>=')) {
+            $this->markTestSkipped('Only required before 9.0');
+        }
+
+        $post = Post::create(['title' => Str::random()]);
+
+        $tag = Tag::create(['name' => Str::random()]);
+
+        $post->tags()->attach(Tag::all());
+
+        $post->tags()->updateOrCreate(['id' => $tag->id], ['name' => 'wavez']);
+        $this->assertSame('wavez', $tag->fresh()->name);
+
+        $post->tags()->updateOrCreate(['id' => 666], ['name' => 'dives']);
+        $this->assertNotNull($post->tags()->whereName('dives')->first());
+    }
+
     public function testUpdateOrCreateMethodCreate()
     {
+        if (version_compare(App::version(), '9.0', '<')) {
+            $this->markTestSkipped('Not included before 9.0');
+        }
+
         $post = Post::create(['title' => Str::random()]);
 
         $post->tags()->updateOrCreate(['name' => 'wavez'], ['type' => 'featured']);
@@ -860,7 +892,6 @@ class EloquentBelongsToManyTest extends DatabaseTestCase
     /** @group SkipMSSQL */
     public function testWherePivotNotNullMethod()
     {
-        $tag1 = Tag::create(['name' => Str::random()]);
         $tag1 = Tag::create(['name' => Str::random()])->fresh();
         $tag2 = Tag::create(['name' => Str::random()]);
         $post = Post::create(['title' => Str::random()]);
