@@ -15,6 +15,11 @@ use YlsIdeas\CockroachDb\Query\CockroachGrammar;
 
 class DatabaseCockroachDbQueryBuilderTest  extends TestCase
 {
+    protected function tearDown(): void
+    {
+        m::close();
+    }
+
     public function testWhereTimeOperatorOptional()
     {
         $builder = $this->getCockroachDbBuilder();
@@ -93,6 +98,29 @@ class DatabaseCockroachDbQueryBuilderTest  extends TestCase
         $builder->select('*')->from('users')->where('id', 'not ilike', '1');
         $this->assertSame('select * from "users" where "id"::text not ilike ?', $builder->toSql());
         $this->assertEquals([0 => '1'], $builder->getBindings());
+    }
+
+    public function testUpdateMethodWithJoins()
+    {
+        $builder =  $this->getCockroachDbBuilder();
+        $builder->getConnection()
+            ->shouldReceive('update')
+            ->once()
+            ->with('update "users" set "admin" = ? from "blocklist" where "user"."email" = "blocklist"."email"', [0 => false])
+            ->andReturn(1);
+        $result = $builder
+            ->from('users')
+            ->join('blocklist', 'user.email', '=', 'blocklist.email')
+            ->update(['admin' => false]);
+        $this->assertEquals(1, $result);
+    }
+
+    public function testDeletesWithJoinsThrowAnException()
+    {
+        $this->expectException(FeatureNotSupportedException::class);
+        $builder = $this->getCockroachDbBuilder();
+        $builder->from('users')->join('blocklist', 'email', '=', 'email')->delete();
+        $builder->toSql();
     }
 
     public function testWhereFullTextThrowsExceptionCockroachDb()
