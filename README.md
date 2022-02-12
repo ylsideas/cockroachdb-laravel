@@ -55,7 +55,7 @@ To enable set `DB_CONNECTION=crdb` in your .env.
 ## Notes
 
 CockroachDB should work inline with the feature set of Postgresql, with some exceptions. You can look at the
-features of each CockroachDB server in the CockroachDB [Docs](https://www.cockroachlabs.com/docs/stable/sql-feature-support.html#indexes).
+features of each CockroachDB server in the CockroachDB [Docs](https://www.cockroachlabs.com/docs/stable/sql-feature-support.html).
 
 ### Deletes with Joins
 CockroachDB does not support performing deletes using joins. If you wish to
