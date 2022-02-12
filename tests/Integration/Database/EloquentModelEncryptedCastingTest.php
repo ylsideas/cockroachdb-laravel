@@ -13,9 +13,12 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Schema;
 use stdClass;
+use YlsIdeas\CockroachDb\Tests\WithMultipleApplicationVersions;
 
 class EloquentModelEncryptedCastingTest extends DatabaseTestCase
 {
+    use WithMultipleApplicationVersions;
+
     protected $encrypter;
 
     protected function setUp(): void
@@ -184,11 +187,8 @@ class EloquentModelEncryptedCastingTest extends DatabaseTestCase
 
     public function testAsEncryptedCollection()
     {
-        if (version_compare(App::version(), '8.75', '<')) {
-            $this->markTestSkipped('Not included before 8.75');
-        }
-
-        $expectedCount = version_compare(App::version(), '9.0', '>=') ? 10 : 12;
+        $this->skipIfOlderThan('8.75');
+        $expectedCount = $this->executeOnVersion('9.0', 10, 12);
 
         $this->encrypter->expects('encryptString')
             ->twice()
@@ -240,11 +240,8 @@ class EloquentModelEncryptedCastingTest extends DatabaseTestCase
 
     public function testAsEncryptedArrayObject()
     {
-        if (version_compare(App::version(), '8.75', '<')) {
-            $this->markTestSkipped('Not included before 8.75');
-        }
-
-        $expectedCount = version_compare(App::version(), '9.0', '>=') ? 10 : 12;
+        $this->skipIfOlderThan('8.75');
+        $expectedCount = $this->executeOnVersion('9.0', 10, 12);
 
         $this->encrypter->expects('encryptString')
             ->once()

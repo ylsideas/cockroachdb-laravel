@@ -10,15 +10,16 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
+use YlsIdeas\CockroachDb\Tests\WithMultipleApplicationVersions;
 
 class DatabaseEloquentModelAttributeCastingTest extends DatabaseTestCase
 {
+    use WithMultipleApplicationVersions;
+
     public function setUp(): void
     {
         parent::setUp();
-        if (version_compare(App::version(), '8.77', '<')) {
-            $this->markTestSkipped('Not included before 8.77');
-        }
+        $this->skipIfOlderThan('8.77');
     }
 
     protected function defineDatabaseMigrationsAfterDatabaseRefreshed()

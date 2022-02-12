@@ -6,6 +6,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+use YlsIdeas\CockroachDb\Tests\WithMultipleApplicationVersions;
 
 if (PHP_VERSION_ID >= 80100) {
     include_once 'Enums.php';
@@ -16,13 +17,13 @@ if (PHP_VERSION_ID >= 80100) {
  */
 class QueryingWithEnumsTest extends DatabaseTestCase
 {
+    use WithMultipleApplicationVersions;
+
     public function setUp(): void
     {
         parent::setUp();
 
-        if (version_compare(App::version(), '8.69', '<')) {
-            $this->markTestSkipped('Not included before 8.69');
-        }
+        $this->skipIfOlderThan('8.69');
     }
 
     protected function defineDatabaseMigrationsAfterDatabaseRefreshed()

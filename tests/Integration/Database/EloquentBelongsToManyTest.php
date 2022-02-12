@@ -12,9 +12,12 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
+use YlsIdeas\CockroachDb\Tests\WithMultipleApplicationVersions;
 
 class EloquentBelongsToManyTest extends DatabaseTestCase
 {
+    use WithMultipleApplicationVersions;
+
     protected function tearDown(): void
     {
         parent::tearDown();
@@ -443,9 +446,7 @@ class EloquentBelongsToManyTest extends DatabaseTestCase
 
     public function testFirstOrNewMethodWithValues()
     {
-        if (version_compare(App::version(), '9.0', '<')) {
-            $this->markTestSkipped('Not included before 9.0');
-        }
+        $this->skipIfOlderThan('9.0');
 
         $post = Post::create(['title' => Str::random()]);
         $tag = Tag::create(['name' => Str::random()]);
@@ -477,9 +478,7 @@ class EloquentBelongsToManyTest extends DatabaseTestCase
 
     public function testFirstOrCreateMethodWithValues()
     {
-        if (version_compare(App::version(), '9.0', '<')) {
-            $this->markTestSkipped('Not included before 9.0');
-        }
+        $this->skipIfOlderThan('9.0');
 
         $post = Post::create(['title' => Str::random()]);
         $tag = Tag::create(['name' => Str::random()]);
@@ -513,9 +512,7 @@ class EloquentBelongsToManyTest extends DatabaseTestCase
 
     public function testUpdateOrCreateMethodCreateLegacy()
     {
-        if (version_compare(App::version(), '9.0', '>=')) {
-            $this->markTestSkipped('Only required before 9.0');
-        }
+        $this->skipIfNewerThan('9.0');
 
         $post = Post::create(['title' => Str::random()]);
 
@@ -532,9 +529,7 @@ class EloquentBelongsToManyTest extends DatabaseTestCase
 
     public function testUpdateOrCreateMethodCreate()
     {
-        if (version_compare(App::version(), '9.0', '<')) {
-            $this->markTestSkipped('Not included before 9.0');
-        }
+        $this->skipIfOlderThan('9.0');
 
         $post = Post::create(['title' => Str::random()]);
 

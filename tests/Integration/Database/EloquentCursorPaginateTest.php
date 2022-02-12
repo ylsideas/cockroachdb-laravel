@@ -8,9 +8,12 @@ use Illuminate\Pagination\Cursor;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+use YlsIdeas\CockroachDb\Tests\WithMultipleApplicationVersions;
 
 class EloquentCursorPaginateTest extends DatabaseTestCase
 {
+    use WithMultipleApplicationVersions;
+
     protected function defineDatabaseMigrationsAfterDatabaseRefreshed()
     {
         Schema::create('test_posts', function (Blueprint $table) {
@@ -39,9 +42,7 @@ class EloquentCursorPaginateTest extends DatabaseTestCase
 
     public function testPaginationWithUnion()
     {
-        if (version_compare(App::version(), '8.83', '<')) {
-            $this->markTestSkipped('Not included before 8.83');
-        }
+        $this->skipIfOlderThan('8.83');
 
         TestPost::create(['title' => 'Hello world', 'user_id' => 1]);
         TestPost::create(['title' => 'Goodbye world', 'user_id' => 2]);

@@ -125,6 +125,8 @@ class DatabaseCockroachDbQueryBuilderTest extends TestCase
 
     public function testWhereFullTextThrowsExceptionCockroachDb()
     {
+
+
         $this->expectException(FeatureNotSupportedException::class);
         $builder = $this->getCockroachDbBuilder();
         $builder->select('*')->from('users')->whereFullText('description', 'should contain');
