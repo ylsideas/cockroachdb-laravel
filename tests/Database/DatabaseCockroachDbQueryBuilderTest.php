@@ -12,12 +12,9 @@ use PHPUnit\Framework\TestCase;
 use YlsIdeas\CockroachDb\Exceptions\FeatureNotSupportedException;
 use YlsIdeas\CockroachDb\Processor\CockroachDbProcessor;
 use YlsIdeas\CockroachDb\Query\CockroachGrammar;
-use YlsIdeas\CockroachDb\Tests\WithMultipleApplicationVersions;
 
 class DatabaseCockroachDbQueryBuilderTest extends TestCase
 {
-    use WithMultipleApplicationVersions;
-
     protected function tearDown(): void
     {
         m::close();
@@ -128,8 +125,6 @@ class DatabaseCockroachDbQueryBuilderTest extends TestCase
 
     public function testWhereFullTextThrowsExceptionCockroachDb()
     {
-        $this->skipIfNewerThan('8.79');
-
         $this->expectException(FeatureNotSupportedException::class);
         $builder = $this->getCockroachDbBuilder();
         $builder->select('*')->from('users')->whereFullText('description', 'should contain');
