@@ -33,7 +33,7 @@ class FulltextTest extends DatabaseTestCase
 
     public function testWhereFulltext()
     {
-        $this->skipIfNewerThan('8.79');
+        $this->skipIfOlderThan('8.79');
 
         DB::table('articles')->insert([
             ['title' => 'PostgreSQL Tutorial', 'body' => 'DBMS stands for DataBase ...'],
