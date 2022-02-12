@@ -5,6 +5,7 @@ namespace YlsIdeas\CockroachDb\Tests\Integration\Database;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Pagination\Cursor;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
@@ -38,6 +39,10 @@ class EloquentCursorPaginateTest extends DatabaseTestCase
 
     public function testPaginationWithUnion()
     {
+        if (version_compare(App::version(), '8.83', '<')) {
+            $this->markTestSkipped('Not included before 8.83');
+        }
+
         TestPost::create(['title' => 'Hello world', 'user_id' => 1]);
         TestPost::create(['title' => 'Goodbye world', 'user_id' => 2]);
         TestPost::create(['title' => 'Howdy', 'user_id' => 3]);

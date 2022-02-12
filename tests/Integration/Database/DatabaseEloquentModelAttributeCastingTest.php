@@ -6,12 +6,21 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 
 class DatabaseEloquentModelAttributeCastingTest extends DatabaseTestCase
 {
+    public function setUp(): void
+    {
+        parent::setUp();
+        if (version_compare(App::version(), '8.77', '<')) {
+            $this->markTestSkipped('Not included before 8.77');
+        }
+    }
+
     protected function defineDatabaseMigrationsAfterDatabaseRefreshed()
     {
         Schema::create('test_eloquent_model_with_custom_casts', function (Blueprint $table) {
