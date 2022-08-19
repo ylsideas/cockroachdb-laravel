@@ -62,6 +62,17 @@ class CockroachGrammar extends PostgresGrammar
 
         return trim($statement);
     }
+    
+    /**
+     * Compile a truncate table statement into SQL.
+     *
+     * @param  \Illuminate\Database\Query\Builder  $query
+     * @return array
+     */
+    public function compileTruncate(Builder $query)
+    {
+        return ['truncate '.$this->wrapTable($query->from).' cascade' => []];
+    }
 
     /**
      * Compile a "where fulltext" clause.
