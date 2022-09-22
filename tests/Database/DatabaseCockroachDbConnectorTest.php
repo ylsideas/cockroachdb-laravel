@@ -17,8 +17,8 @@ class DatabaseCockroachDbConnectorTest extends TestCase
                 'host' => 'localhost',
                 'database' => 'defaultdb',
                 'port' => '23456',
-                'cluster' => 'cluster-1234'
-            ]
+                'cluster' => 'cluster-1234',
+            ],
         ]);
 
         $this->assertEquals("pgsql:host=localhost;dbname='defaultdb';port=23456;options='--cluster=cluster-1234'", $dsnConfig);
@@ -33,8 +33,8 @@ class DatabaseCockroachDbConnectorTest extends TestCase
                 'host' => 'localhost',
                 'database' => 'defaultdb',
                 'port' => '23456',
-                'cluster' => ''
-            ]
+                'cluster' => '',
+            ],
         ]);
 
         $this->assertEquals("pgsql:host=localhost;dbname='defaultdb';port=23456", $dsnConfig);

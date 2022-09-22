@@ -15,7 +15,7 @@ class CockroachDbConnector extends PostgresConnector implements ConnectorInterfa
     {
         $dsn = parent::getDsn($config);
 
-        if (isset($config['cluster']) && !empty($config['cluster'])) {
+        if (isset($config['cluster']) && ! empty($config['cluster'])) {
             $dsn .= ";options='--cluster={$config['cluster']}'";
         }
 
