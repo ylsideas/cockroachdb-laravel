@@ -6,8 +6,6 @@ services:
       - "26257:26257"
       - "8080:8080"
     command: start-single-node --insecure --store=type=mem,size=0.9 --advertise-addr=localhost
-#    volumes:
-#      - crdb-volume:/cockroach/cockroach-data
     deploy:
       resources:
         limits:
@@ -16,6 +14,3 @@ services:
         reservations:
           cpus: '0.25'
           memory: 500M
-
-#volumes:
-#  crdb-volume:
