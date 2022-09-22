@@ -1,13 +1,12 @@
 <?php
 
-namespace YlsIdeas\CockroachDb\Tests\Integration\Database\EloquentModelRefreshTest;
+namespace YlsIdeas\CockroachDb\Tests\Integration\Database;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Concerns\AsPivot;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use YlsIdeas\CockroachDb\Tests\Integration\Database\DatabaseTestCase;
 
 class EloquentModelRefreshTest extends DatabaseTestCase
 {
@@ -23,16 +22,17 @@ class EloquentModelRefreshTest extends DatabaseTestCase
 
     public function test_it_refreshes_model_excluded_by_global_scope()
     {
-        $post = Post::create(['title' => 'mohamed']);
+        /** @var ModelRefreshPost $post */
+        $post = ModelRefreshPost::create(['title' => 'mohamed']);
 
-        $post->refresh();
+        $this->assertInstanceOf(ModelRefreshPost::class, $post->refresh());
     }
 
     public function test_it_refreshes_a_soft_deleted_model()
     {
-        $post = Post::create(['title' => 'said']);
+        $post = ModelRefreshPost::create(['title' => 'said']);
 
-        Post::find($post->id)->delete();
+        ModelRefreshPost::find($post->id)->delete();
 
         $this->assertFalse($post->trashed());
 
@@ -43,9 +43,9 @@ class EloquentModelRefreshTest extends DatabaseTestCase
 
     public function test_it_syncs_original_on_refresh()
     {
-        $post = Post::create(['title' => 'pat']);
+        $post = ModelRefreshPost::create(['title' => 'pat']);
 
-        Post::find($post->id)->update(['title' => 'patrick']);
+        ModelRefreshPost::find($post->id)->update(['title' => 'patrick']);
 
         $post->refresh();
 
@@ -62,8 +62,8 @@ class EloquentModelRefreshTest extends DatabaseTestCase
             $table->bigInteger('related_id');
         });
 
-        $post = AsPivotPost::create(['title' => 'parent']);
-        $child = AsPivotPost::create(['title' => 'child']);
+        $post = AsPivotModelRefreshPost::create(['title' => 'parent']);
+        $child = AsPivotModelRefreshPost::create(['title' => 'child']);
 
         $post->children()->attach($child->getKey());
 
@@ -73,7 +73,7 @@ class EloquentModelRefreshTest extends DatabaseTestCase
     }
 }
 
-class Post extends Model
+class ModelRefreshPost extends Model
 {
     use SoftDeletes;
     public $table = 'posts';
@@ -90,7 +90,7 @@ class Post extends Model
     }
 }
 
-class AsPivotPost extends Post
+class AsPivotModelRefreshPost extends ModelRefreshPost
 {
     public function children()
     {
