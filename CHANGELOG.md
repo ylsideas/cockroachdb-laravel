@@ -2,6 +2,12 @@
 
 All notable changes to `cockroachdb-laravel` will be documented in this file.
 
+## Fixed Truncating tables - 2022-09-22
+
+### Changes
+
+- Fixes truncating tables, thanks to @tryvin for pointing this out and providing the code to fix this.
+
 ## Stable Release with Laravel 9 and 8 support - 2022-02-12
 
 # Changes
