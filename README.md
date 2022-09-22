@@ -71,6 +71,30 @@ search meaning the feature cannot be used when using this driver.
 At current if you try to create a Fulltext index using the Schema builder or try to use the `whereFulltext`
 method of the Query builder a `YlsIdeas\CockroachDb\Exceptions\FeatureNotSupportedException` exception will be thrown.
 
+### Serverless Support
+Cockroach Serverless requires you to add an `options` parameter to the connection string.
+Laravel doesn't provide this out of the box, so, it's being implemented as an extra `cluster` parameter in the database config.
+
+Sample config snippet:
+
+```php
+'crdb' => [
+    'driver' => 'crdb',
+    'url' => env('DATABASE_URL'),
+    'host' => env('DB_HOST', '127.0.0.1'),
+    'port' => env('DB_PORT', '26257'),
+    'database' => env('DB_DATABASE', 'forge'),
+    'username' => env('DB_USERNAME', 'forge'),
+    'password' => env('DB_PASSWORD', ''),
+    'charset' => 'utf8',
+    'prefix' => '',
+    'prefix_indexes' => true,
+    'schema' => 'public',
+    'sslmode' => 'prefer',
+    'cluster' => 'my-cluster-id-1234',
+]
+```
+
 ## Testing
 
 The tests try to closely follow the same functionality of the grammar provided by Laravel
