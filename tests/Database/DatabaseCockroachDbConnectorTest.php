@@ -21,7 +21,7 @@ class DatabaseCockroachDbConnectorTest extends TestCase
             ],
         ]);
 
-        $this->assertEquals("pgsql:host=localhost;dbname='defaultdb';port=23456;options='--cluster=cluster-1234'", $dsnConfig);
+        $this->assertStringContainsString("options='--cluster=cluster-1234'", $dsnConfig);
     }
 
     public function test_dsn_params_without_cluster()
@@ -37,7 +37,7 @@ class DatabaseCockroachDbConnectorTest extends TestCase
             ],
         ]);
 
-        $this->assertEquals("pgsql:host=localhost;dbname='defaultdb';port=23456", $dsnConfig);
+        $this->assertStringNotContainsString("options=", $dsnConfig);
     }
 
     /**
