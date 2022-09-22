@@ -74,4 +74,15 @@ class CockroachGrammar extends PostgresGrammar
     {
         throw new FeatureNotSupportedException('Fulltext indexes are not supported by CockroachDB as of version 2.5');
     }
+
+    /**
+     * Compile a truncate table statement into SQL.
+     *
+     * @param  \Illuminate\Database\Query\Builder  $query
+     * @return array
+     */
+    public function compileTruncate(Builder $query)
+    {
+        return ['truncate ' . $this->wrapTable($query->from) . ' cascade' => []];
+    }
 }
