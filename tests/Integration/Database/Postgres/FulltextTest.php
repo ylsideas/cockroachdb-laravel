@@ -31,7 +31,7 @@ class FulltextTest extends DatabaseTestCase
         Schema::drop('articles');
     }
 
-    public function testWhereFulltext()
+    public function test_where_fulltext()
     {
         $this->skipIfOlderThan('8.79');
 

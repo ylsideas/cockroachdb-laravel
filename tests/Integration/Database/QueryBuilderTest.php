@@ -27,14 +27,14 @@ class QueryBuilderTest extends DatabaseTestCase
         ]);
     }
 
-    public function testSole()
+    public function test_sole()
     {
         $expected = ['id' => '1', 'title' => 'Foo Post'];
 
         $this->assertEquals($expected, (array) DB::table('posts')->where('title', 'Foo Post')->select('id', 'title')->sole());
     }
 
-    public function testSoleFailsForMultipleRecords()
+    public function test_sole_fails_for_multiple_records()
     {
         DB::table('posts')->insert([
             ['title' => 'Foo Post', 'content' => 'Lorem Ipsum.', 'created_at' => new Carbon('2017-11-12 13:14:15')],
@@ -45,14 +45,14 @@ class QueryBuilderTest extends DatabaseTestCase
         DB::table('posts')->where('title', 'Foo Post')->sole();
     }
 
-    public function testSoleFailsIfNoRecords()
+    public function test_sole_fails_if_no_records()
     {
         $this->expectException(RecordsNotFoundException::class);
 
         DB::table('posts')->where('title', 'Baz Post')->sole();
     }
 
-    public function testSelect()
+    public function test_select()
     {
         $expected = ['id' => '1', 'title' => 'Foo Post'];
 
@@ -60,7 +60,7 @@ class QueryBuilderTest extends DatabaseTestCase
         $this->assertEquals($expected, (array) DB::table('posts')->select(['id', 'title'])->first());
     }
 
-    public function testSelectReplacesExistingSelects()
+    public function test_select_replaces_existing_selects()
     {
         $this->assertEquals(
             ['id' => '1', 'title' => 'Foo Post'],
@@ -68,7 +68,7 @@ class QueryBuilderTest extends DatabaseTestCase
         );
     }
 
-    public function testSelectWithSubQuery()
+    public function test_select_with_sub_query()
     {
         $this->assertEquals(
             ['id' => '1', 'title' => 'Foo Post', 'foo' => 'Lorem Ipsum.'],
@@ -78,7 +78,7 @@ class QueryBuilderTest extends DatabaseTestCase
         );
     }
 
-    public function testAddSelect()
+    public function test_add_select()
     {
         $expected = ['id' => '1', 'title' => 'Foo Post', 'content' => 'Lorem Ipsum.'];
 
@@ -87,7 +87,7 @@ class QueryBuilderTest extends DatabaseTestCase
         $this->assertEquals($expected, (array) DB::table('posts')->addSelect(['id', 'title', 'content'])->first());
     }
 
-    public function testAddSelectWithSubQuery()
+    public function test_add_select_with_sub_query()
     {
         $this->assertEquals(
             ['id' => '1', 'title' => 'Foo Post', 'foo' => 'Lorem Ipsum.'],
@@ -97,12 +97,12 @@ class QueryBuilderTest extends DatabaseTestCase
         );
     }
 
-    public function testFromWithAlias()
+    public function test_from_with_alias()
     {
         $this->assertCount(2, DB::table('posts', 'alias')->select('alias.*')->get());
     }
 
-    public function testFromWithSubQuery()
+    public function test_from_with_sub_query()
     {
         $this->assertSame(
             'Fake Post',
@@ -112,7 +112,7 @@ class QueryBuilderTest extends DatabaseTestCase
         );
     }
 
-    public function testWhereValueSubQuery()
+    public function test_where_value_sub_query()
     {
         $subQuery = function ($query) {
             $query->selectRaw("'Sub query value'");
@@ -123,7 +123,7 @@ class QueryBuilderTest extends DatabaseTestCase
         $this->assertTrue(DB::table('posts')->where($subQuery, '!=', 'Does not match')->exists());
     }
 
-    public function testWhereValueSubQueryBuilder()
+    public function test_where_value_sub_query_builder()
     {
         $subQuery = DB::table('posts')->selectRaw("'Sub query value'")->limit(1);
 
@@ -132,73 +132,73 @@ class QueryBuilderTest extends DatabaseTestCase
         $this->assertTrue(DB::table('posts')->where($subQuery, '!=', 'Does not match')->exists());
     }
 
-    public function testWhereDate()
+    public function test_where_date()
     {
         $this->assertSame(1, DB::table('posts')->whereDate('created_at', '2018-01-02')->count());
         $this->assertSame(1, DB::table('posts')->whereDate('created_at', new Carbon('2018-01-02'))->count());
     }
 
-    public function testOrWhereDate()
+    public function test_or_where_date()
     {
         $this->assertSame(2, DB::table('posts')->where('id', 1)->orWhereDate('created_at', '2018-01-02')->count());
         $this->assertSame(2, DB::table('posts')->where('id', 1)->orWhereDate('created_at', new Carbon('2018-01-02'))->count());
     }
 
-    public function testWhereDay()
+    public function test_where_day()
     {
         $this->assertSame(1, DB::table('posts')->whereDay('created_at', '02')->count());
         $this->assertSame(1, DB::table('posts')->whereDay('created_at', 2)->count());
         $this->assertSame(1, DB::table('posts')->whereDay('created_at', new Carbon('2018-01-02'))->count());
     }
 
-    public function testOrWhereDay()
+    public function test_or_where_day()
     {
         $this->assertSame(2, DB::table('posts')->where('id', 1)->orWhereDay('created_at', '02')->count());
         $this->assertSame(2, DB::table('posts')->where('id', 1)->orWhereDay('created_at', 2)->count());
         $this->assertSame(2, DB::table('posts')->where('id', 1)->orWhereDay('created_at', new Carbon('2018-01-02'))->count());
     }
 
-    public function testWhereMonth()
+    public function test_where_month()
     {
         $this->assertSame(1, DB::table('posts')->whereMonth('created_at', '01')->count());
         $this->assertSame(1, DB::table('posts')->whereMonth('created_at', 1)->count());
         $this->assertSame(1, DB::table('posts')->whereMonth('created_at', new Carbon('2018-01-02'))->count());
     }
 
-    public function testOrWhereMonth()
+    public function test_or_where_month()
     {
         $this->assertSame(2, DB::table('posts')->where('id', 1)->orWhereMonth('created_at', '01')->count());
         $this->assertSame(2, DB::table('posts')->where('id', 1)->orWhereMonth('created_at', 1)->count());
         $this->assertSame(2, DB::table('posts')->where('id', 1)->orWhereMonth('created_at', new Carbon('2018-01-02'))->count());
     }
 
-    public function testWhereYear()
+    public function test_where_year()
     {
         $this->assertSame(1, DB::table('posts')->whereYear('created_at', '2018')->count());
         $this->assertSame(1, DB::table('posts')->whereYear('created_at', 2018)->count());
         $this->assertSame(1, DB::table('posts')->whereYear('created_at', new Carbon('2018-01-02'))->count());
     }
 
-    public function testOrWhereYear()
+    public function test_or_where_year()
     {
         $this->assertSame(2, DB::table('posts')->where('id', 1)->orWhereYear('created_at', '2018')->count());
         $this->assertSame(2, DB::table('posts')->where('id', 1)->orWhereYear('created_at', 2018)->count());
         $this->assertSame(2, DB::table('posts')->where('id', 1)->orWhereYear('created_at', new Carbon('2018-01-02'))->count());
     }
 
-    public function testWhereTime()
+    public function test_where_time()
     {
         $this->assertSame(1, DB::table('posts')->whereTime('created_at', '03:04:05')->count());
         $this->assertSame(1, DB::table('posts')->whereTime('created_at', new Carbon('2018-01-02 03:04:05'))->count());
     }
 
-    public function testOrWhereTime()
+    public function test_or_where_time()
     {
         $this->assertSame(2, DB::table('posts')->where('id', 1)->orWhereTime('created_at', '03:04:05')->count());
         $this->assertSame(2, DB::table('posts')->where('id', 1)->orWhereTime('created_at', new Carbon('2018-01-02 03:04:05'))->count());
     }
 
-    public function testPaginateWithSpecificColumns()
+    public function test_paginate_with_specific_columns()
     {
         $result = DB::table('posts')->paginate(5, ['title', 'content']);
 
@@ -209,7 +209,7 @@ class QueryBuilderTest extends DatabaseTestCase
         ]);
     }
 
-    public function testChunkMap()
+    public function test_chunk_map()
     {
         DB::enableQueryLog();
 

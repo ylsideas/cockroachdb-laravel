@@ -20,7 +20,7 @@ class DatabaseCockroachDbQueryBuilderTest extends TestCase
         m::close();
     }
 
-    public function testWhereTimeOperatorOptional()
+    public function test_where_time_operator_optional()
     {
         $builder = $this->getCockroachDbBuilder();
         $builder->select('*')->from('users')->whereTime('created_at', '22:00');
@@ -28,7 +28,7 @@ class DatabaseCockroachDbQueryBuilderTest extends TestCase
         $this->assertEquals([0 => '22:00'], $builder->getBindings());
     }
 
-    public function testWhereDate()
+    public function test_where_date()
     {
         $builder = $this->getCockroachDbBuilder();
         $builder->select('*')->from('users')->whereDate('created_at', '=', '2015-12-21');
@@ -40,7 +40,7 @@ class DatabaseCockroachDbQueryBuilderTest extends TestCase
         $this->assertSame('select * from "users" where "created_at"::date = NOW()', $builder->toSql());
     }
 
-    public function testWhereDay()
+    public function test_where_day()
     {
         $builder = $this->getCockroachDbBuilder();
         $builder->select('*')->from('users')->whereDay('created_at', '=', 1);
@@ -48,7 +48,7 @@ class DatabaseCockroachDbQueryBuilderTest extends TestCase
         $this->assertEquals([0 => 1], $builder->getBindings());
     }
 
-    public function testWhereMonth()
+    public function test_where_month()
     {
         $builder = $this->getCockroachDbBuilder();
         $builder->select('*')->from('users')->whereMonth('created_at', '=', 5);
@@ -56,7 +56,7 @@ class DatabaseCockroachDbQueryBuilderTest extends TestCase
         $this->assertEquals([0 => 5], $builder->getBindings());
     }
 
-    public function testWhereYear()
+    public function test_where_year()
     {
         $builder = $this->getCockroachDbBuilder();
         $builder->select('*')->from('users')->whereYear('created_at', '=', 2014);
@@ -64,7 +64,7 @@ class DatabaseCockroachDbQueryBuilderTest extends TestCase
         $this->assertEquals([0 => 2014], $builder->getBindings());
     }
 
-    public function testWhereTime()
+    public function test_where_time()
     {
         $builder = $this->getCockroachDbBuilder();
         $builder->select('*')->from('users')->whereTime('created_at', '>=', '22:00');
@@ -72,7 +72,7 @@ class DatabaseCockroachDbQueryBuilderTest extends TestCase
         $this->assertEquals([0 => '22:00'], $builder->getBindings());
     }
 
-    public function testWhereLike()
+    public function test_where_like()
     {
         $builder = $this->getCockroachDbBuilder();
         $builder->select('*')->from('users')->where('id', 'like', '1');
@@ -100,7 +100,7 @@ class DatabaseCockroachDbQueryBuilderTest extends TestCase
         $this->assertEquals([0 => '1'], $builder->getBindings());
     }
 
-    public function testUpdateMethodWithJoins()
+    public function test_update_method_with_joins()
     {
         $builder = $this->getCockroachDbBuilder();
         $builder->getConnection()
@@ -115,7 +115,7 @@ class DatabaseCockroachDbQueryBuilderTest extends TestCase
         $this->assertEquals(1, $result);
     }
 
-    public function testDeletesWithJoinsThrowAnException()
+    public function test_deletes_with_joins_throw_an_exception()
     {
         $this->expectException(FeatureNotSupportedException::class);
         $builder = $this->getCockroachDbBuilder();
@@ -123,7 +123,7 @@ class DatabaseCockroachDbQueryBuilderTest extends TestCase
         $builder->toSql();
     }
 
-    public function testWhereFullTextThrowsExceptionCockroachDb()
+    public function test_where_full_text_throws_exception_cockroach_db()
     {
         if (! method_exists(Grammar::class, 'whereFulltext')) {
             $this->markTestSkipped('fullText features do not exist in this application version');

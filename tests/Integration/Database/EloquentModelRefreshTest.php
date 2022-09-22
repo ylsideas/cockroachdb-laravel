@@ -21,14 +21,14 @@ class EloquentModelRefreshTest extends DatabaseTestCase
         });
     }
 
-    public function testItRefreshesModelExcludedByGlobalScope()
+    public function test_it_refreshes_model_excluded_by_global_scope()
     {
         $post = Post::create(['title' => 'mohamed']);
 
         $post->refresh();
     }
 
-    public function testItRefreshesASoftDeletedModel()
+    public function test_it_refreshes_a_soft_deleted_model()
     {
         $post = Post::create(['title' => 'said']);
 
@@ -41,7 +41,7 @@ class EloquentModelRefreshTest extends DatabaseTestCase
         $this->assertTrue($post->trashed());
     }
 
-    public function testItSyncsOriginalOnRefresh()
+    public function test_it_syncs_original_on_refresh()
     {
         $post = Post::create(['title' => 'pat']);
 
@@ -54,7 +54,7 @@ class EloquentModelRefreshTest extends DatabaseTestCase
         $this->assertSame('patrick', $post->getOriginal('title'));
     }
 
-    public function testAsPivot()
+    public function test_as_pivot()
     {
         Schema::create('post_posts', function (Blueprint $table) {
             $table->increments('id');

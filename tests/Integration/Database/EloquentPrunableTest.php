@@ -31,7 +31,7 @@ class EloquentPrunableTest extends DatabaseTestCase
         });
     }
 
-    public function testPrunableMethodMustBeImplemented()
+    public function test_prunable_method_must_be_implemented()
     {
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage(
@@ -41,7 +41,7 @@ class EloquentPrunableTest extends DatabaseTestCase
         PrunableTestModelMissingPrunableMethod::create()->pruneAll();
     }
 
-    public function testPrunesRecords()
+    public function test_prunes_records()
     {
         Event::fake();
 
@@ -59,7 +59,7 @@ class EloquentPrunableTest extends DatabaseTestCase
         Event::assertDispatched(ModelsPruned::class, 2);
     }
 
-    public function testPrunesSoftDeletedRecords()
+    public function test_prunes_soft_deleted_records()
     {
         Event::fake();
 
@@ -78,7 +78,7 @@ class EloquentPrunableTest extends DatabaseTestCase
         Event::assertDispatched(ModelsPruned::class, 3);
     }
 
-    public function testPruneWithCustomPruneMethod()
+    public function test_prune_with_custom_prune_method()
     {
         Event::fake();
 

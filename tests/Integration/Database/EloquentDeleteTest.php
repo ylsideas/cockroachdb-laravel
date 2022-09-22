@@ -32,7 +32,7 @@ class EloquentDeleteTest extends DatabaseTestCase
     }
 
     /** @group SkipMSSQL */
-    public function testDeleteWithLimit()
+    public function test_delete_with_limit()
     {
         for ($i = 1; $i <= 10; $i++) {
             CommentDelete::create([
@@ -58,7 +58,7 @@ class EloquentDeleteTest extends DatabaseTestCase
         $this->assertCount(8, PostDelete::all());
     }
 
-    public function testForceDeletedEventIsFired()
+    public function test_force_deleted_event_is_fired()
     {
         $role = Role::create([]);
         $this->assertInstanceOf(Role::class, $role);

@@ -28,7 +28,7 @@ class EloquentCursorPaginateTest extends DatabaseTestCase
         });
     }
 
-    public function testCursorPaginationOnTopOfColumns()
+    public function test_cursor_pagination_on_top_of_columns()
     {
         for ($i = 1; $i <= 50; $i++) {
             TestPost::create([
@@ -39,7 +39,7 @@ class EloquentCursorPaginateTest extends DatabaseTestCase
         $this->assertCount(15, TestPost::cursorPaginate(15, ['id', 'title']));
     }
 
-    public function testPaginationWithUnion()
+    public function test_pagination_with_union()
     {
         $this->skipIfOlderThan('8.83');
 
@@ -58,7 +58,7 @@ class EloquentCursorPaginateTest extends DatabaseTestCase
         self::assertSame(['user_id'], $result->getOptions()['parameters']);
     }
 
-    public function testPaginationWithDistinct()
+    public function test_pagination_with_distinct()
     {
         for ($i = 1; $i <= 3; $i++) {
             TestPost::create(['title' => 'Hello world']);
@@ -72,7 +72,7 @@ class EloquentCursorPaginateTest extends DatabaseTestCase
         $this->assertCount(6, $query->cursorPaginate()->items());
     }
 
-    public function testPaginationWithWhereClause()
+    public function test_pagination_with_where_clause()
     {
         for ($i = 1; $i <= 3; $i++) {
             TestPost::create(['title' => 'Hello world', 'user_id' => null]);
@@ -87,7 +87,7 @@ class EloquentCursorPaginateTest extends DatabaseTestCase
     }
 
     /** @group SkipMSSQL */
-    public function testPaginationWithHasClause()
+    public function test_pagination_with_has_clause()
     {
         for ($i = 1; $i <= 3; $i++) {
             TestUser::create(['id' => $i]);
@@ -104,7 +104,7 @@ class EloquentCursorPaginateTest extends DatabaseTestCase
     }
 
     /** @group SkipMSSQL */
-    public function testPaginationWithWhereHasClause()
+    public function test_pagination_with_where_has_clause()
     {
         for ($i = 1; $i <= 3; $i++) {
             TestUser::create(['id' => $i]);
@@ -123,7 +123,7 @@ class EloquentCursorPaginateTest extends DatabaseTestCase
     }
 
     /** @group SkipMSSQL */
-    public function testPaginationWithWhereExistsClause()
+    public function test_pagination_with_where_exists_clause()
     {
         for ($i = 1; $i <= 3; $i++) {
             TestUser::create(['id' => $i]);
@@ -144,7 +144,7 @@ class EloquentCursorPaginateTest extends DatabaseTestCase
     }
 
     /** @group SkipMSSQL */
-    public function testPaginationWithMultipleWhereClauses()
+    public function test_pagination_with_multiple_where_clauses()
     {
         for ($i = 1; $i <= 4; $i++) {
             TestUser::create(['id' => $i]);
@@ -177,7 +177,7 @@ class EloquentCursorPaginateTest extends DatabaseTestCase
     }
 
     /** @group SkipMSSQL */
-    public function testPaginationWithAliasedOrderBy()
+    public function test_pagination_with_aliased_order_by()
     {
         for ($i = 1; $i <= 6; $i++) {
             TestUser::create(['id' => $i]);
@@ -198,7 +198,7 @@ class EloquentCursorPaginateTest extends DatabaseTestCase
         );
     }
 
-    public function testPaginationWithDistinctColumnsAndSelect()
+    public function test_pagination_with_distinct_columns_and_select()
     {
         for ($i = 1; $i <= 3; $i++) {
             TestPost::create(['title' => 'Hello world']);
@@ -212,7 +212,7 @@ class EloquentCursorPaginateTest extends DatabaseTestCase
         $this->assertCount(2, $query->cursorPaginate()->items());
     }
 
-    public function testPaginationWithDistinctColumnsAndSelectAndJoin()
+    public function test_pagination_with_distinct_columns_and_select_and_join()
     {
         for ($i = 1; $i <= 5; $i++) {
             $user = TestUser::create();

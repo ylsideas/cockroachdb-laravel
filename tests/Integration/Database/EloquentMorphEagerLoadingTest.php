@@ -41,7 +41,7 @@ class EloquentMorphEagerLoadingTest extends DatabaseTestCase
         (new Comment())->commentable()->associate($video)->save();
     }
 
-    public function testWithMorphLoading()
+    public function test_with_morph_loading()
     {
         $comments = Comment::query()
             ->with(['commentable' => function (MorphTo $morphTo) {
@@ -54,7 +54,7 @@ class EloquentMorphEagerLoadingTest extends DatabaseTestCase
         $this->assertTrue($comments[1]->relationLoaded('commentable'));
     }
 
-    public function testWithMorphLoadingWithSingleRelation()
+    public function test_with_morph_loading_with_single_relation()
     {
         $comments = Comment::query()
             ->with(['commentable' => function (MorphTo $morphTo) {

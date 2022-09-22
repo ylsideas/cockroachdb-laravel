@@ -23,7 +23,7 @@ class EloquentPaginateTest extends DatabaseTestCase
         });
     }
 
-    public function testPaginationOnTopOfColumns()
+    public function test_pagination_on_top_of_columns()
     {
         for ($i = 1; $i <= 50; $i++) {
             PostPagination::create([
@@ -34,7 +34,7 @@ class EloquentPaginateTest extends DatabaseTestCase
         $this->assertCount(15, PostPagination::paginate(15, ['id', 'title']));
     }
 
-    public function testPaginationWithDistinct()
+    public function test_pagination_with_distinct()
     {
         for ($i = 1; $i <= 3; $i++) {
             PostPagination::create(['title' => 'Hello world']);
@@ -48,7 +48,7 @@ class EloquentPaginateTest extends DatabaseTestCase
         $this->assertEquals(6, $query->paginate()->total());
     }
 
-    public function testPaginationWithDistinctAndSelect()
+    public function test_pagination_with_distinct_and_select()
     {
         // This is the 'broken' behaviour, but this test is added to show backwards compatibility.
         for ($i = 1; $i <= 3; $i++) {
@@ -63,7 +63,7 @@ class EloquentPaginateTest extends DatabaseTestCase
         $this->assertEquals(6, $query->paginate()->total());
     }
 
-    public function testPaginationWithDistinctColumnsAndSelect()
+    public function test_pagination_with_distinct_columns_and_select()
     {
         for ($i = 1; $i <= 3; $i++) {
             PostPagination::create(['title' => 'Hello world']);
@@ -77,7 +77,7 @@ class EloquentPaginateTest extends DatabaseTestCase
         $this->assertEquals(2, $query->paginate()->total());
     }
 
-    public function testPaginationWithDistinctColumnsAndSelectAndJoin()
+    public function test_pagination_with_distinct_columns_and_select_and_join()
     {
         for ($i = 1; $i <= 5; $i++) {
             $user = UserPagination::create();

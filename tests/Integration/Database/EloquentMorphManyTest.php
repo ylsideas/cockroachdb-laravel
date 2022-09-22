@@ -26,7 +26,7 @@ class EloquentMorphManyTest extends DatabaseTestCase
         });
     }
 
-    public function testUpdateModelWithDefaultWithCount()
+    public function test_update_model_with_default_with_count()
     {
         $post = MorphManyPost::create(['title' => Str::random()]);
 

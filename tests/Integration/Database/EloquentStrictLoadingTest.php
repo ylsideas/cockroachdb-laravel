@@ -38,7 +38,7 @@ class EloquentStrictLoadingTest extends DatabaseTestCase
         });
     }
 
-    public function testStrictModeThrowsAnExceptionOnLazyLoading()
+    public function test_strict_mode_throws_an_exception_on_lazy_loading()
     {
         $this->expectException(LazyLoadingViolationException::class);
         $this->expectExceptionMessage('Attempted to lazy load');
@@ -51,7 +51,7 @@ class EloquentStrictLoadingTest extends DatabaseTestCase
         $models[0]->modelTwos;
     }
 
-    public function testStrictModeDoesntThrowAnExceptionOnLazyLoadingWithSingleModel()
+    public function test_strict_mode_doesnt_throw_an_exception_on_lazy_loading_with_single_model()
     {
         EloquentStrictLoadingTestModel1::create();
 
@@ -60,7 +60,7 @@ class EloquentStrictLoadingTest extends DatabaseTestCase
         $this->assertInstanceOf(Collection::class, $models);
     }
 
-    public function testStrictModeDoesntThrowAnExceptionOnAttributes()
+    public function test_strict_mode_doesnt_throw_an_exception_on_attributes()
     {
         EloquentStrictLoadingTestModel1::create();
 
@@ -69,7 +69,7 @@ class EloquentStrictLoadingTest extends DatabaseTestCase
         $this->assertNull($models[0]->number);
     }
 
-    public function testStrictModeDoesntThrowAnExceptionOnEagerLoading()
+    public function test_strict_mode_doesnt_throw_an_exception_on_eager_loading()
     {
         $this->app['config']->set('database.connections.testing.zxc', false);
 
@@ -81,7 +81,7 @@ class EloquentStrictLoadingTest extends DatabaseTestCase
         $this->assertInstanceOf(Collection::class, $models[0]->modelTwos);
     }
 
-    public function testStrictModeDoesntThrowAnExceptionOnLazyEagerLoading()
+    public function test_strict_mode_doesnt_throw_an_exception_on_lazy_eager_loading()
     {
         EloquentStrictLoadingTestModel1::create();
         EloquentStrictLoadingTestModel1::create();
@@ -93,7 +93,7 @@ class EloquentStrictLoadingTest extends DatabaseTestCase
         $this->assertInstanceOf(Collection::class, $models[0]->modelTwos);
     }
 
-    public function testStrictModeDoesntThrowAnExceptionOnSingleModelLoading()
+    public function test_strict_mode_doesnt_throw_an_exception_on_single_model_loading()
     {
         $model = EloquentStrictLoadingTestModel1::create();
 
@@ -102,7 +102,7 @@ class EloquentStrictLoadingTest extends DatabaseTestCase
         $this->assertInstanceOf(Collection::class, $model->modelTwos);
     }
 
-    public function testStrictModeThrowsAnExceptionOnLazyLoadingInRelations()
+    public function test_strict_mode_throws_an_exception_on_lazy_loading_in_relations()
     {
         $this->expectException(LazyLoadingViolationException::class);
         $this->expectExceptionMessage('Attempted to lazy load');
@@ -116,7 +116,7 @@ class EloquentStrictLoadingTest extends DatabaseTestCase
         $models[0]->modelTwos[0]->modelThrees;
     }
 
-    public function testStrictModeWithCustomCallbackOnLazyLoading()
+    public function test_strict_mode_with_custom_callback_on_lazy_loading()
     {
         Event::fake();
 
@@ -134,7 +134,7 @@ class EloquentStrictLoadingTest extends DatabaseTestCase
         Event::assertDispatched(ViolatedLazyLoadingEvent::class);
     }
 
-    public function testStrictModeWithOverriddenHandlerOnLazyLoading()
+    public function test_strict_mode_with_overridden_handler_on_lazy_loading()
     {
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Violated');

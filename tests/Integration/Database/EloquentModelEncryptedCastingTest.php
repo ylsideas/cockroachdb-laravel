@@ -42,7 +42,7 @@ class EloquentModelEncryptedCastingTest extends DatabaseTestCase
         });
     }
 
-    public function testStringsAreCastable()
+    public function test_strings_are_castable()
     {
         $this->encrypter->expects('encrypt')
             ->with('this is a secret string', false)
@@ -63,7 +63,7 @@ class EloquentModelEncryptedCastingTest extends DatabaseTestCase
         ]);
     }
 
-    public function testArraysAreCastable()
+    public function test_arrays_are_castable()
     {
         $this->encrypter->expects('encrypt')
             ->with('{"key1":"value1"}', false)
@@ -84,7 +84,7 @@ class EloquentModelEncryptedCastingTest extends DatabaseTestCase
         ]);
     }
 
-    public function testJsonIsCastable()
+    public function test_json_is_castable()
     {
         $this->encrypter->expects('encrypt')
             ->with('{"key1":"value1"}', false)
@@ -105,7 +105,7 @@ class EloquentModelEncryptedCastingTest extends DatabaseTestCase
         ]);
     }
 
-    public function testJsonAttributeIsCastable()
+    public function test_json_attribute_is_castable()
     {
         $this->encrypter->expects('encrypt')
             ->with('{"key1":"value1"}', false)
@@ -135,7 +135,7 @@ class EloquentModelEncryptedCastingTest extends DatabaseTestCase
         ]);
     }
 
-    public function testObjectIsCastable()
+    public function test_object_is_castable()
     {
         $object = new stdClass();
         $object->key1 = 'value1';
@@ -161,7 +161,7 @@ class EloquentModelEncryptedCastingTest extends DatabaseTestCase
         ]);
     }
 
-    public function testCollectionIsCastable()
+    public function test_collection_is_castable()
     {
         $this->encrypter->expects('encrypt')
             ->with('{"key1":"value1"}', false)
@@ -184,7 +184,7 @@ class EloquentModelEncryptedCastingTest extends DatabaseTestCase
         ]);
     }
 
-    public function testAsEncryptedCollection()
+    public function test_as_encrypted_collection()
     {
         $this->skipIfOlderThan('8.75');
         $expectedCount = $this->executeOnVersion('9.0', 10, 12);
@@ -237,7 +237,7 @@ class EloquentModelEncryptedCastingTest extends DatabaseTestCase
         $this->assertNull($subject->fresh()->secret_collection);
     }
 
-    public function testAsEncryptedArrayObject()
+    public function test_as_encrypted_array_object()
     {
         $this->skipIfOlderThan('8.75');
         $expectedCount = $this->executeOnVersion('9.0', 10, 12);
@@ -294,7 +294,7 @@ class EloquentModelEncryptedCastingTest extends DatabaseTestCase
         $this->assertNull($subject->fresh()->secret_array);
     }
 
-    public function testCustomEncrypterCanBeSpecified()
+    public function test_custom_encrypter_can_be_specified()
     {
         $customEncrypter = $this->mock(Encrypter::class);
 

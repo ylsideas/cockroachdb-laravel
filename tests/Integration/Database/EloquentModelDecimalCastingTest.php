@@ -18,7 +18,7 @@ class EloquentModelDecimalCastingTest extends DatabaseTestCase
         });
     }
 
-    public function testDecimalsAreCastable()
+    public function test_decimals_are_castable()
     {
         $user = TestModel1::create([
             'decimal_field_2' => '12',

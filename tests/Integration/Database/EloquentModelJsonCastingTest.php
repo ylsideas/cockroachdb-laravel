@@ -23,7 +23,7 @@ class EloquentModelJsonCastingTest extends DatabaseTestCase
         });
     }
 
-    public function testStringsAreCastable()
+    public function test_strings_are_castable()
     {
         /** @var \YlsIdeas\CockroachDb\Tests\Integration\Database\EloquentModelJsonCastingTest\JsonCast $object */
         $object = JsonCast::create([
@@ -35,7 +35,7 @@ class EloquentModelJsonCastingTest extends DatabaseTestCase
         $this->assertSame('{"key1":"value1"}', $object->json_string_as_json_field);
     }
 
-    public function testArraysAreCastable()
+    public function test_arrays_are_castable()
     {
         /** @var \YlsIdeas\CockroachDb\Tests\Integration\Database\EloquentModelJsonCastingTest\JsonCast $object */
         $object = JsonCast::create([
@@ -45,7 +45,7 @@ class EloquentModelJsonCastingTest extends DatabaseTestCase
         $this->assertEquals(['key1' => 'value1'], $object->array_as_json_field);
     }
 
-    public function testObjectsAreCastable()
+    public function test_objects_are_castable()
     {
         $object = new stdClass();
         $object->key1 = 'value1';
@@ -59,7 +59,7 @@ class EloquentModelJsonCastingTest extends DatabaseTestCase
         $this->assertSame('value1', $user->object_as_json_field->key1);
     }
 
-    public function testCollectionsAreCastable()
+    public function test_collections_are_castable()
     {
         /** @var \YlsIdeas\CockroachDb\Tests\Integration\Database\EloquentModelJsonCastingTest\JsonCast $user */
         $user = JsonCast::create([

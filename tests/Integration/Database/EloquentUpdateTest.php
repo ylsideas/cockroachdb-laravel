@@ -34,7 +34,7 @@ class EloquentUpdateTest extends DatabaseTestCase
         });
     }
 
-    public function testBasicUpdate()
+    public function test_basic_update()
     {
         TestUpdateModel1::create([
             'name' => Str::random(),
@@ -47,7 +47,7 @@ class EloquentUpdateTest extends DatabaseTestCase
     }
 
     /** @group SkipMSSQL */
-    public function testUpdateWithLimitsAndOrders()
+    public function test_update_with_limits_and_orders()
     {
         for ($i = 1; $i <= 10; $i++) {
             TestUpdateModel1::create(['id' => $i]);
@@ -59,7 +59,7 @@ class EloquentUpdateTest extends DatabaseTestCase
         $this->assertNotSame('Dr.', TestUpdateModel1::find(7)->title);
     }
 
-    public function testUpdatedAtWithJoins()
+    public function test_updated_at_with_joins()
     {
         TestUpdateModel1::create([
             'id' => 1,
@@ -82,7 +82,7 @@ class EloquentUpdateTest extends DatabaseTestCase
         $this->assertSame('Engineer: Abdul', $record->job.': '.$record->name);
     }
 
-    public function testSoftDeleteWithJoins()
+    public function test_soft_delete_with_joins()
     {
         TestUpdateModel1::create([
             'name' => Str::random(),
@@ -103,7 +103,7 @@ class EloquentUpdateTest extends DatabaseTestCase
         $this->assertCount(0, TestUpdateModel2::all());
     }
 
-    public function testIncrement()
+    public function test_increment()
     {
         TestUpdateModel3::create([
             'counter' => 0,

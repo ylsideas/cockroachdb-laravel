@@ -63,7 +63,7 @@ class EloquentBelongsToManyTest extends DatabaseTestCase
         });
     }
 
-    public function testBasicCreateAndRetrieve()
+    public function test_basic_create_and_retrieve()
     {
         Carbon::setTestNow('2017-10-10 10:10:10');
 
@@ -100,7 +100,7 @@ class EloquentBelongsToManyTest extends DatabaseTestCase
         );
     }
 
-    public function testRefreshOnOtherModelWorks()
+    public function test_refresh_on_other_model_works()
     {
         $post = Post::create(['title' => Str::random()]);
         $tag = Tag::create(['name' => $tagName = Str::random()]);
@@ -128,7 +128,7 @@ class EloquentBelongsToManyTest extends DatabaseTestCase
         $this->assertSame('newName', $post->tags[0]->name);
     }
 
-    public function testCustomPivotClass()
+    public function test_custom_pivot_class()
     {
         Carbon::setTestNow('2017-10-10 10:10:10');
 
@@ -158,7 +158,7 @@ class EloquentBelongsToManyTest extends DatabaseTestCase
         $this->assertEquals(2, PostTagPivot::first()->tag_id);
     }
 
-    public function testCustomPivotClassUsingSync()
+    public function test_custom_pivot_class_using_sync()
     {
         Carbon::setTestNow('2017-10-10 10:10:10');
 
@@ -183,7 +183,7 @@ class EloquentBelongsToManyTest extends DatabaseTestCase
         $this->assertNotEmpty($results['detached']);
     }
 
-    public function testCustomPivotClassUsingUpdateExistingPivot()
+    public function test_custom_pivot_class_using_update_existing_pivot()
     {
         Carbon::setTestNow('2017-10-10 10:10:10');
 
@@ -211,7 +211,7 @@ class EloquentBelongsToManyTest extends DatabaseTestCase
     }
 
     /** @group SkipMSSQL */
-    public function testCustomPivotClassUpdatesTimestamps()
+    public function test_custom_pivot_class_updates_timestamps()
     {
         Carbon::setTestNow('2017-10-10 10:10:10');
 
@@ -239,7 +239,7 @@ class EloquentBelongsToManyTest extends DatabaseTestCase
         }
     }
 
-    public function testAttachMethod()
+    public function test_attach_method()
     {
         $post = Post::create(['title' => Str::random()]);
 
@@ -279,7 +279,7 @@ class EloquentBelongsToManyTest extends DatabaseTestCase
         $this->assertEquals($tag8->name, $post->tags[7]->name);
     }
 
-    public function testDetachMethod()
+    public function test_detach_method()
     {
         $post = Post::create(['title' => Str::random()]);
 
@@ -322,7 +322,7 @@ class EloquentBelongsToManyTest extends DatabaseTestCase
         $this->assertCount(0, $post->tags);
     }
 
-    public function testFirstMethod()
+    public function test_first_method()
     {
         $post = Post::create(['title' => Str::random()]);
 
@@ -333,7 +333,7 @@ class EloquentBelongsToManyTest extends DatabaseTestCase
         $this->assertEquals($tag->name, $post->tags()->first()->name);
     }
 
-    public function testFirstOrFailMethod()
+    public function test_first_or_fail_method()
     {
         $this->expectException(ModelNotFoundException::class);
 
@@ -342,7 +342,7 @@ class EloquentBelongsToManyTest extends DatabaseTestCase
         $post->tags()->firstOrFail(['id']);
     }
 
-    public function testFindMethod()
+    public function test_find_method()
     {
         $post = Post::create(['title' => Str::random()]);
 
@@ -358,7 +358,7 @@ class EloquentBelongsToManyTest extends DatabaseTestCase
         $this->assertCount(2, $post->tags()->findMany(new Collection([$tag->id, $tag2->id])));
     }
 
-    public function testFindOrFailMethod()
+    public function test_find_or_fail_method()
     {
         $this->expectException(ModelNotFoundException::class);
         $this->expectExceptionMessage('No query results for model [YlsIdeas\CockroachDb\Tests\Integration\Database\Tag] 10');
@@ -372,7 +372,7 @@ class EloquentBelongsToManyTest extends DatabaseTestCase
         $post->tags()->findOrFail(10);
     }
 
-    public function testFindOrFailMethodWithMany()
+    public function test_find_or_fail_method_with_many()
     {
         $this->expectException(ModelNotFoundException::class);
         $this->expectExceptionMessage('No query results for model [YlsIdeas\CockroachDb\Tests\Integration\Database\Tag] 10, 11');
@@ -386,7 +386,7 @@ class EloquentBelongsToManyTest extends DatabaseTestCase
         $post->tags()->findOrFail([10, 11]);
     }
 
-    public function testFindOrFailMethodWithManyUsingCollection()
+    public function test_find_or_fail_method_with_many_using_collection()
     {
         $this->expectException(ModelNotFoundException::class);
         $this->expectExceptionMessage('No query results for model [YlsIdeas\CockroachDb\Tests\Integration\Database\Tag] 10, 11');
@@ -400,7 +400,7 @@ class EloquentBelongsToManyTest extends DatabaseTestCase
         $post->tags()->findOrFail(new Collection([10, 11]));
     }
 
-    public function testFindOrNewMethod()
+    public function test_find_or_new_method()
     {
         $post = Post::create(['title' => Str::random()]);
 
@@ -414,7 +414,7 @@ class EloquentBelongsToManyTest extends DatabaseTestCase
         $this->assertInstanceOf(Tag::class, $post->tags()->findOrNew(666));
     }
 
-    public function testFirstOrNewMethod()
+    public function test_first_or_new_method()
     {
         $post = Post::create(['title' => Str::random()]);
 
@@ -428,7 +428,7 @@ class EloquentBelongsToManyTest extends DatabaseTestCase
         $this->assertInstanceOf(Tag::class, $post->tags()->firstOrNew(['id' => 666]));
     }
 
-    public function testFirstOrCreateMethod()
+    public function test_first_or_create_method()
     {
         $post = Post::create(['title' => Str::random()]);
 
@@ -443,7 +443,7 @@ class EloquentBelongsToManyTest extends DatabaseTestCase
         $this->assertNotNull($new->id);
     }
 
-    public function testFirstOrNewMethodWithValues()
+    public function test_first_or_new_method_with_values()
     {
         $this->skipIfOlderThan('9.0');
 
@@ -475,7 +475,7 @@ class EloquentBelongsToManyTest extends DatabaseTestCase
         $this->assertSame('bar', $new->name);
     }
 
-    public function testFirstOrCreateMethodWithValues()
+    public function test_first_or_create_method_with_values()
     {
         $this->skipIfOlderThan('9.0');
 
@@ -509,7 +509,7 @@ class EloquentBelongsToManyTest extends DatabaseTestCase
         $this->assertNotNull($new->id);
     }
 
-    public function testUpdateOrCreateMethodCreateLegacy()
+    public function test_update_or_create_method_create_legacy()
     {
         $this->skipIfNewerThan('9.0');
 
@@ -526,7 +526,7 @@ class EloquentBelongsToManyTest extends DatabaseTestCase
         $this->assertNotNull($post->tags()->whereName('dives')->first());
     }
 
-    public function testUpdateOrCreateMethodCreate()
+    public function test_update_or_create_method_create()
     {
         $this->skipIfOlderThan('9.0');
 
@@ -540,7 +540,7 @@ class EloquentBelongsToManyTest extends DatabaseTestCase
         $this->assertSame('wavez', $tag->name);
     }
 
-    public function testSyncMethod()
+    public function test_sync_method()
     {
         $post = Post::create(['title' => Str::random()]);
 
@@ -583,7 +583,7 @@ class EloquentBelongsToManyTest extends DatabaseTestCase
         $this->assertSame('mohamed', $post->tags[1]->pivot->flag);
     }
 
-    public function testSyncWithoutDetachingMethod()
+    public function test_sync_without_detaching_method()
     {
         $post = Post::create(['title' => Str::random()]);
 
@@ -605,7 +605,7 @@ class EloquentBelongsToManyTest extends DatabaseTestCase
         );
     }
 
-    public function testToggleMethod()
+    public function test_toggle_method()
     {
         $post = Post::create(['title' => Str::random()]);
 
@@ -635,7 +635,7 @@ class EloquentBelongsToManyTest extends DatabaseTestCase
         $this->assertSame('taylor', $post->tags[0]->pivot->flag);
     }
 
-    public function testTouchingParent()
+    public function test_touching_parent()
     {
         $post = Post::create(['title' => Str::random()]);
 
@@ -654,7 +654,7 @@ class EloquentBelongsToManyTest extends DatabaseTestCase
         $this->assertSame('2017-10-10 10:10:10', $post->fresh()->updated_at->toDateTimeString());
     }
 
-    public function testTouchingRelatedModelsOnSync()
+    public function test_touching_related_models_on_sync()
     {
         $tag = TouchingTag::create(['name' => Str::random()]);
 
@@ -671,7 +671,7 @@ class EloquentBelongsToManyTest extends DatabaseTestCase
         $this->assertSame('2017-10-10 10:10:10', $tag->fresh()->updated_at->toDateTimeString());
     }
 
-    public function testNoTouchingHappensIfNotConfigured()
+    public function test_no_touching_happens_if_not_configured()
     {
         $tag = Tag::create(['name' => Str::random()]);
 
@@ -689,7 +689,7 @@ class EloquentBelongsToManyTest extends DatabaseTestCase
     }
 
     /** @group SkipMSSQL */
-    public function testCanRetrieveRelatedIds()
+    public function test_can_retrieve_related_ids()
     {
         $post = Post::create(['title' => Str::random()]);
 
@@ -708,7 +708,7 @@ class EloquentBelongsToManyTest extends DatabaseTestCase
     }
 
     /** @group SkipMSSQL */
-    public function testCanTouchRelatedModels()
+    public function test_can_touch_related_models()
     {
         $post = Post::create(['title' => Str::random()]);
 
@@ -735,7 +735,7 @@ class EloquentBelongsToManyTest extends DatabaseTestCase
     }
 
     /** @group SkipMSSQL */
-    public function testWherePivotOnString()
+    public function test_where_pivot_on_string()
     {
         $tag = Tag::create(['name' => Str::random()]);
         $tag = Tag::create(['name' => Str::random()])->fresh();
@@ -753,7 +753,7 @@ class EloquentBelongsToManyTest extends DatabaseTestCase
     }
 
     /** @group SkipMSSQL */
-    public function testFirstWhere()
+    public function test_first_where()
     {
         $tag = Tag::create(['name' => 'foo']);
         $tag = Tag::create(['name' => 'foo'])->fresh();
@@ -771,7 +771,7 @@ class EloquentBelongsToManyTest extends DatabaseTestCase
     }
 
     /** @group SkipMSSQL */
-    public function testWherePivotOnBoolean()
+    public function test_where_pivot_on_boolean()
     {
         $tag = Tag::create(['name' => Str::random()]);
         $tag = Tag::create(['name' => Str::random()])->fresh();
@@ -789,7 +789,7 @@ class EloquentBelongsToManyTest extends DatabaseTestCase
     }
 
     /** @group SkipMSSQL */
-    public function testWherePivotInMethod()
+    public function test_where_pivot_in_method()
     {
         $tag = Tag::create(['name' => Str::random()]);
         $tag = Tag::create(['name' => Str::random()])->fresh();
@@ -803,7 +803,7 @@ class EloquentBelongsToManyTest extends DatabaseTestCase
         $this->assertEquals($relationTag->getAttributes(), $tag->getAttributes());
     }
 
-    public function testOrWherePivotInMethod()
+    public function test_or_where_pivot_in_method()
     {
         $tag1 = Tag::create(['name' => Str::random()]);
         $tag2 = Tag::create(['name' => Str::random()]);
@@ -825,7 +825,7 @@ class EloquentBelongsToManyTest extends DatabaseTestCase
     }
 
     /** @group SkipMSSQL */
-    public function testWherePivotNotInMethod()
+    public function test_where_pivot_not_in_method()
     {
         $tag1 = Tag::create(['name' => Str::random()]);
         $tag2 = Tag::create(['name' => Str::random()]);
@@ -843,7 +843,7 @@ class EloquentBelongsToManyTest extends DatabaseTestCase
         $this->assertEquals($relationTag->getAttributes(), $tag2->getAttributes());
     }
 
-    public function testOrWherePivotNotInMethod()
+    public function test_or_where_pivot_not_in_method()
     {
         $tag1 = Tag::create(['name' => Str::random()]);
         $tag2 = Tag::create(['name' => Str::random()]);
@@ -865,7 +865,7 @@ class EloquentBelongsToManyTest extends DatabaseTestCase
     }
 
     /** @group SkipMSSQL */
-    public function testWherePivotNullMethod()
+    public function test_where_pivot_null_method()
     {
         $tag1 = Tag::create(['name' => Str::random()]);
         $tag2 = Tag::create(['name' => Str::random()]);
@@ -884,7 +884,7 @@ class EloquentBelongsToManyTest extends DatabaseTestCase
     }
 
     /** @group SkipMSSQL */
-    public function testWherePivotNotNullMethod()
+    public function test_where_pivot_not_null_method()
     {
         $tag1 = Tag::create(['name' => Str::random()])->fresh();
         $tag2 = Tag::create(['name' => Str::random()]);
@@ -901,7 +901,7 @@ class EloquentBelongsToManyTest extends DatabaseTestCase
         $this->assertEquals($relationTag->getAttributes(), $tag1->getAttributes());
     }
 
-    public function testCanUpdateExistingPivot()
+    public function test_can_update_existing_pivot()
     {
         $tag = Tag::create(['name' => Str::random()]);
         $post = Post::create(['title' => Str::random()]);
@@ -917,7 +917,7 @@ class EloquentBelongsToManyTest extends DatabaseTestCase
         }
     }
 
-    public function testCanUpdateExistingPivotUsingArrayableOfIds()
+    public function test_can_update_existing_pivot_using_arrayable_of_ids()
     {
         $tags = new Collection([
             $tag1 = Tag::create(['name' => Str::random()]),
@@ -937,7 +937,7 @@ class EloquentBelongsToManyTest extends DatabaseTestCase
         }
     }
 
-    public function testCanUpdateExistingPivotUsingModel()
+    public function test_can_update_existing_pivot_using_model()
     {
         $tag = Tag::create(['name' => Str::random()]);
         $post = Post::create(['title' => Str::random()]);
@@ -953,7 +953,7 @@ class EloquentBelongsToManyTest extends DatabaseTestCase
         }
     }
 
-    public function testCustomRelatedKey()
+    public function test_custom_related_key()
     {
         $post = Post::create(['title' => Str::random()]);
 
@@ -974,7 +974,7 @@ class EloquentBelongsToManyTest extends DatabaseTestCase
         $this->assertSame('exclude', $post->tagsWithCustomRelatedKey()->first()->pivot->flag);
     }
 
-    public function testGlobalScopeColumns()
+    public function test_global_scope_columns()
     {
         $tag = Tag::create(['id' => '1', 'name' => Str::random()]);
         $post = Post::create(['id' => '2', 'title' => Str::random()]);
@@ -988,7 +988,7 @@ class EloquentBelongsToManyTest extends DatabaseTestCase
         $this->assertEquals(['id' => 1], $tags[0]->getAttributes());
     }
 
-    public function testPivotDoesntHavePrimaryKey()
+    public function test_pivot_doesnt_have_primary_key()
     {
         $user = UserBelongsToMany::create(['name' => Str::random()]);
         $post1 = Post::create(['title' => Str::random()]);
@@ -1009,7 +1009,7 @@ class EloquentBelongsToManyTest extends DatabaseTestCase
     }
 
     /** @group SkipMSSQL */
-    public function testOrderByPivotMethod()
+    public function test_order_by_pivot_method()
     {
         $tag1 = Tag::create(['name' => Str::random()]);
         $tag2 = Tag::create(['name' => Str::random()])->fresh();

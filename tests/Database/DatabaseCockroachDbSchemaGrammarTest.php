@@ -18,7 +18,7 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
         m::close();
     }
 
-    public function testBasicCreateTable()
+    public function test_basic_create_table()
     {
         $blueprint = new Blueprint('users');
         $blueprint->create();
@@ -39,7 +39,7 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
         $this->assertSame('alter table "users" add column "id" serial primary key not null, add column "email" varchar(255) not null', $statements[0]);
     }
 
-    public function testCreateTableWithAutoIncrementStartingValue()
+    public function test_create_table_with_auto_increment_starting_value()
     {
         $blueprint = new Blueprint('users');
         $blueprint->create();
@@ -53,7 +53,7 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
         $this->assertSame('alter sequence users_id_seq restart with 1000', $statements[1]);
     }
 
-    public function testCreateTableAndCommentColumn()
+    public function test_create_table_and_comment_column()
     {
         $blueprint = new Blueprint('users');
         $blueprint->create();
@@ -66,7 +66,7 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
         $this->assertSame('comment on column "users"."email" is \'my first comment\'', $statements[1]);
     }
 
-    public function testCreateTemporaryTable()
+    public function test_create_temporary_table()
     {
         $blueprint = new Blueprint('users');
         $blueprint->create();
@@ -79,7 +79,7 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
         $this->assertSame('create temporary table "users" ("id" serial primary key not null, "email" varchar(255) not null)', $statements[0]);
     }
 
-    public function testDropTable()
+    public function test_drop_table()
     {
         $blueprint = new Blueprint('users');
         $blueprint->drop();
@@ -89,7 +89,7 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
         $this->assertSame('drop table "users"', $statements[0]);
     }
 
-    public function testDropTableIfExists()
+    public function test_drop_table_if_exists()
     {
         $blueprint = new Blueprint('users');
         $blueprint->dropIfExists();
@@ -99,7 +99,7 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
         $this->assertSame('drop table if exists "users"', $statements[0]);
     }
 
-    public function testDropColumn()
+    public function test_drop_column()
     {
         $blueprint = new Blueprint('users');
         $blueprint->dropColumn('foo');
@@ -123,7 +123,7 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
         $this->assertSame('alter table "users" drop column "foo", drop column "bar"', $statements[0]);
     }
 
-    public function testDropPrimary()
+    public function test_drop_primary()
     {
         $blueprint = new Blueprint('users');
         $blueprint->dropPrimary();
@@ -133,7 +133,7 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
         $this->assertSame('alter table "users" drop constraint "users_pkey"', $statements[0]);
     }
 
-    public function testDropUnique()
+    public function test_drop_unique()
     {
         $blueprint = new Blueprint('users');
         $blueprint->dropUnique('foo');
@@ -143,7 +143,7 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
         $this->assertSame('alter table "users" drop constraint "foo"', $statements[0]);
     }
 
-    public function testDropIndex()
+    public function test_drop_index()
     {
         $blueprint = new Blueprint('users');
         $blueprint->dropIndex('foo');
@@ -153,7 +153,7 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
         $this->assertSame('drop index "foo"', $statements[0]);
     }
 
-    public function testDropSpatialIndex()
+    public function test_drop_spatial_index()
     {
         $blueprint = new Blueprint('geo');
         $blueprint->dropSpatialIndex(['coordinates']);
@@ -163,7 +163,7 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
         $this->assertSame('drop index "geo_coordinates_spatialindex"', $statements[0]);
     }
 
-    public function testDropForeign()
+    public function test_drop_foreign()
     {
         $blueprint = new Blueprint('users');
         $blueprint->dropForeign('foo');
@@ -173,7 +173,7 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
         $this->assertSame('alter table "users" drop constraint "foo"', $statements[0]);
     }
 
-    public function testDropTimestamps()
+    public function test_drop_timestamps()
     {
         $blueprint = new Blueprint('users');
         $blueprint->dropTimestamps();
@@ -183,7 +183,7 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
         $this->assertSame('alter table "users" drop column "created_at", drop column "updated_at"', $statements[0]);
     }
 
-    public function testDropTimestampsTz()
+    public function test_drop_timestamps_tz()
     {
         $blueprint = new Blueprint('users');
         $blueprint->dropTimestampsTz();
@@ -193,7 +193,7 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
         $this->assertSame('alter table "users" drop column "created_at", drop column "updated_at"', $statements[0]);
     }
 
-    public function testDropMorphs()
+    public function test_drop_morphs()
     {
         $blueprint = new Blueprint('photos');
         $blueprint->dropMorphs('imageable');
@@ -204,7 +204,7 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
         $this->assertSame('alter table "photos" drop column "imageable_type", drop column "imageable_id"', $statements[1]);
     }
 
-    public function testRenameTable()
+    public function test_rename_table()
     {
         $blueprint = new Blueprint('users');
         $blueprint->rename('foo');
@@ -214,7 +214,7 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
         $this->assertSame('alter table "users" rename to "foo"', $statements[0]);
     }
 
-    public function testRenameIndex()
+    public function test_rename_index()
     {
         $blueprint = new Blueprint('users');
         $blueprint->renameIndex('foo', 'bar');
@@ -224,7 +224,7 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
         $this->assertSame('alter index "foo" rename to "bar"', $statements[0]);
     }
 
-    public function testAddingPrimaryKey()
+    public function test_adding_primary_key()
     {
         $blueprint = new Blueprint('users');
         $blueprint->primary('foo');
@@ -234,7 +234,7 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
         $this->assertSame('alter table "users" add primary key ("foo")', $statements[0]);
     }
 
-    public function testAddingUniqueKey()
+    public function test_adding_unique_key()
     {
         $blueprint = new Blueprint('users');
         $blueprint->unique('foo', 'bar');
@@ -244,7 +244,7 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
         $this->assertSame('alter table "users" add constraint "bar" unique ("foo")', $statements[0]);
     }
 
-    public function testAddingIndex()
+    public function test_adding_index()
     {
         $blueprint = new Blueprint('users');
         $blueprint->index(['foo', 'bar'], 'baz');
@@ -254,7 +254,7 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
         $this->assertSame('create index "baz" on "users" ("foo", "bar")', $statements[0]);
     }
 
-    public function testAddingIndexWithAlgorithm()
+    public function test_adding_index_with_algorithm()
     {
         $blueprint = new Blueprint('users');
         $blueprint->index(['foo', 'bar'], 'baz', 'hash');
@@ -264,7 +264,7 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
         $this->assertSame('create index "baz" on "users" using hash ("foo", "bar")', $statements[0]);
     }
 
-    public function testAddingSpatialIndex()
+    public function test_adding_spatial_index()
     {
         $blueprint = new Blueprint('geo');
         $blueprint->spatialIndex('coordinates');
@@ -274,7 +274,7 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
         $this->assertSame('create index "geo_coordinates_spatialindex" on "geo" using gist ("coordinates")', $statements[0]);
     }
 
-    public function testAddingFluentSpatialIndex()
+    public function test_adding_fluent_spatial_index()
     {
         $blueprint = new Blueprint('geo');
         $blueprint->point('coordinates')->spatialIndex();
@@ -284,7 +284,7 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
         $this->assertSame('create index "geo_coordinates_spatialindex" on "geo" using gist ("coordinates")', $statements[1]);
     }
 
-    public function testAddingRawIndex()
+    public function test_adding_raw_index()
     {
         $blueprint = new Blueprint('users');
         $blueprint->rawIndex('(function(column))', 'raw_index');
@@ -294,7 +294,7 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
         $this->assertSame('create index "raw_index" on "users" ((function(column)))', $statements[0]);
     }
 
-    public function testAddingIncrementingID()
+    public function test_adding_incrementing_id()
     {
         $blueprint = new Blueprint('users');
         $blueprint->increments('id');
@@ -304,7 +304,7 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
         $this->assertSame('alter table "users" add column "id" serial primary key not null', $statements[0]);
     }
 
-    public function testAddingSmallIncrementingID()
+    public function test_adding_small_incrementing_id()
     {
         $blueprint = new Blueprint('users');
         $blueprint->smallIncrements('id');
@@ -314,7 +314,7 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
         $this->assertSame('alter table "users" add column "id" smallserial primary key not null', $statements[0]);
     }
 
-    public function testAddingMediumIncrementingID()
+    public function test_adding_medium_incrementing_id()
     {
         $blueprint = new Blueprint('users');
         $blueprint->mediumIncrements('id');
@@ -324,7 +324,7 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
         $this->assertSame('alter table "users" add column "id" serial primary key not null', $statements[0]);
     }
 
-    public function testAddingID()
+    public function test_adding_id()
     {
         $blueprint = new Blueprint('users');
         $blueprint->id();
@@ -341,7 +341,7 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
         $this->assertSame('alter table "users" add column "foo" bigserial primary key not null', $statements[0]);
     }
 
-    public function testAddingForeignID()
+    public function test_adding_foreign_id()
     {
         $blueprint = new Blueprint('users');
         $foreignId = $blueprint->foreignId('foo');
@@ -362,7 +362,7 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
         ], $statements);
     }
 
-    public function testAddingBigIncrementingID()
+    public function test_adding_big_incrementing_id()
     {
         $blueprint = new Blueprint('users');
         $blueprint->bigIncrements('id');
@@ -372,7 +372,7 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
         $this->assertSame('alter table "users" add column "id" bigserial primary key not null', $statements[0]);
     }
 
-    public function testAddingString()
+    public function test_adding_string()
     {
         $blueprint = new Blueprint('users');
         $blueprint->string('foo');
@@ -396,7 +396,7 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
         $this->assertSame('alter table "users" add column "foo" varchar(100) null default \'bar\'', $statements[0]);
     }
 
-    public function testAddingText()
+    public function test_adding_text()
     {
         $blueprint = new Blueprint('users');
         $blueprint->text('foo');
@@ -406,7 +406,7 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
         $this->assertSame('alter table "users" add column "foo" text not null', $statements[0]);
     }
 
-    public function testAddingBigInteger()
+    public function test_adding_big_integer()
     {
         $blueprint = new Blueprint('users');
         $blueprint->bigInteger('foo');
@@ -423,7 +423,7 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
         $this->assertSame('alter table "users" add column "foo" bigserial primary key not null', $statements[0]);
     }
 
-    public function testAddingInteger()
+    public function test_adding_integer()
     {
         $blueprint = new Blueprint('users');
         $blueprint->integer('foo');
@@ -440,7 +440,7 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
         $this->assertSame('alter table "users" add column "foo" serial primary key not null', $statements[0]);
     }
 
-    public function testAddingMediumInteger()
+    public function test_adding_medium_integer()
     {
         $blueprint = new Blueprint('users');
         $blueprint->mediumInteger('foo');
@@ -457,7 +457,7 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
         $this->assertSame('alter table "users" add column "foo" serial primary key not null', $statements[0]);
     }
 
-    public function testAddingTinyInteger()
+    public function test_adding_tiny_integer()
     {
         $blueprint = new Blueprint('users');
         $blueprint->tinyInteger('foo');
@@ -474,7 +474,7 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
         $this->assertSame('alter table "users" add column "foo" smallserial primary key not null', $statements[0]);
     }
 
-    public function testAddingSmallInteger()
+    public function test_adding_small_integer()
     {
         $blueprint = new Blueprint('users');
         $blueprint->smallInteger('foo');
@@ -491,7 +491,7 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
         $this->assertSame('alter table "users" add column "foo" smallserial primary key not null', $statements[0]);
     }
 
-    public function testAddingFloat()
+    public function test_adding_float()
     {
         $blueprint = new Blueprint('users');
         $blueprint->float('foo', 5, 2);
@@ -501,7 +501,7 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
         $this->assertSame('alter table "users" add column "foo" double precision not null', $statements[0]);
     }
 
-    public function testAddingDouble()
+    public function test_adding_double()
     {
         $blueprint = new Blueprint('users');
         $blueprint->double('foo', 15, 8);
@@ -511,7 +511,7 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
         $this->assertSame('alter table "users" add column "foo" double precision not null', $statements[0]);
     }
 
-    public function testAddingDecimal()
+    public function test_adding_decimal()
     {
         $blueprint = new Blueprint('users');
         $blueprint->decimal('foo', 5, 2);
@@ -521,7 +521,7 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
         $this->assertSame('alter table "users" add column "foo" decimal(5, 2) not null', $statements[0]);
     }
 
-    public function testAddingBoolean()
+    public function test_adding_boolean()
     {
         $blueprint = new Blueprint('users');
         $blueprint->boolean('foo');
@@ -531,7 +531,7 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
         $this->assertSame('alter table "users" add column "foo" boolean not null', $statements[0]);
     }
 
-    public function testAddingEnum()
+    public function test_adding_enum()
     {
         $blueprint = new Blueprint('users');
         $blueprint->enum('role', ['member', 'admin']);
@@ -541,7 +541,7 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
         $this->assertSame('alter table "users" add column "role" varchar(255) check ("role" in (\'member\', \'admin\')) not null', $statements[0]);
     }
 
-    public function testAddingDate()
+    public function test_adding_date()
     {
         $blueprint = new Blueprint('users');
         $blueprint->date('foo');
@@ -551,7 +551,7 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
         $this->assertSame('alter table "users" add column "foo" date not null', $statements[0]);
     }
 
-    public function testAddingYear()
+    public function test_adding_year()
     {
         $blueprint = new Blueprint('users');
         $blueprint->year('birth_year');
@@ -560,7 +560,7 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
         $this->assertSame('alter table "users" add column "birth_year" integer not null', $statements[0]);
     }
 
-    public function testAddingJson()
+    public function test_adding_json()
     {
         $blueprint = new Blueprint('users');
         $blueprint->json('foo');
@@ -570,7 +570,7 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
         $this->assertSame('alter table "users" add column "foo" json not null', $statements[0]);
     }
 
-    public function testAddingJsonb()
+    public function test_adding_jsonb()
     {
         $blueprint = new Blueprint('users');
         $blueprint->jsonb('foo');
@@ -580,7 +580,7 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
         $this->assertSame('alter table "users" add column "foo" jsonb not null', $statements[0]);
     }
 
-    public function testAddingDateTime()
+    public function test_adding_date_time()
     {
         $blueprint = new Blueprint('users');
         $blueprint->dateTime('created_at');
@@ -589,7 +589,7 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
         $this->assertSame('alter table "users" add column "created_at" timestamp(0) without time zone not null', $statements[0]);
     }
 
-    public function testAddingDateTimeWithPrecision()
+    public function test_adding_date_time_with_precision()
     {
         $blueprint = new Blueprint('users');
         $blueprint->dateTime('created_at', 1);
@@ -598,7 +598,7 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
         $this->assertSame('alter table "users" add column "created_at" timestamp(1) without time zone not null', $statements[0]);
     }
 
-    public function testAddingDateTimeWithNullPrecision()
+    public function test_adding_date_time_with_null_precision()
     {
         $blueprint = new Blueprint('users');
         $blueprint->dateTime('created_at', null);
@@ -607,7 +607,7 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
         $this->assertSame('alter table "users" add column "created_at" timestamp without time zone not null', $statements[0]);
     }
 
-    public function testAddingDateTimeTz()
+    public function test_adding_date_time_tz()
     {
         $blueprint = new Blueprint('users');
         $blueprint->dateTimeTz('created_at');
@@ -616,7 +616,7 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
         $this->assertSame('alter table "users" add column "created_at" timestamp(0) with time zone not null', $statements[0]);
     }
 
-    public function testAddingDateTimeTzWithPrecision()
+    public function test_adding_date_time_tz_with_precision()
     {
         $blueprint = new Blueprint('users');
         $blueprint->dateTimeTz('created_at', 1);
@@ -625,7 +625,7 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
         $this->assertSame('alter table "users" add column "created_at" timestamp(1) with time zone not null', $statements[0]);
     }
 
-    public function testAddingDateTimeTzWithNullPrecision()
+    public function test_adding_date_time_tz_with_null_precision()
     {
         $blueprint = new Blueprint('users');
         $blueprint->dateTimeTz('created_at', null);
@@ -634,7 +634,7 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
         $this->assertSame('alter table "users" add column "created_at" timestamp with time zone not null', $statements[0]);
     }
 
-    public function testAddingTime()
+    public function test_adding_time()
     {
         $blueprint = new Blueprint('users');
         $blueprint->time('created_at');
@@ -643,7 +643,7 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
         $this->assertSame('alter table "users" add column "created_at" time(0) without time zone not null', $statements[0]);
     }
 
-    public function testAddingTimeWithPrecision()
+    public function test_adding_time_with_precision()
     {
         $blueprint = new Blueprint('users');
         $blueprint->time('created_at', 1);
@@ -652,7 +652,7 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
         $this->assertSame('alter table "users" add column "created_at" time(1) without time zone not null', $statements[0]);
     }
 
-    public function testAddingTimeWithNullPrecision()
+    public function test_adding_time_with_null_precision()
     {
         $blueprint = new Blueprint('users');
         $blueprint->time('created_at', null);
@@ -661,7 +661,7 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
         $this->assertSame('alter table "users" add column "created_at" time without time zone not null', $statements[0]);
     }
 
-    public function testAddingTimeTz()
+    public function test_adding_time_tz()
     {
         $blueprint = new Blueprint('users');
         $blueprint->timeTz('created_at');
@@ -670,7 +670,7 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
         $this->assertSame('alter table "users" add column "created_at" time(0) with time zone not null', $statements[0]);
     }
 
-    public function testAddingTimeTzWithPrecision()
+    public function test_adding_time_tz_with_precision()
     {
         $blueprint = new Blueprint('users');
         $blueprint->timeTz('created_at', 1);
@@ -679,7 +679,7 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
         $this->assertSame('alter table "users" add column "created_at" time(1) with time zone not null', $statements[0]);
     }
 
-    public function testAddingTimeTzWithNullPrecision()
+    public function test_adding_time_tz_with_null_precision()
     {
         $blueprint = new Blueprint('users');
         $blueprint->timeTz('created_at', null);
@@ -688,7 +688,7 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
         $this->assertSame('alter table "users" add column "created_at" time with time zone not null', $statements[0]);
     }
 
-    public function testAddingTimestamp()
+    public function test_adding_timestamp()
     {
         $blueprint = new Blueprint('users');
         $blueprint->timestamp('created_at');
@@ -697,7 +697,7 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
         $this->assertSame('alter table "users" add column "created_at" timestamp(0) without time zone not null', $statements[0]);
     }
 
-    public function testAddingTimestampWithPrecision()
+    public function test_adding_timestamp_with_precision()
     {
         $blueprint = new Blueprint('users');
         $blueprint->timestamp('created_at', 1);
@@ -706,7 +706,7 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
         $this->assertSame('alter table "users" add column "created_at" timestamp(1) without time zone not null', $statements[0]);
     }
 
-    public function testAddingTimestampWithNullPrecision()
+    public function test_adding_timestamp_with_null_precision()
     {
         $blueprint = new Blueprint('users');
         $blueprint->timestamp('created_at', null);
@@ -715,7 +715,7 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
         $this->assertSame('alter table "users" add column "created_at" timestamp without time zone not null', $statements[0]);
     }
 
-    public function testAddingTimestampTz()
+    public function test_adding_timestamp_tz()
     {
         $blueprint = new Blueprint('users');
         $blueprint->timestampTz('created_at');
@@ -724,7 +724,7 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
         $this->assertSame('alter table "users" add column "created_at" timestamp(0) with time zone not null', $statements[0]);
     }
 
-    public function testAddingTimestampTzWithPrecision()
+    public function test_adding_timestamp_tz_with_precision()
     {
         $blueprint = new Blueprint('users');
         $blueprint->timestampTz('created_at', 1);
@@ -733,7 +733,7 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
         $this->assertSame('alter table "users" add column "created_at" timestamp(1) with time zone not null', $statements[0]);
     }
 
-    public function testAddingTimestampTzWithNullPrecision()
+    public function test_adding_timestamp_tz_with_null_precision()
     {
         $blueprint = new Blueprint('users');
         $blueprint->timestampTz('created_at', null);
@@ -742,7 +742,7 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
         $this->assertSame('alter table "users" add column "created_at" timestamp with time zone not null', $statements[0]);
     }
 
-    public function testAddingTimestamps()
+    public function test_adding_timestamps()
     {
         $blueprint = new Blueprint('users');
         $blueprint->timestamps();
@@ -751,7 +751,7 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
         $this->assertSame('alter table "users" add column "created_at" timestamp(0) without time zone null, add column "updated_at" timestamp(0) without time zone null', $statements[0]);
     }
 
-    public function testAddingTimestampsTz()
+    public function test_adding_timestamps_tz()
     {
         $blueprint = new Blueprint('users');
         $blueprint->timestampsTz();
@@ -760,7 +760,7 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
         $this->assertSame('alter table "users" add column "created_at" timestamp(0) with time zone null, add column "updated_at" timestamp(0) with time zone null', $statements[0]);
     }
 
-    public function testAddingBinary()
+    public function test_adding_binary()
     {
         $blueprint = new Blueprint('users');
         $blueprint->binary('foo');
@@ -770,7 +770,7 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
         $this->assertSame('alter table "users" add column "foo" bytea not null', $statements[0]);
     }
 
-    public function testAddingUuid()
+    public function test_adding_uuid()
     {
         $blueprint = new Blueprint('users');
         $blueprint->uuid('foo');
@@ -780,7 +780,7 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
         $this->assertSame('alter table "users" add column "foo" uuid not null', $statements[0]);
     }
 
-    public function testAddingForeignUuid()
+    public function test_adding_foreign_uuid()
     {
         $blueprint = new Blueprint('users');
         $foreignUuid = $blueprint->foreignUuid('foo');
@@ -801,7 +801,7 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
         ], $statements);
     }
 
-    public function testAddingGeneratedAs()
+    public function test_adding_generated_as()
     {
         $blueprint = new Blueprint('users');
         $blueprint->increments('foo')->generatedAs();
@@ -828,7 +828,7 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
         $this->assertSame('alter table "users" add column "foo" integer generated by default as identity not null', $statements[0]);
     }
 
-    public function testAddingVirtualAs()
+    public function test_adding_virtual_as()
     {
         $blueprint = new Blueprint('users');
         $blueprint->integer('foo')->nullable();
@@ -838,7 +838,7 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
         $this->assertSame('alter table "users" add column "foo" integer null, add column "bar" boolean not null generated always as (foo is not null)', $statements[0]);
     }
 
-    public function testAddingStoredAs()
+    public function test_adding_stored_as()
     {
         $blueprint = new Blueprint('users');
         $blueprint->integer('foo')->nullable();
@@ -848,7 +848,7 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
         $this->assertSame('alter table "users" add column "foo" integer null, add column "bar" boolean not null generated always as (foo is not null) stored', $statements[0]);
     }
 
-    public function testAddingIpAddress()
+    public function test_adding_ip_address()
     {
         $blueprint = new Blueprint('users');
         $blueprint->ipAddress('foo');
@@ -858,7 +858,7 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
         $this->assertSame('alter table "users" add column "foo" inet not null', $statements[0]);
     }
 
-    public function testAddingMacAddress()
+    public function test_adding_mac_address()
     {
         $blueprint = new Blueprint('users');
         $blueprint->macAddress('foo');
@@ -868,7 +868,7 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
         $this->assertSame('alter table "users" add column "foo" macaddr not null', $statements[0]);
     }
 
-    public function testCompileForeign()
+    public function test_compile_foreign()
     {
         $blueprint = new Blueprint('users');
         $blueprint->foreign('parent_id')->references('id')->on('parents')->onDelete('cascade')->deferrable();
@@ -899,7 +899,7 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
         $this->assertSame('alter table "users" add constraint "users_parent_id_foreign" foreign key ("parent_id") references "parents" ("id") on delete cascade deferrable not valid', $statements[0]);
     }
 
-    public function testAddingGeometry()
+    public function test_adding_geometry()
     {
         $blueprint = new Blueprint('geo');
         $blueprint->geometry('coordinates');
@@ -909,7 +909,7 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
         $this->assertSame('alter table "geo" add column "coordinates" geography(geometry, 4326) not null', $statements[0]);
     }
 
-    public function testAddingPoint()
+    public function test_adding_point()
     {
         $blueprint = new Blueprint('geo');
         $blueprint->point('coordinates');
@@ -919,7 +919,7 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
         $this->assertSame('alter table "geo" add column "coordinates" geography(point, 4326) not null', $statements[0]);
     }
 
-    public function testAddingLineString()
+    public function test_adding_line_string()
     {
         $blueprint = new Blueprint('geo');
         $blueprint->linestring('coordinates');
@@ -929,7 +929,7 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
         $this->assertSame('alter table "geo" add column "coordinates" geography(linestring, 4326) not null', $statements[0]);
     }
 
-    public function testAddingPolygon()
+    public function test_adding_polygon()
     {
         $blueprint = new Blueprint('geo');
         $blueprint->polygon('coordinates');
@@ -939,7 +939,7 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
         $this->assertSame('alter table "geo" add column "coordinates" geography(polygon, 4326) not null', $statements[0]);
     }
 
-    public function testAddingGeometryCollection()
+    public function test_adding_geometry_collection()
     {
         $blueprint = new Blueprint('geo');
         $blueprint->geometrycollection('coordinates');
@@ -949,7 +949,7 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
         $this->assertSame('alter table "geo" add column "coordinates" geography(geometrycollection, 4326) not null', $statements[0]);
     }
 
-    public function testAddingMultiPoint()
+    public function test_adding_multi_point()
     {
         $blueprint = new Blueprint('geo');
         $blueprint->multipoint('coordinates');
@@ -959,7 +959,7 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
         $this->assertSame('alter table "geo" add column "coordinates" geography(multipoint, 4326) not null', $statements[0]);
     }
 
-    public function testAddingMultiLineString()
+    public function test_adding_multi_line_string()
     {
         $blueprint = new Blueprint('geo');
         $blueprint->multilinestring('coordinates');
@@ -969,7 +969,7 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
         $this->assertSame('alter table "geo" add column "coordinates" geography(multilinestring, 4326) not null', $statements[0]);
     }
 
-    public function testAddingMultiPolygon()
+    public function test_adding_multi_polygon()
     {
         $blueprint = new Blueprint('geo');
         $blueprint->multipolygon('coordinates');
@@ -979,7 +979,7 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
         $this->assertSame('alter table "geo" add column "coordinates" geography(multipolygon, 4326) not null', $statements[0]);
     }
 
-    public function testCreateDatabase()
+    public function test_create_database()
     {
         $connection = $this->getConnection();
         $connection->shouldReceive('getConfig')->once()->once()->with('charset')->andReturn('utf8_foo');
@@ -1000,7 +1000,7 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
         );
     }
 
-    public function testDropDatabaseIfExists()
+    public function test_drop_database_if_exists()
     {
         $statement = $this->getGrammar()->compileDropDatabaseIfExists('my_database_a');
 
@@ -1017,28 +1017,28 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
         );
     }
 
-    public function testDropAllTablesEscapesTableNames()
+    public function test_drop_all_tables_escapes_table_names()
     {
         $statement = $this->getGrammar()->compileDropAllTables(['alpha', 'beta', 'gamma']);
 
         $this->assertSame('drop table "alpha","beta","gamma" cascade', $statement);
     }
 
-    public function testDropAllViewsEscapesTableNames()
+    public function test_drop_all_views_escapes_table_names()
     {
         $statement = $this->getGrammar()->compileDropAllViews(['alpha', 'beta', 'gamma']);
 
         $this->assertSame('drop view "alpha","beta","gamma" cascade', $statement);
     }
 
-    public function testDropAllTypesEscapesTableNames()
+    public function test_drop_all_types_escapes_table_names()
     {
         $statement = $this->getGrammar()->compileDropAllTypes(['alpha', 'beta', 'gamma']);
 
         $this->assertSame('drop type "alpha","beta","gamma" cascade', $statement);
     }
 
-    public function testCreatingFulltextIndexesThrowsAnException()
+    public function test_creating_fulltext_indexes_throws_an_exception()
     {
         $this->expectException(FeatureNotSupportedException::class);
         $blueprint = new Blueprint('fulltext');
@@ -1056,7 +1056,7 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
         return new CockroachGrammar();
     }
 
-    public function testGrammarsAreMacroable()
+    public function test_grammars_are_macroable()
     {
         // compileReplace macro.
         $this->getGrammar()::macro('compileReplace', function () {

@@ -38,7 +38,7 @@ class EloquentCollectionLoadCountTest extends DatabaseTestCase
         Post::create();
     }
 
-    public function testLoadCount()
+    public function test_load_count()
     {
         $posts = Post::all();
 
@@ -52,7 +52,7 @@ class EloquentCollectionLoadCountTest extends DatabaseTestCase
         $this->assertEquals('2', $posts[0]->getOriginal('comments_count'));
     }
 
-    public function testLoadCountWithSameModels()
+    public function test_load_count_with_same_models()
     {
         $posts = Post::all()->push(Post::first());
 
@@ -66,7 +66,7 @@ class EloquentCollectionLoadCountTest extends DatabaseTestCase
         $this->assertEquals('2', $posts[2]->comments_count);
     }
 
-    public function testLoadCountOnDeletedModels()
+    public function test_load_count_on_deleted_models()
     {
         $posts = Post::all()->each->delete();
 
@@ -79,7 +79,7 @@ class EloquentCollectionLoadCountTest extends DatabaseTestCase
         $this->assertEquals('0', $posts[1]->comments_count);
     }
 
-    public function testLoadCountWithArrayOfRelations()
+    public function test_load_count_with_array_of_relations()
     {
         $posts = Post::all();
 
@@ -94,7 +94,7 @@ class EloquentCollectionLoadCountTest extends DatabaseTestCase
         $this->assertEquals('0', $posts[1]->likes_count);
     }
 
-    public function testLoadCountDoesNotOverrideAttributesWithDefaultValue()
+    public function test_load_count_does_not_override_attributes_with_default_value()
     {
         $post = Post::first();
         $post->some_default_value = 200;

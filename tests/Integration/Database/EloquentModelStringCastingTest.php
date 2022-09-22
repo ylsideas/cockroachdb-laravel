@@ -23,7 +23,7 @@ class EloquentModelStringCastingTest extends DatabaseTestCase
     /**
      * Tests...
      */
-    public function testSavingCastedAttributesToDatabase()
+    public function test_saving_casted_attributes_to_database()
     {
         /** @var \YlsIdeas\CockroachDb\Tests\Integration\Database\StringCasts $model */
         $model = StringCasts::create([
@@ -43,7 +43,7 @@ class EloquentModelStringCastingTest extends DatabaseTestCase
         $this->assertEquals($stdClass, $model->getAttribute('object_attributes'));
     }
 
-    public function testSavingCastedEmptyAttributesToDatabase()
+    public function test_saving_casted_empty_attributes_to_database()
     {
         /** @var \YlsIdeas\CockroachDb\Tests\Integration\Database\StringCasts $model */
         $model = StringCasts::create([

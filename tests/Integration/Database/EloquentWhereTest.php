@@ -21,7 +21,7 @@ class EloquentWhereTest extends DatabaseTestCase
         });
     }
 
-    public function testWhereAndWhereOrBehavior()
+    public function test_where_and_where_or_behavior()
     {
         /** @var \YlsIdeas\CockroachDb\Tests\Integration\Database\UserWhereTest $firstUser */
         $firstUser = UserWhereTest::create([
@@ -65,7 +65,7 @@ class EloquentWhereTest extends DatabaseTestCase
         );
     }
 
-    public function testFirstWhere()
+    public function test_first_where()
     {
         /** @var \YlsIdeas\CockroachDb\Tests\Integration\Database\UserWhereTest $firstUser */
         $firstUser = UserWhereTest::create([
@@ -94,7 +94,7 @@ class EloquentWhereTest extends DatabaseTestCase
         );
     }
 
-    public function testSole()
+    public function test_sole()
     {
         $expected = UserWhereTest::create([
             'name' => 'test-name',
@@ -105,7 +105,7 @@ class EloquentWhereTest extends DatabaseTestCase
         $this->assertTrue($expected->is(UserWhereTest::where('name', 'test-name')->sole()));
     }
 
-    public function testSoleFailsForMultipleRecords()
+    public function test_sole_fails_for_multiple_records()
     {
         UserWhereTest::create([
             'name' => 'test-name',
@@ -124,7 +124,7 @@ class EloquentWhereTest extends DatabaseTestCase
         UserWhereTest::where('name', 'test-name')->sole();
     }
 
-    public function testSoleFailsIfNoRecords()
+    public function test_sole_fails_if_no_records()
     {
         try {
             UserWhereTest::where('name', 'test-name')->sole();
@@ -135,7 +135,7 @@ class EloquentWhereTest extends DatabaseTestCase
         $this->assertSame(UserWhereTest::class, $exception->getModel());
     }
 
-    public function testChunkMap()
+    public function test_chunk_map()
     {
         UserWhereTest::create([
             'name' => 'first-name',

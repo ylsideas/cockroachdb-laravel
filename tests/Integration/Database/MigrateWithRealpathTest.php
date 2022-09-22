@@ -28,12 +28,12 @@ class MigrateWithRealpathTest extends TestCase
         });
     }
 
-    public function testRealpathMigrationHasProperlyExecuted()
+    public function test_realpath_migration_has_properly_executed()
     {
         $this->assertTrue(Schema::hasTable('members'));
     }
 
-    public function testMigrationsHasTheMigratedTable()
+    public function test_migrations_has_the_migrated_table()
     {
         $this->assertDatabaseHas('migrations', [
             'migration' => '2014_10_12_000000_create_members_table',

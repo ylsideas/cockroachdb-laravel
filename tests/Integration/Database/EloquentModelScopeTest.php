@@ -6,14 +6,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class EloquentModelScopeTest extends DatabaseTestCase
 {
-    public function testModelHasScope()
+    public function test_model_has_scope()
     {
         $model = new TestScopeModel1();
 
         $this->assertTrue($model->hasNamedScope('exists'));
     }
 
-    public function testModelDoesNotHaveScope()
+    public function test_model_does_not_have_scope()
     {
         $model = new TestScopeModel1();
 

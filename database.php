@@ -1,14 +1,14 @@
 <?php
 
 $host = '127.0.0.1';
-$db   = 'default';
+$db = 'default';
 $user = 'root';
 $pass = '';
 
 $options = [
-    PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
+    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
     PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-    PDO::ATTR_EMULATE_PREPARES   => false,
+    PDO::ATTR_EMULATE_PREPARES => false,
 ];
 
 $dsn = "pgsql:host=$host;port=26257;dbname=$db";

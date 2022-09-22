@@ -33,7 +33,7 @@ class EloquentMorphLazyEagerLoadingTest extends DatabaseTestCase
         (new Comment())->commentable()->associate($post)->save();
     }
 
-    public function testLazyEagerLoading()
+    public function test_lazy_eager_loading()
     {
         $comment = Comment::first();
 

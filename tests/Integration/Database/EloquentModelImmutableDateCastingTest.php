@@ -19,7 +19,7 @@ class EloquentModelImmutableDateCastingTest extends DatabaseTestCase
         });
     }
 
-    public function testDatesAreImmutableCastable()
+    public function test_dates_are_immutable_castable()
     {
         $model = TestModelImmutable::create([
             'date_field' => '2019-10-01',
@@ -32,7 +32,7 @@ class EloquentModelImmutableDateCastingTest extends DatabaseTestCase
         $this->assertInstanceOf(CarbonImmutable::class, $model->datetime_field);
     }
 
-    public function testDatesAreImmutableAndCustomCastable()
+    public function test_dates_are_immutable_and_custom_castable()
     {
         $model = TestModelCustomImmutable::create([
             'date_field' => '2019-10-01',

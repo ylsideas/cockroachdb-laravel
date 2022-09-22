@@ -26,7 +26,7 @@ class EloquentModelCustomEventsTest extends DatabaseTestCase
         });
     }
 
-    public function testFlushListenersClearsCustomEvents()
+    public function test_flush_listeners_clears_custom_events()
     {
         $_SERVER['fired_event'] = false;
 
@@ -37,7 +37,7 @@ class EloquentModelCustomEventsTest extends DatabaseTestCase
         $this->assertFalse($_SERVER['fired_event']);
     }
 
-    public function testCustomEventListenersAreFired()
+    public function test_custom_event_listeners_are_fired()
     {
         $_SERVER['fired_event'] = false;
 

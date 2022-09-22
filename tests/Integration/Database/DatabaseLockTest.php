@@ -18,7 +18,7 @@ class DatabaseLockTest extends DatabaseTestCase
         });
     }
 
-    public function testLockCanHaveASeparateConnection()
+    public function test_lock_can_have_a_separate_connection()
     {
         $this->app['config']->set('cache.stores.database.lock_connection', 'test');
         $this->app['config']->set('database.connections.test', $this->app['config']->get('database.connections.mysql'));
@@ -26,7 +26,7 @@ class DatabaseLockTest extends DatabaseTestCase
         $this->assertSame('test', Cache::driver('database')->lock('foo')->getConnectionName());
     }
 
-    public function testLockCanBeAcquired()
+    public function test_lock_can_be_acquired()
     {
         $lock = Cache::driver('database')->lock('foo');
         $this->assertTrue($lock->get());
@@ -42,7 +42,7 @@ class DatabaseLockTest extends DatabaseTestCase
         $otherLock->release();
     }
 
-    public function testLockCanBeForceReleased()
+    public function test_lock_can_be_force_released()
     {
         $lock = Cache::driver('database')->lock('foo');
         $this->assertTrue($lock->get());
@@ -54,7 +54,7 @@ class DatabaseLockTest extends DatabaseTestCase
         $otherLock->release();
     }
 
-    public function testExpiredLockCanBeRetrieved()
+    public function test_expired_lock_can_be_retrieved()
     {
         $lock = Cache::driver('database')->lock('foo');
         $this->assertTrue($lock->get());

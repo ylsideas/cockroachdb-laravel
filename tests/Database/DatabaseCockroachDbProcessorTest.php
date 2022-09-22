@@ -7,7 +7,7 @@ use YlsIdeas\CockroachDb\Processor\CockroachDbProcessor;
 
 class DatabaseCockroachDbProcessorTest extends TestCase
 {
-    public function testProcessColumnListing()
+    public function test_process_column_listing()
     {
         $processor = new CockroachDbProcessor();
 

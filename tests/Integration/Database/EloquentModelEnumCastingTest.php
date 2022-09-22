@@ -35,7 +35,7 @@ class EloquentModelEnumCastingTest extends DatabaseTestCase
         });
     }
 
-    public function testEnumsAreCastable()
+    public function test_enums_are_castable()
     {
         DB::table('enum_casts')->insert([
             'string_status' => 'pending',
@@ -48,7 +48,7 @@ class EloquentModelEnumCastingTest extends DatabaseTestCase
         $this->assertEquals(IntegerStatus::pending, $model->integer_status);
     }
 
-    public function testEnumsReturnNullWhenNull()
+    public function test_enums_return_null_when_null()
     {
         DB::table('enum_casts')->insert([
             'string_status' => null,
@@ -61,7 +61,7 @@ class EloquentModelEnumCastingTest extends DatabaseTestCase
         $this->assertEquals(null, $model->integer_status);
     }
 
-    public function testEnumsAreCastableToArray()
+    public function test_enums_are_castable_to_array()
     {
         $model = new EloquentModelEnumCastingTestModel([
             'string_status' => StringStatus::pending,
@@ -74,7 +74,7 @@ class EloquentModelEnumCastingTest extends DatabaseTestCase
         ], $model->toArray());
     }
 
-    public function testEnumsAreCastableToArrayWhenNull()
+    public function test_enums_are_castable_to_array_when_null()
     {
         $model = new EloquentModelEnumCastingTestModel([
             'string_status' => null,
@@ -87,7 +87,7 @@ class EloquentModelEnumCastingTest extends DatabaseTestCase
         ], $model->toArray());
     }
 
-    public function testEnumsAreConvertedOnSave()
+    public function test_enums_are_converted_on_save()
     {
         $model = new EloquentModelEnumCastingTestModel([
             'string_status' => StringStatus::pending,
@@ -103,7 +103,7 @@ class EloquentModelEnumCastingTest extends DatabaseTestCase
         ], DB::table('enum_casts')->where('id', $model->id)->first());
     }
 
-    public function testEnumsAcceptNullOnSave()
+    public function test_enums_accept_null_on_save()
     {
         $model = new EloquentModelEnumCastingTestModel([
             'string_status' => null,
@@ -119,7 +119,7 @@ class EloquentModelEnumCastingTest extends DatabaseTestCase
         ], DB::table('enum_casts')->where('id', $model->id)->first());
     }
 
-    public function testEnumsAcceptBackedValueOnSave()
+    public function test_enums_accept_backed_value_on_save()
     {
         $model = new EloquentModelEnumCastingTestModel([
             'string_status' => 'pending',
@@ -134,7 +134,7 @@ class EloquentModelEnumCastingTest extends DatabaseTestCase
         $this->assertEquals(IntegerStatus::pending, $model->integer_status);
     }
 
-    public function testFirstOrNew()
+    public function test_first_or_new()
     {
         DB::table('enum_casts')->insert([
             'string_status' => 'pending',
@@ -157,7 +157,7 @@ class EloquentModelEnumCastingTest extends DatabaseTestCase
         $this->assertEquals(StringStatus::done, $model2->string_status);
     }
 
-    public function testFirstOrCreate()
+    public function test_first_or_create()
     {
         DB::table('enum_casts')->insert([
             'string_status' => 'pending',

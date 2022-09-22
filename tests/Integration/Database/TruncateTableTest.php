@@ -16,7 +16,7 @@ class TruncateTableTest extends DatabaseTestCase
         });
     }
 
-    public function testTruncatingTables()
+    public function test_truncating_tables()
     {
         DB::table('test_truncating_table')->insert([['name' => 'test']]);
 

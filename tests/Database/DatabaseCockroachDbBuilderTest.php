@@ -15,7 +15,7 @@ class DatabaseCockroachDbBuilderTest extends TestCase
         m::close();
     }
 
-    public function testCreateDatabase()
+    public function test_create_database()
     {
         $grammar = new CockroachGrammar();
 
@@ -30,7 +30,7 @@ class DatabaseCockroachDbBuilderTest extends TestCase
         $builder->createDatabase('my_temporary_database');
     }
 
-    public function testDropDatabaseIfExists()
+    public function test_drop_database_if_exists()
     {
         $grammar = new CockroachGrammar();
 

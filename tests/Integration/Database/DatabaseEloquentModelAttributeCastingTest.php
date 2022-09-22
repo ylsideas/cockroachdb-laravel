@@ -29,7 +29,7 @@ class DatabaseEloquentModelAttributeCastingTest extends DatabaseTestCase
         });
     }
 
-    public function testBasicCustomCasting()
+    public function test_basic_custom_casting()
     {
         $model = new TestEloquentModelWithAttributeCast();
         $model->uppercase = 'taylor';
@@ -109,7 +109,7 @@ class DatabaseEloquentModelAttributeCastingTest extends DatabaseTestCase
         $this->assertIsString($model->toArray()['birthday_at']);
     }
 
-    public function testGetOriginalWithCastValueObjects()
+    public function test_get_original_with_cast_value_objects()
     {
         $model = new TestEloquentModelWithAttributeCast([
             'address' => new AttributeCastAddress('110 Kingsbrook St.', 'My Childhood House'),
@@ -149,7 +149,7 @@ class DatabaseEloquentModelAttributeCastingTest extends DatabaseTestCase
         $this->assertNull($model->address);
     }
 
-    public function testOneWayCasting()
+    public function test_one_way_casting()
     {
         $model = new TestEloquentModelWithAttributeCast();
 
@@ -170,7 +170,7 @@ class DatabaseEloquentModelAttributeCastingTest extends DatabaseTestCase
         $this->assertEquals(hash('sha256', 'secret2'), $model->password);
     }
 
-    public function testSettingRawAttributesClearsTheCastCache()
+    public function test_setting_raw_attributes_clears_the_cast_cache()
     {
         $model = new TestEloquentModelWithAttributeCast();
 
@@ -189,7 +189,7 @@ class DatabaseEloquentModelAttributeCastingTest extends DatabaseTestCase
         $this->assertSame('117 Spencer St.', $model->address->lineOne);
     }
 
-    public function testCastsThatOnlyHaveGetterDoNotPeristAnythingToModelOnSave()
+    public function test_casts_that_only_have_getter_do_not_perist_anything_to_model_on_save()
     {
         $model = new TestEloquentModelWithAttributeCast();
 
@@ -201,7 +201,7 @@ class DatabaseEloquentModelAttributeCastingTest extends DatabaseTestCase
         $this->assertEmpty($model->getDirty());
     }
 
-    public function testCastsThatOnlyHaveGetterThatReturnsPrimitivesAreNotCached()
+    public function test_casts_that_only_have_getter_that_returns_primitives_are_not_cached()
     {
         $model = new TestEloquentModelWithAttributeCast();
 
@@ -212,7 +212,7 @@ class DatabaseEloquentModelAttributeCastingTest extends DatabaseTestCase
         }
     }
 
-    public function testCastsThatOnlyHaveGetterThatReturnsObjectAreCached()
+    public function test_casts_that_only_have_getter_that_returns_object_are_cached()
     {
         $model = new TestEloquentModelWithAttributeCast();
 
@@ -223,7 +223,7 @@ class DatabaseEloquentModelAttributeCastingTest extends DatabaseTestCase
         }
     }
 
-    public function testCastsThatOnlyHaveGetterThatReturnsDateTimeAreCached()
+    public function test_casts_that_only_have_getter_that_returns_date_time_are_cached()
     {
         $model = new TestEloquentModelWithAttributeCast();
 
@@ -234,7 +234,7 @@ class DatabaseEloquentModelAttributeCastingTest extends DatabaseTestCase
         }
     }
 
-    public function testCastsThatOnlyHaveGetterThatReturnsObjectAreNotCached()
+    public function test_casts_that_only_have_getter_that_returns_object_are_not_cached()
     {
         $model = new TestEloquentModelWithAttributeCast();
 
@@ -245,7 +245,7 @@ class DatabaseEloquentModelAttributeCastingTest extends DatabaseTestCase
         }
     }
 
-    public function testCastsThatOnlyHaveGetterThatReturnsDateTimeAreNotCached()
+    public function test_casts_that_only_have_getter_that_returns_date_time_are_not_cached()
     {
         $model = new TestEloquentModelWithAttributeCast();
 
@@ -256,7 +256,7 @@ class DatabaseEloquentModelAttributeCastingTest extends DatabaseTestCase
         }
     }
 
-    public function testCastsThatOnlyHaveGetterThatReturnsObjectAreNotCachedFluent()
+    public function test_casts_that_only_have_getter_that_returns_object_are_not_cached_fluent()
     {
         $model = new TestEloquentModelWithAttributeCast();
 
@@ -267,7 +267,7 @@ class DatabaseEloquentModelAttributeCastingTest extends DatabaseTestCase
         }
     }
 
-    public function testCastsThatOnlyHaveGetterThatReturnsDateTimeAreNotCachedFluent()
+    public function test_casts_that_only_have_getter_that_returns_date_time_are_not_cached_fluent()
     {
         $model = new TestEloquentModelWithAttributeCast();
 

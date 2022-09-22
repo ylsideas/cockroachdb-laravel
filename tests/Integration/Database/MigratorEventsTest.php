@@ -22,7 +22,7 @@ class MigratorEventsTest extends TestCase
         ];
     }
 
-    public function testMigrationEventsAreFired()
+    public function test_migration_events_are_fired()
     {
         Event::fake();
 
@@ -35,7 +35,7 @@ class MigratorEventsTest extends TestCase
         Event::assertDispatched(MigrationEnded::class, 2);
     }
 
-    public function testMigrationEventsContainTheMigrationAndMethod()
+    public function test_migration_events_contain_the_migration_and_method()
     {
         Event::fake();
 
@@ -56,7 +56,7 @@ class MigratorEventsTest extends TestCase
         });
     }
 
-    public function testTheNoMigrationEventIsFiredWhenNothingToMigrate()
+    public function test_the_no_migration_event_is_fired_when_nothing_to_migrate()
     {
         Event::fake();
 

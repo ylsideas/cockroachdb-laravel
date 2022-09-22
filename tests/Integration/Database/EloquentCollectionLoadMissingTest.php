@@ -63,7 +63,7 @@ class EloquentCollectionLoadMissingTest extends DatabaseTestCase
         PostSubSubRelation::create(['id' => 1, 'post_sub_relation_id' => 1]);
     }
 
-    public function testLoadMissing()
+    public function test_load_missing()
     {
         $posts = Post::with('comments', 'user')->get();
 
@@ -77,7 +77,7 @@ class EloquentCollectionLoadMissingTest extends DatabaseTestCase
         $this->assertArrayNotHasKey('id', $posts[0]->comments[1]->parent->revisions[0]->getAttributes());
     }
 
-    public function testLoadMissingWithClosure()
+    public function test_load_missing_with_closure()
     {
         $posts = Post::with('comments')->get();
 
@@ -92,7 +92,7 @@ class EloquentCollectionLoadMissingTest extends DatabaseTestCase
         $this->assertArrayNotHasKey('post_id', $posts[0]->comments[1]->parent->getAttributes());
     }
 
-    public function testLoadMissingWithDuplicateRelationName()
+    public function test_load_missing_with_duplicate_relation_name()
     {
         $posts = Post::with('comments')->get();
 
@@ -105,7 +105,7 @@ class EloquentCollectionLoadMissingTest extends DatabaseTestCase
         $this->assertTrue($posts[0]->comments[1]->parent->relationLoaded('parent'));
     }
 
-    public function testLoadMissingWithoutInitialLoad()
+    public function test_load_missing_without_initial_load()
     {
         $user = User::first();
         $user->loadMissing('posts.postRelation.postSubRelations.postSubSubRelations');

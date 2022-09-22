@@ -48,7 +48,7 @@ class EloquentMorphCountEagerLoadingTest extends DatabaseTestCase
         (new Comment())->commentable()->associate($video)->save();
     }
 
-    public function testWithMorphCountLoading()
+    public function test_with_morph_count_loading()
     {
         $comments = Comment::query()
             ->with(['commentable' => function (MorphTo $morphTo) {
@@ -62,7 +62,7 @@ class EloquentMorphCountEagerLoadingTest extends DatabaseTestCase
         $this->assertNull($comments[1]->commentable->views_count);
     }
 
-    public function testWithMorphCountLoadingWithSingleRelation()
+    public function test_with_morph_count_loading_with_single_relation()
     {
         $comments = Comment::query()
             ->with(['commentable' => function (MorphTo $morphTo) {

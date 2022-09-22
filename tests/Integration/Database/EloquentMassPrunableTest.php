@@ -45,7 +45,7 @@ class EloquentMassPrunableTest extends DatabaseTestCase
         });
     }
 
-    public function testPrunableMethodMustBeImplemented()
+    public function test_prunable_method_must_be_implemented()
     {
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage(
@@ -55,7 +55,7 @@ class EloquentMassPrunableTest extends DatabaseTestCase
         MassPrunableTestModelMissingPrunableMethod::create()->pruneAll();
     }
 
-    public function testPrunesRecords()
+    public function test_prunes_records()
     {
         app('events')
             ->shouldReceive('dispatch')
@@ -74,7 +74,7 @@ class EloquentMassPrunableTest extends DatabaseTestCase
         $this->assertEquals(3500, MassPrunableTestModel::count());
     }
 
-    public function testPrunesSoftDeletedRecords()
+    public function test_prunes_soft_deleted_records()
     {
         app('events')
             ->shouldReceive('dispatch')

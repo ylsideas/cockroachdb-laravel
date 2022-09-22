@@ -26,7 +26,7 @@ class EloquentMorphOneIsTest extends DatabaseTestCase
         $post->attachment()->create();
     }
 
-    public function testChildIsNotNull()
+    public function test_child_is_not_null()
     {
         $parent = Post::first();
         $child = null;
@@ -35,7 +35,7 @@ class EloquentMorphOneIsTest extends DatabaseTestCase
         $this->assertTrue($parent->attachment()->isNot($child));
     }
 
-    public function testChildIsModel()
+    public function test_child_is_model()
     {
         $parent = Post::first();
         $child = Attachment::first();
@@ -44,7 +44,7 @@ class EloquentMorphOneIsTest extends DatabaseTestCase
         $this->assertFalse($parent->attachment()->isNot($child));
     }
 
-    public function testChildIsNotAnotherModel()
+    public function test_child_is_not_another_model()
     {
         $parent = Post::first();
         $child = new Attachment();
@@ -54,7 +54,7 @@ class EloquentMorphOneIsTest extends DatabaseTestCase
         $this->assertTrue($parent->attachment()->isNot($child));
     }
 
-    public function testNullChildIsNotModel()
+    public function test_null_child_is_not_model()
     {
         $parent = Post::first();
         $child = Attachment::first();
@@ -65,7 +65,7 @@ class EloquentMorphOneIsTest extends DatabaseTestCase
         $this->assertTrue($parent->attachment()->isNot($child));
     }
 
-    public function testChildIsNotModelWithAnotherTable()
+    public function test_child_is_not_model_with_another_table()
     {
         $parent = Post::first();
         $child = Attachment::first();
@@ -75,7 +75,7 @@ class EloquentMorphOneIsTest extends DatabaseTestCase
         $this->assertTrue($parent->attachment()->isNot($child));
     }
 
-    public function testChildIsNotModelWithAnotherConnection()
+    public function test_child_is_not_model_with_another_connection()
     {
         $parent = Post::first();
         $child = Attachment::first();

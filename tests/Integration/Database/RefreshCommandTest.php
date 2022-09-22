@@ -8,7 +8,7 @@ use YlsIdeas\CockroachDb\CockroachDbServiceProvider;
 
 class RefreshCommandTest extends TestCase
 {
-    public function testRefreshWithoutRealpath()
+    public function test_refresh_without_realpath()
     {
         $this->app->setBasePath(__DIR__);
 
@@ -19,7 +19,7 @@ class RefreshCommandTest extends TestCase
         $this->migrateRefreshWith($options);
     }
 
-    public function testRefreshWithRealpath()
+    public function test_refresh_with_realpath()
     {
         $options = [
             '--path' => realpath(__DIR__.'/stubs/'),

@@ -26,7 +26,7 @@ class EloquentMorphToIsTest extends DatabaseTestCase
         (new Comment())->commentable()->associate($post)->save();
     }
 
-    public function testParentIsNotNull()
+    public function test_parent_is_not_null()
     {
         $child = Comment::first();
         $parent = null;
@@ -35,7 +35,7 @@ class EloquentMorphToIsTest extends DatabaseTestCase
         $this->assertTrue($child->commentable()->isNot($parent));
     }
 
-    public function testParentIsModel()
+    public function test_parent_is_model()
     {
         $child = Comment::first();
         $parent = Post::first();
@@ -44,7 +44,7 @@ class EloquentMorphToIsTest extends DatabaseTestCase
         $this->assertFalse($child->commentable()->isNot($parent));
     }
 
-    public function testParentIsNotAnotherModel()
+    public function test_parent_is_not_another_model()
     {
         $child = Comment::first();
         $parent = new Post();
@@ -54,7 +54,7 @@ class EloquentMorphToIsTest extends DatabaseTestCase
         $this->assertTrue($child->commentable()->isNot($parent));
     }
 
-    public function testNullParentIsNotModel()
+    public function test_null_parent_is_not_model()
     {
         $child = Comment::first();
         $child->commentable()->dissociate();
@@ -64,7 +64,7 @@ class EloquentMorphToIsTest extends DatabaseTestCase
         $this->assertTrue($child->commentable()->isNot($parent));
     }
 
-    public function testParentIsNotModelWithAnotherTable()
+    public function test_parent_is_not_model_with_another_table()
     {
         $child = Comment::first();
         $parent = Post::first();
@@ -74,7 +74,7 @@ class EloquentMorphToIsTest extends DatabaseTestCase
         $this->assertTrue($child->commentable()->isNot($parent));
     }
 
-    public function testParentIsNotModelWithAnotherConnection()
+    public function test_parent_is_not_model_with_another_connection()
     {
         $child = Comment::first();
         $parent = Post::first();

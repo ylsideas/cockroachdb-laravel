@@ -41,7 +41,7 @@ class EloquentMorphConstrainTest extends DatabaseTestCase
         (new Comment())->commentable()->associate($video2)->save();
     }
 
-    public function testMorphConstraints()
+    public function test_morph_constraints()
     {
         $comments = Comment::query()
             ->with(['commentable' => function (MorphTo $morphTo) {

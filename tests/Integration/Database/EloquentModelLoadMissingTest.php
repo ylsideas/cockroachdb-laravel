@@ -28,7 +28,7 @@ class EloquentModelLoadMissingTest extends DatabaseTestCase
         Comment::create(['parent_id' => 1, 'post_id' => 1]);
     }
 
-    public function testLoadMissing()
+    public function test_load_missing()
     {
         $post = Post::with('comments')->first();
 

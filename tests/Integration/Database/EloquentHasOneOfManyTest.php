@@ -20,7 +20,7 @@ class EloquentHasOneOfManyTest extends DatabaseTestCase
         });
     }
 
-    public function testItOnlyEagerLoadsRequiredModels()
+    public function test_it_only_eager_loads_required_models()
     {
         $this->retrievedLogins = 0;
         User::getEventDispatcher()->listen('eloquent.retrieved:*', function ($event, $models) {

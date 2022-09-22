@@ -44,42 +44,42 @@ class EloquentWhereHasTest extends DatabaseTestCase
         (new Text(['id' => 2, 'content' => 'test2']))->post()->associate($post)->save();
     }
 
-    public function testWhereRelation()
+    public function test_where_relation()
     {
         $users = User::whereRelation('posts', 'public', true)->get();
 
         $this->assertEquals([1], $users->pluck('id')->all());
     }
 
-    public function testOrWhereRelation()
+    public function test_or_where_relation()
     {
         $users = User::whereRelation('posts', 'public', true)->orWhereRelation('posts', 'public', false)->get();
 
         $this->assertEquals([1, 2], $users->pluck('id')->all());
     }
 
-    public function testNestedWhereRelation()
+    public function test_nested_where_relation()
     {
         $texts = User::whereRelation('posts.texts', 'content', 'test')->get();
 
         $this->assertEquals([1], $texts->pluck('id')->all());
     }
 
-    public function testNestedOrWhereRelation()
+    public function test_nested_or_where_relation()
     {
         $texts = User::whereRelation('posts.texts', 'content', 'test')->orWhereRelation('posts.texts', 'content', 'test2')->get();
 
         $this->assertEquals([1, 2], $texts->pluck('id')->all());
     }
 
-    public function testWhereMorphRelation()
+    public function test_where_morph_relation()
     {
         $comments = Comment::whereMorphRelation('commentable', '*', 'public', true)->get();
 
         $this->assertEquals([1], $comments->pluck('id')->all());
     }
 
-    public function testOrWhereMorphRelation()
+    public function test_or_where_morph_relation()
     {
         $comments = Comment::whereMorphRelation('commentable', '*', 'public', true)
             ->orWhereMorphRelation('commentable', '*', 'public', false)
@@ -88,7 +88,7 @@ class EloquentWhereHasTest extends DatabaseTestCase
         $this->assertEquals([1, 2], $comments->pluck('id')->all());
     }
 
-    public function testWithCount()
+    public function test_with_count()
     {
         $users = User::whereHas('posts', function ($query) {
             $query->where('public', true);

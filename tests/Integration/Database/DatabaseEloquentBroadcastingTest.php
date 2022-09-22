@@ -27,7 +27,7 @@ class DatabaseEloquentBroadcastingTest extends DatabaseTestCase
         });
     }
 
-    public function testBasicBroadcasting()
+    public function test_basic_broadcasting()
     {
         Event::fake([BroadcastableModelEventOccurred::class]);
 
@@ -43,14 +43,14 @@ class DatabaseEloquentBroadcastingTest extends DatabaseTestCase
         });
     }
 
-    public function testChannelRouteFormatting()
+    public function test_channel_route_formatting()
     {
         $model = new TestEloquentBroadcastUser();
 
         $this->assertEquals('YlsIdeas.CockroachDb.Tests.Integration.Database.TestEloquentBroadcastUser.{testEloquentBroadcastUser}', $model->broadcastChannelRoute());
     }
 
-    public function testBroadcastingOnModelTrashing()
+    public function test_broadcasting_on_model_trashing()
     {
         Event::fake([BroadcastableModelEventOccurred::class]);
 
@@ -69,7 +69,7 @@ class DatabaseEloquentBroadcastingTest extends DatabaseTestCase
         });
     }
 
-    public function testBroadcastingForSpecificEventsOnly()
+    public function test_broadcasting_for_specific_events_only()
     {
         Event::fake([BroadcastableModelEventOccurred::class]);
 
@@ -95,7 +95,7 @@ class DatabaseEloquentBroadcastingTest extends DatabaseTestCase
         });
     }
 
-    public function testBroadcastNameDefault()
+    public function test_broadcast_name_default()
     {
         Event::fake([BroadcastableModelEventOccurred::class]);
 
@@ -113,7 +113,7 @@ class DatabaseEloquentBroadcastingTest extends DatabaseTestCase
         });
     }
 
-    public function testBroadcastNameCanBeDefined()
+    public function test_broadcast_name_can_be_defined()
     {
         Event::fake([BroadcastableModelEventOccurred::class]);
 
@@ -143,7 +143,7 @@ class DatabaseEloquentBroadcastingTest extends DatabaseTestCase
         });
     }
 
-    public function testBroadcastPayloadDefault()
+    public function test_broadcast_payload_default()
     {
         Event::fake([BroadcastableModelEventOccurred::class]);
 
@@ -161,7 +161,7 @@ class DatabaseEloquentBroadcastingTest extends DatabaseTestCase
         });
     }
 
-    public function testBroadcastPayloadCanBeDefined()
+    public function test_broadcast_payload_can_be_defined()
     {
         Event::fake([BroadcastableModelEventOccurred::class]);
 

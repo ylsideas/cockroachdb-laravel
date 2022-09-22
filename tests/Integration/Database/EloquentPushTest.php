@@ -28,7 +28,7 @@ class EloquentPushTest extends DatabaseTestCase
         });
     }
 
-    public function testPushMethodSavesTheRelationshipsRecursively()
+    public function test_push_method_saves_the_relationships_recursively()
     {
         $user = new UserX();
         $user->name = 'Test';

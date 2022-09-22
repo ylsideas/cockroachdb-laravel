@@ -40,7 +40,7 @@ class EloquentModelLoadCountTest extends DatabaseTestCase
         DeletedRelated::create(['base_model_id' => 1]);
     }
 
-    public function testLoadCountSingleRelation()
+    public function test_load_count_single_relation()
     {
         $model = BaseModel::first();
 
@@ -52,7 +52,7 @@ class EloquentModelLoadCountTest extends DatabaseTestCase
         $this->assertEquals(2, $model->related1_count);
     }
 
-    public function testLoadCountMultipleRelations()
+    public function test_load_count_multiple_relations()
     {
         $model = BaseModel::first();
 
@@ -65,7 +65,7 @@ class EloquentModelLoadCountTest extends DatabaseTestCase
         $this->assertEquals(1, $model->related2_count);
     }
 
-    public function testLoadCountDeletedRelations()
+    public function test_load_count_deleted_relations()
     {
         $model = BaseModel::first();
 

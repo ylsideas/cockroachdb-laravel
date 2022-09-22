@@ -39,7 +39,7 @@ class EloquentPivotEventsTest extends DatabaseTestCase
         });
     }
 
-    public function testPivotWillTriggerEventsToBeFired()
+    public function test_pivot_will_trigger_events_to_be_fired()
     {
         $user = PivotEventsTestUser::forceCreate(['email' => 'taylor@laravel.com']);
         $user2 = PivotEventsTestUser::forceCreate(['email' => 'ralph@ralphschindler.com']);
@@ -61,7 +61,7 @@ class EloquentPivotEventsTest extends DatabaseTestCase
         $this->assertEquals(['deleting', 'deleted'], PivotEventsTestCollaborator::$eventsCalled);
     }
 
-    public function testPivotWithPivotCriteriaTriggerEventsToBeFiredOnCreateUpdateNoneOnDetach()
+    public function test_pivot_with_pivot_criteria_trigger_events_to_be_fired_on_create_update_none_on_detach()
     {
         $user = PivotEventsTestUser::forceCreate(['email' => 'taylor@laravel.com']);
         $user2 = PivotEventsTestUser::forceCreate(['email' => 'ralph@ralphschindler.com']);
@@ -75,7 +75,7 @@ class EloquentPivotEventsTest extends DatabaseTestCase
         $this->assertEquals([], PivotEventsTestCollaborator::$eventsCalled);
     }
 
-    public function testCustomPivotUpdateEventHasExistingAttributes()
+    public function test_custom_pivot_update_event_has_existing_attributes()
     {
         $_SERVER['pivot_attributes'] = false;
 
@@ -104,7 +104,7 @@ class EloquentPivotEventsTest extends DatabaseTestCase
         );
     }
 
-    public function testCustomPivotUpdateEventHasDirtyCorrect()
+    public function test_custom_pivot_update_event_has_dirty_correct()
     {
         $_SERVER['pivot_dirty_attributes'] = false;
 

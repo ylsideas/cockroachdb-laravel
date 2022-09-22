@@ -16,7 +16,7 @@ class EloquentModelWithoutEventsTest extends DatabaseTestCase
         });
     }
 
-    public function testWithoutEventsRegistersBootedListenersForLater()
+    public function test_without_events_registers_booted_listeners_for_later()
     {
         $model = AutoFilledModel::withoutEvents(function () {
             return AutoFilledModel::create();

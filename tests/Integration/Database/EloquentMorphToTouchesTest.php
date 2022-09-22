@@ -25,7 +25,7 @@ class EloquentMorphToTouchesTest extends DatabaseTestCase
         Post::create();
     }
 
-    public function testNotNull()
+    public function test_not_null()
     {
         $comment = (new Comment())->commentable()->associate(Post::first());
 
@@ -36,7 +36,7 @@ class EloquentMorphToTouchesTest extends DatabaseTestCase
         $this->assertCount(2, DB::getQueryLog());
     }
 
-    public function testNull()
+    public function test_null()
     {
         DB::enableQueryLog();
 
