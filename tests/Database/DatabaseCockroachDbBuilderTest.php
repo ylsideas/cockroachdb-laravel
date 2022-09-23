@@ -11,7 +11,7 @@ use YlsIdeas\CockroachDb\Schema\CockroachGrammar;
 class DatabaseCockroachDbBuilderTest extends TestCase
 {
     use m\Adapter\Phpunit\MockeryPHPUnitIntegration;
-    
+
     protected function tearDown(): void
     {
         m::close();
