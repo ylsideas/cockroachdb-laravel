@@ -51,7 +51,7 @@ class RefreshCommandTest extends TestCase
             'host' => env('DB_HOST', '127.0.0.1'),
             'port' => env('DB_PORT', '26257'),
             'database' => env('DB_DATABASE', 'forge'),
-            'username' => env('DB_USERNAME', 'root'),
+            'username' => env('DB_USERNAME', 'forge'),
             'password' => env('DB_PASSWORD', ''),
             'charset' => 'utf8',
             'prefix' => '',
