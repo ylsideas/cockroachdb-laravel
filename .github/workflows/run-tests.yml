@@ -23,7 +23,7 @@ jobs:
           - laravel: 8.*
             testbench: ^6.24
 
-    name: P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.stability }} - ${{ matrix.os }}
+    name: P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.stability }} - crdb.${{ matrix.cockroachdb }} ${{ matrix.os }}
 
     steps:
       - name: Checkout code
