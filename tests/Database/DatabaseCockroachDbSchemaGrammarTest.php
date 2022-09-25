@@ -140,7 +140,7 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
         $statements = $blueprint->toSql($this->getConnection(), $this->getGrammar());
 
         $this->assertCount(1, $statements);
-        $this->assertSame('alter table "users" drop constraint "foo"', $statements[0]);
+        $this->assertSame('drop index "users"@"foo" cascade', $statements[0]);
     }
 
     public function test_drop_index()
