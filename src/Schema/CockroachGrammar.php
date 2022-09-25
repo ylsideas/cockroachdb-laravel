@@ -37,7 +37,7 @@ class CockroachGrammar extends PostgresGrammar
 
     /**
      * Compile a drop unique key command.
-     * 
+     *
      * CockroachDB doesn't support alter table for dropping unique indexes.
      * https://github.com/cockroachdb/cockroach/issues/42840?version=v22.1
      *
