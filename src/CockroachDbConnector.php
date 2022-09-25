@@ -13,10 +13,14 @@ class CockroachDbConnector extends PostgresConnector implements ConnectorInterfa
      */
     protected function getDsn(array $config)
     {
-        $dsn = parent::getDsn($config);
+        return $this->addClusterOptions(parent::getDsn($config), $config);
+    }
 
+    protected function addClusterOptions(string $dsn, array $config)
+    {
         if (isset($config['cluster']) && ! empty($config['cluster'])) {
-            $dsn .= ";options='--cluster={$config['cluster']}'";
+            $clusterNameEscaped = addslashes($config['cluster']);
+            $dsn .= ";options='--cluster={$clusterNameEscaped}'";
         }
 
         return $dsn;

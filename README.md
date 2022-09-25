@@ -73,7 +73,7 @@ method of the Query builder a `YlsIdeas\CockroachDb\Exceptions\FeatureNotSupport
 
 ### Serverless Support
 Cockroach Serverless requires you to add an `options` parameter to the connection string.
-Laravel doesn't provide this out of the box, so, it's being implemented as an extra `cluster` parameter in the database config.
+Laravel doesn't provide this out of the box, so, it's being implemented as an extra `cluster` parameter in the database config. Just pass the cluster identification from CockroachDB Serverless.
 
 Sample config snippet:
 
@@ -91,7 +91,7 @@ Sample config snippet:
     'prefix_indexes' => true,
     'schema' => 'public',
     'sslmode' => 'prefer',
-    'cluster' => 'my-cluster-id-1234',
+    'cluster' => env('COCKROACHDB_CLUSTER', ''),
 ]
 ```
 
