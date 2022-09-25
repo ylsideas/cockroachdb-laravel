@@ -41,8 +41,9 @@ class DatabaseCockroachDbConnectorTest extends TestCase
 
     protected function getConnector()
     {
-        return new class extends CockroachDbConnector {
-            public function exposeGetDsnMethod(array $config) {
+        return new class () extends CockroachDbConnector {
+            public function exposeGetDsnMethod(array $config)
+            {
                 return $this->getDsn($config);
             }
         };
