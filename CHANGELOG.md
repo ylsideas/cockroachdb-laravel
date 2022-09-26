@@ -2,6 +2,15 @@
 
 All notable changes to `cockroachdb-laravel` will be documented in this file.
 
+## v1.1.0 - 2022-09-26
+
+### What's Changed
+
+- Add support for Cockroach Serverless Cluster identifier by @tryvin in https://github.com/ylsideas/cockroachdb-laravel/pull/11
+- Drop unique indexes fixes by @tryvin in https://github.com/ylsideas/cockroachdb-laravel/pull/10
+
+**Full Changelog**: https://github.com/ylsideas/cockroachdb-laravel/compare/v1.0.1...v1.1.0
+
 ## Fixed Truncating tables - 2022-09-22
 
 ### Changes
