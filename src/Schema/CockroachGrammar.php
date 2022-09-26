@@ -34,4 +34,21 @@ class CockroachGrammar extends PostgresGrammar
     {
         return $this->compileDropIndex($blueprint, $command);
     }
+
+    /**
+     * Compile a drop unique key command.
+     *
+     * CockroachDB doesn't support alter table for dropping unique indexes.
+     * https://github.com/cockroachdb/cockroach/issues/42840?version=v22.1
+     *
+     * @param  \Illuminate\Database\Schema\Blueprint  $blueprint
+     * @param  \Illuminate\Support\Fluent  $command
+     * @return string
+     */
+    public function compileDropUnique(Blueprint $blueprint, Fluent $command)
+    {
+        $index = $this->wrap($command->index);
+
+        return "drop index {$this->wrapTable($blueprint)}@{$index} cascade";
+    }
 }
