@@ -20,7 +20,7 @@ class DatabaseCockroachDbConnectorTest extends TestCase
             ],
         );
 
-        $this->assertStringContainsString("options='--cluster=cluster-1234'", $dsnConfig);
+        $this->assertStringContainsString("dbname='cluster-1234.defaultdb'", $dsnConfig);
     }
 
     public function test_dsn_params_without_cluster()
@@ -36,13 +36,13 @@ class DatabaseCockroachDbConnectorTest extends TestCase
             ],
         );
 
-        $this->assertStringNotContainsString("options=", $dsnConfig);
+        $this->assertStringContainsString("dbname='defaultdb'", $dsnConfig);
     }
 
     protected function getConnector()
     {
         return new class () extends CockroachDbConnector {
-            public function exposeGetDsnMethod(array $config)
+            public function exposeGetDsnMethod(array $config): string
             {
                 return $this->getDsn($config);
             }

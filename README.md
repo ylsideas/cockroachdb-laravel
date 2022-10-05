@@ -48,6 +48,12 @@ You need to add the connection type to the database config:
 ]
 ```
 
+You can also use URLs.
+
+```dotenv
+DATABASE_URL=cockroachdb://<username>:<password>@<host>:<port>/<database>?sslmode=verify-full
+```
+
 ## Usage
 
 To enable set `DB_CONNECTION=crdb` in your .env.
@@ -72,10 +78,9 @@ At current if you try to create a Fulltext index using the Schema builder or try
 method of the Query builder a `YlsIdeas\CockroachDb\Exceptions\FeatureNotSupportedException` exception will be thrown.
 
 ### Serverless Support
-Cockroach Serverless requires you to add an `options` parameter to the connection string.
-Laravel doesn't provide this out of the box, so, it's being implemented as an extra `cluster` parameter in the database config. Just pass the cluster identification from CockroachDB Serverless.
-
-Sample config snippet:
+Cockroach Serverless requires you to provide a cluster with connection.
+Laravel doesn't provide this out of the box, so, it's being implemented as an extra `cluster` parameter in the 
+database config. Just pass the cluster identification from CockroachDB Serverless.
 
 ```php
 'crdb' => [
@@ -93,6 +98,12 @@ Sample config snippet:
     'sslmode' => 'prefer',
     'cluster' => env('COCKROACHDB_CLUSTER', ''),
 ]
+```
+
+You may also use a URL in the following format.
+
+```dotenv
+DATABASE_URL=cockroachdb://<username>:<password>@<host>:<port>/<database>?sslmode=verify-full&cluster=<cluster>
 ```
 
 ## Testing

@@ -8,21 +8,15 @@ use Illuminate\Database\Connectors\PostgresConnector;
 class CockroachDbConnector extends PostgresConnector implements ConnectorInterface
 {
     /**
-     * Usually the normal PostgresConnector would suffice for Cockroach,
-     * but Cockroach Serverless Clusters need an extra parameter `options`.
+     * When using CockroachDB serverless it's possible to apply a namespace to the name of the database
+     * which then allows for the service to recognise which cluster is being used.
      */
-    protected function getDsn(array $config)
+    protected function getDsn(array $config): string
     {
-        return $this->addClusterOptions(parent::getDsn($config), $config);
-    }
-
-    protected function addClusterOptions(string $dsn, array $config)
-    {
-        if (isset($config['cluster']) && ! empty($config['cluster'])) {
-            $clusterNameEscaped = addslashes($config['cluster']);
-            $dsn .= ";options='--cluster={$clusterNameEscaped}'";
+        if (($config['cluster'] ?? false) && $config['cluster'] != '') {
+            $config['database'] = implode('.', [$config['cluster'], $config['database']]);
         }
 
-        return $dsn;
+        return parent::getDsn($config);
     }
 }
