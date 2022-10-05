@@ -2,6 +2,7 @@
 
 namespace YlsIdeas\CockroachDb\Tests\Database;
 
+use Illuminate\Foundation\Application;
 use PHPUnit\Framework\TestCase;
 use YlsIdeas\CockroachDb\CockroachDbConnector;
 
@@ -20,7 +21,11 @@ class DatabaseCockroachDbConnectorTest extends TestCase
             ],
         );
 
-        $this->assertStringContainsString("dbname='cluster-1234.defaultdb'", $dsnConfig);
+        if (version_compare(Application::VERSION, '8.81.0', '>=')) {
+            $this->assertStringContainsString('dbname=\'cluster-1234.defaultdb\'', $dsnConfig);
+        } else {
+            $this->assertStringContainsString('dbname=cluster-1234.defaultdb', $dsnConfig);
+        }
     }
 
     public function test_dsn_params_without_cluster()
@@ -36,7 +41,11 @@ class DatabaseCockroachDbConnectorTest extends TestCase
             ],
         );
 
-        $this->assertStringContainsString("dbname='defaultdb'", $dsnConfig);
+        if (version_compare(Application::VERSION, '8.81.0', '>=')) {
+            $this->assertStringContainsString('dbname=\'defaultdb\'', $dsnConfig);
+        } else {
+            $this->assertStringContainsString('dbname=defaultdb', $dsnConfig);
+        }
     }
 
     protected function getConnector()
