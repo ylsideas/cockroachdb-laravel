@@ -13,6 +13,9 @@ class SchemaBuilderTest extends DatabaseTestCase
         Schema::dropAllViews();
     }
 
+    /**
+     * @doesNotPerformAssertions
+     */
     public function test_drop_all_tables()
     {
         $this->expectNotToPerformAssertions();
@@ -30,6 +33,9 @@ class SchemaBuilderTest extends DatabaseTestCase
         });
     }
 
+    /**
+     * @doesNotPerformAssertions
+     */
     public function test_drop_all_views()
     {
         $this->expectNotToPerformAssertions();
