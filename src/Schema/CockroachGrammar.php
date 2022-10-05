@@ -47,7 +47,7 @@ class CockroachGrammar extends PostgresGrammar
      */
     public function compileDropUnique(Blueprint $blueprint, Fluent $command)
     {
-        $index = $this->wrap($command->index);
+        $index = $this->wrap($command->get('index'));
 
         return "drop index {$this->wrapTable($blueprint)}@{$index} cascade";
     }
