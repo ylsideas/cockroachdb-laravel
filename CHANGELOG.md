@@ -2,6 +2,14 @@
 
 All notable changes to `cockroachdb-laravel` will be documented in this file.
 
+## v1.1.1 - 2022-10-05
+
+### What's Changed
+
+- CockroachDB Database URLs including serverless usage are now fully supported.
+
+**Full Changelog**: https://github.com/ylsideas/cockroachdb-laravel/compare/v1.1.0...v1.1.1
+
 ## v1.1.0 - 2022-09-26
 
 ### What's Changed
