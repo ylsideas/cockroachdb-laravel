@@ -115,8 +115,30 @@ Namely, cockroachdb is designed to be distributed so primary keys do not occur i
 Tests should also try to be compatible with not just the latest version of Laravel but across
 Laravel 8 and 9, this requires some tests to be skipped.
 
+You can run up a local cockroachDB test instance using Docker compose.
+```shell
+docker-composer up -d
+```
+
+If you need to you may run the docker compose file with different cockroachdb
+versions
+```shell
+VERSION=v21.2.15 docker-compose up -d
+```
+
+Then run the following PHP script to create a test database and user
+```shell
+php ./database.php
+```
+
+Afterwards you can run the test suite.
 ```bash
 composer test
+```
+
+To clean up, you only need stop docker composer.
+```shell
+docker-composer down
 ```
 
 ## Changelog
