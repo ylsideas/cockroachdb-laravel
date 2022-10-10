@@ -5,6 +5,7 @@
 [![GitHub Code Style Action Status](https://img.shields.io/github/workflow/status/ylsideas/cockroachdb-laravel/Check%20&%20fix%20styling?label=Code%20Style&style=flat-square)](https://github.com/ylsideas/cockroachdb-laravel/actions?query=workflow%3A"Check+%26+fix+styling"+branch%3Amain)
 [![Total Downloads](https://img.shields.io/packagist/dt/ylsideas/cockroachdb-laravel.svg?style=flat-square)](https://packagist.org/packages/ylsideas/cockroachdb-laravel)
 [![Help Fund](https://img.shields.io/github/sponsors/peterfox?style=flat-square)](https://github.com/sponsors/peterfox)
+
 A driver/grammar for Laravel that works with CockroachDB. While CockroachDB is compatible with Postgresql, this support
 is not 1 to 1 meaning you may run into issues, this driver hopes to resolve those problems as much as possible.
 
