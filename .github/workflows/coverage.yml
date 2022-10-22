@@ -1,0 +1,41 @@
+name: Coverage
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  generate-coverage:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Run CockroachDB Service
+        run: docker-compose up -d
+        env:
+          VERSION: v22.1.7
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.1
+          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, pdo_pgsql
+          tools: composer:v2
+          coverage: pcov
+
+      - uses: ramsey/composer-install@v2
+
+      - name: Configure Database
+        run: php ./database.php
+
+      - name: Execute tests
+        run: vendor/bin/pest
+
+      - uses: codecov/codecov-action@v3
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./build/logs/clover.xml
