@@ -13,17 +13,21 @@ jobs:
       fail-fast: true
       matrix:
         os: [ ubuntu-latest ]
-        php: [ 8.0, 8.1 ]
+        php: [ 8.0, 8.1, 8.2 ]
         laravel: [ 9.*, 8.* ]
         cockroachdb: [ v21.2.15, v22.1.7 ]
-        stability: [ prefer-stable, prefer-lowest ]
+        dependencies: [ stable, lowest ]
         include:
           - laravel: 9.*
             testbench: ^7.0
           - laravel: 8.*
             testbench: ^6.24
+          - php: 8.2
+            dependencies: lowest
+            dotenv: ^5.5.0
+            carbon: ^2.62.1
 
-    name: P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.stability }} - crdb.${{ matrix.cockroachdb }} ${{ matrix.os }}
+    name: P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.dependencies }} - crdb.${{ matrix.cockroachdb }} ${{ matrix.os }}
 
     steps:
       - name: Checkout code
@@ -47,10 +51,24 @@ jobs:
           echo "::add-matcher::${{ runner.tool_cache }}/php.json"
           echo "::add-matcher::${{ runner.tool_cache }}/phpunit.json"
 
+      - name: Require Laravel Version
+        run: >
+          composer require
+          "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}"
+          --no-interaction --no-update
+
+      - name: Require Minimum Packages for version
+        if: ${{ matrix.php == '8.2' && matrix.dependencies == 'lowest' }}
+        run: >
+          composer require
+          "vlucas/phpdotenv:${{ matrix.dotenv }}" "nesbot/carbon:${{ matrix.carbon }}"
+          --no-interaction --no-update
+
       - name: Install dependencies
-        run: |
-            composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" --no-interaction --no-update
-            composer update --${{ matrix.stability }} --prefer-dist --no-interaction
+        uses: ramsey/composer-install@v2
+        with:
+          dependency-versions: ${{ matrix.dependencies }}
+          composer-options: ${{ matrix.composer-options }}
 
       - name: Configure Database
         run: |
