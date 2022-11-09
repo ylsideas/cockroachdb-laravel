@@ -18,9 +18,7 @@
     "require": {
         "php": "^8.0",
         "spatie/laravel-package-tools": "^1.9.2",
-        "illuminate/contracts": "9.*|8.*",
-        "vlucas/phpdotenv": "^5.5.0",
-        "nesbot/carbon": "^2.62.1"
+        "illuminate/contracts": "9.*|8.*"
     },
     "require-dev": {
         "doctrine/dbal": "^3.2",
