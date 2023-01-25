@@ -10,14 +10,16 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     strategy:
-      fail-fast: true
+      fail-fast: false
       matrix:
         os: [ ubuntu-latest ]
         php: [ 8.0, 8.1, 8.2 ]
-        laravel: [ 9.*, 8.* ]
-        cockroachdb: [ v21.2.15, v22.1.7 ]
+        laravel: [ 10.*, 9.*, 8.* ]
+        cockroachdb: [ v21.2.15, v22.1.12 ]
         dependencies: [ stable, lowest ]
         include:
+          - laravel: 10.*
+            testbench: ^8.0
           - laravel: 9.*
             testbench: ^7.0
           - laravel: 8.*
@@ -26,6 +28,9 @@ jobs:
             dependencies: lowest
             dotenv: ^5.5.0
             carbon: ^2.62.1
+        exclude:
+          - laravel: 10.*
+            php: 8.0
 
     name: P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.dependencies }} - crdb.${{ matrix.cockroachdb }} ${{ matrix.os }}
 
