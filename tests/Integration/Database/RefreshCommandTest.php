@@ -8,9 +8,6 @@ use YlsIdeas\CockroachDb\CockroachDbServiceProvider;
 
 class RefreshCommandTest extends TestCase
 {
-    /**
-     * @doesNotPerformAssertions
-     */
     public function test_refresh_without_realpath()
     {
         $this->app->setBasePath(__DIR__);

@@ -1,6 +1,6 @@
 <?php
 
-namespace YlsIdeas\CockroachDb\Tests\Database;
+namespace YlsIdeas\CockroachDb\Tests\Database\Laravel10;
 
 use Illuminate\Database\Connection;
 use Illuminate\Database\Schema\Blueprint;
@@ -10,9 +10,20 @@ use Mockery as m;
 use PHPUnit\Framework\TestCase;
 use YlsIdeas\CockroachDb\Exceptions\FeatureNotSupportedException;
 use YlsIdeas\CockroachDb\Schema\CockroachGrammar;
+use YlsIdeas\CockroachDb\Tests\WithMultipleApplicationVersions;
 
 class DatabaseCockroachDbSchemaGrammarTest extends TestCase
 {
+    use WithMultipleApplicationVersions;
+
+    /**
+     * @before
+     */
+    public function onlyForLaravel10()
+    {
+        $this->skipIfOlderThan('10.0.0');
+    }
+
     protected function tearDown(): void
     {
         m::close();
@@ -28,7 +39,7 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
         $statements = $blueprint->toSql($this->getConnection(), $this->getGrammar());
 
         $this->assertCount(1, $statements);
-        $this->assertSame('create table "users" ("id" serial primary key not null, "email" varchar(255) not null, "name" varchar(255) collate "nb_NO.utf8" not null)', $statements[0]);
+        $this->assertSame('create table "users" ("id" serial not null primary key, "email" varchar(255) not null, "name" varchar(255) collate "nb_NO.utf8" not null)', $statements[0]);
 
         $blueprint = new Blueprint('users');
         $blueprint->increments('id');
@@ -36,7 +47,7 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
         $statements = $blueprint->toSql($this->getConnection(), $this->getGrammar());
 
         $this->assertCount(1, $statements);
-        $this->assertSame('alter table "users" add column "id" serial primary key not null, add column "email" varchar(255) not null', $statements[0]);
+        $this->assertSame('alter table "users" add column "id" serial not null primary key, add column "email" varchar(255) not null', $statements[0]);
     }
 
     public function test_create_table_with_auto_increment_starting_value()
@@ -49,7 +60,7 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
         $statements = $blueprint->toSql($this->getConnection(), $this->getGrammar());
 
         $this->assertCount(2, $statements);
-        $this->assertSame('create table "users" ("id" serial primary key not null, "email" varchar(255) not null, "name" varchar(255) collate "nb_NO.utf8" not null)', $statements[0]);
+        $this->assertSame('create table "users" ("id" serial not null primary key, "email" varchar(255) not null, "name" varchar(255) collate "nb_NO.utf8" not null)', $statements[0]);
         $this->assertSame('alter sequence users_id_seq restart with 1000', $statements[1]);
     }
 
@@ -62,7 +73,7 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
         $statements = $blueprint->toSql($this->getConnection(), $this->getGrammar());
 
         $this->assertCount(2, $statements);
-        $this->assertSame('create table "users" ("id" serial primary key not null, "email" varchar(255) not null)', $statements[0]);
+        $this->assertSame('create table "users" ("id" serial not null primary key, "email" varchar(255) not null)', $statements[0]);
         $this->assertSame('comment on column "users"."email" is \'my first comment\'', $statements[1]);
     }
 
@@ -76,7 +87,7 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
         $statements = $blueprint->toSql($this->getConnection(), $this->getGrammar());
 
         $this->assertCount(1, $statements);
-        $this->assertSame('create temporary table "users" ("id" serial primary key not null, "email" varchar(255) not null)', $statements[0]);
+        $this->assertSame('create temporary table "users" ("id" serial not null primary key, "email" varchar(255) not null)', $statements[0]);
     }
 
     public function test_drop_table()
@@ -301,7 +312,7 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
         $statements = $blueprint->toSql($this->getConnection(), $this->getGrammar());
 
         $this->assertCount(1, $statements);
-        $this->assertSame('alter table "users" add column "id" serial primary key not null', $statements[0]);
+        $this->assertSame('alter table "users" add column "id" serial not null primary key', $statements[0]);
     }
 
     public function test_adding_small_incrementing_id()
@@ -311,7 +322,7 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
         $statements = $blueprint->toSql($this->getConnection(), $this->getGrammar());
 
         $this->assertCount(1, $statements);
-        $this->assertSame('alter table "users" add column "id" smallserial primary key not null', $statements[0]);
+        $this->assertSame('alter table "users" add column "id" smallserial not null primary key', $statements[0]);
     }
 
     public function test_adding_medium_incrementing_id()
@@ -321,7 +332,7 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
         $statements = $blueprint->toSql($this->getConnection(), $this->getGrammar());
 
         $this->assertCount(1, $statements);
-        $this->assertSame('alter table "users" add column "id" serial primary key not null', $statements[0]);
+        $this->assertSame('alter table "users" add column "id" serial not null primary key', $statements[0]);
     }
 
     public function test_adding_id()
@@ -331,14 +342,14 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
         $statements = $blueprint->toSql($this->getConnection(), $this->getGrammar());
 
         $this->assertCount(1, $statements);
-        $this->assertSame('alter table "users" add column "id" bigserial primary key not null', $statements[0]);
+        $this->assertSame('alter table "users" add column "id" bigserial not null primary key', $statements[0]);
 
         $blueprint = new Blueprint('users');
         $blueprint->id('foo');
         $statements = $blueprint->toSql($this->getConnection(), $this->getGrammar());
 
         $this->assertCount(1, $statements);
-        $this->assertSame('alter table "users" add column "foo" bigserial primary key not null', $statements[0]);
+        $this->assertSame('alter table "users" add column "foo" bigserial not null primary key', $statements[0]);
     }
 
     public function test_adding_foreign_id()
@@ -369,7 +380,7 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
         $statements = $blueprint->toSql($this->getConnection(), $this->getGrammar());
 
         $this->assertCount(1, $statements);
-        $this->assertSame('alter table "users" add column "id" bigserial primary key not null', $statements[0]);
+        $this->assertSame('alter table "users" add column "id" bigserial not null primary key', $statements[0]);
     }
 
     public function test_adding_string()
@@ -420,7 +431,7 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
         $statements = $blueprint->toSql($this->getConnection(), $this->getGrammar());
 
         $this->assertCount(1, $statements);
-        $this->assertSame('alter table "users" add column "foo" bigserial primary key not null', $statements[0]);
+        $this->assertSame('alter table "users" add column "foo" bigserial not null primary key', $statements[0]);
     }
 
     public function test_adding_integer()
@@ -437,7 +448,7 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
         $statements = $blueprint->toSql($this->getConnection(), $this->getGrammar());
 
         $this->assertCount(1, $statements);
-        $this->assertSame('alter table "users" add column "foo" serial primary key not null', $statements[0]);
+        $this->assertSame('alter table "users" add column "foo" serial not null primary key', $statements[0]);
     }
 
     public function test_adding_medium_integer()
@@ -454,7 +465,7 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
         $statements = $blueprint->toSql($this->getConnection(), $this->getGrammar());
 
         $this->assertCount(1, $statements);
-        $this->assertSame('alter table "users" add column "foo" serial primary key not null', $statements[0]);
+        $this->assertSame('alter table "users" add column "foo" serial not null primary key', $statements[0]);
     }
 
     public function test_adding_tiny_integer()
@@ -471,7 +482,7 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
         $statements = $blueprint->toSql($this->getConnection(), $this->getGrammar());
 
         $this->assertCount(1, $statements);
-        $this->assertSame('alter table "users" add column "foo" smallserial primary key not null', $statements[0]);
+        $this->assertSame('alter table "users" add column "foo" smallserial not null primary key', $statements[0]);
     }
 
     public function test_adding_small_integer()
@@ -488,7 +499,7 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
         $statements = $blueprint->toSql($this->getConnection(), $this->getGrammar());
 
         $this->assertCount(1, $statements);
-        $this->assertSame('alter table "users" add column "foo" smallserial primary key not null', $statements[0]);
+        $this->assertSame('alter table "users" add column "foo" smallserial not null primary key', $statements[0]);
     }
 
     public function test_adding_float()
@@ -801,31 +812,66 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
         ], $statements);
     }
 
-    public function test_adding_generated_as()
+//    public function test_adding_generated_as()
+//    {
+//        $blueprint = new Blueprint('users');
+//        $blueprint->increments('foo')->generatedAs();
+//        $statements = $blueprint->toSql($this->getConnection(), $this->getGrammar());
+//        $this->assertCount(1, $statements);
+//        $this->assertSame('alter table "users" add column "foo" integer not null generated by default as identity primary key', $statements[0]);
+//        // With always modifier
+//        $blueprint = new Blueprint('users');
+//        $blueprint->increments('foo')->generatedAs()->always();
+//        $statements = $blueprint->toSql($this->getConnection(), $this->getGrammar());
+//        $this->assertCount(1, $statements);
+//        $this->assertSame('alter table "users" add column "foo" integer not null generated always as identity primary key', $statements[0]);
+//        // With sequence options
+//        $blueprint = new Blueprint('users');
+//        $blueprint->increments('foo')->generatedAs('increment by 10 start with 100');
+//        $statements = $blueprint->toSql($this->getConnection(), $this->getGrammar());
+//        $this->assertCount(1, $statements);
+//        $this->assertSame('alter table "users" add column "foo" integer not null generated by default as identity (increment by 10 start with 100) primary key', $statements[0]);
+//        // Not a primary key
+//        $blueprint = new Blueprint('users');
+//        $blueprint->integer('foo')->generatedAs();
+//        $statements = $blueprint->toSql($this->getConnection(), $this->getGrammar());
+//        $this->assertCount(1, $statements);
+//        $this->assertSame('alter table "users" add column "foo" integer not null generated by default as identity', $statements[0]);
+//    }
+
+    /**
+     * @dataProvider generatedAsStatements
+     */
+    public function test_adding_generated_as(callable $alter, string $expected)
     {
         $blueprint = new Blueprint('users');
-        $blueprint->increments('foo')->generatedAs();
+        $alter($blueprint);
         $statements = $blueprint->toSql($this->getConnection(), $this->getGrammar());
         $this->assertCount(1, $statements);
-        $this->assertSame('alter table "users" add column "foo" integer generated by default as identity primary key not null', $statements[0]);
-        // With always modifier
-        $blueprint = new Blueprint('users');
-        $blueprint->increments('foo')->generatedAs()->always();
-        $statements = $blueprint->toSql($this->getConnection(), $this->getGrammar());
-        $this->assertCount(1, $statements);
-        $this->assertSame('alter table "users" add column "foo" integer generated always as identity primary key not null', $statements[0]);
-        // With sequence options
-        $blueprint = new Blueprint('users');
-        $blueprint->increments('foo')->generatedAs('increment by 10 start with 100');
-        $statements = $blueprint->toSql($this->getConnection(), $this->getGrammar());
-        $this->assertCount(1, $statements);
-        $this->assertSame('alter table "users" add column "foo" integer generated by default as identity (increment by 10 start with 100) primary key not null', $statements[0]);
-        // Not a primary key
-        $blueprint = new Blueprint('users');
-        $blueprint->integer('foo')->generatedAs();
-        $statements = $blueprint->toSql($this->getConnection(), $this->getGrammar());
-        $this->assertCount(1, $statements);
-        $this->assertSame('alter table "users" add column "foo" integer generated by default as identity not null', $statements[0]);
+        $this->assertSame($expected, $statements[0]);
+    }
+
+    public function generatedAsStatements(): \Generator
+    {
+        yield 'default' => [
+            fn (Blueprint $blueprint) => $blueprint->increments('foo')->generatedAs(),
+            'alter table "users" add column "foo" integer not null generated by default as identity primary key',
+        ];
+
+        yield 'With always modifier' => [
+            fn (Blueprint $blueprint) => $blueprint->increments('foo')->generatedAs()->always(),
+            'alter table "users" add column "foo" integer not null generated always as identity primary key',
+        ];
+
+        yield 'With sequence options' => [
+            fn (Blueprint $blueprint) => $blueprint->increments('foo')->generatedAs('increment by 10 start with 100'),
+            'alter table "users" add column "foo" integer not null generated by default as identity (increment by 10 start with 100) primary key',
+        ];
+
+        yield 'Not a primary key' => [
+            fn (Blueprint $blueprint) => $blueprint->integer('foo')->generatedAs(),
+            'alter table "users" add column "foo" integer not null generated by default as identity',
+        ];
     }
 
     public function test_adding_virtual_as()
