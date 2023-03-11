@@ -1,8 +1,8 @@
 # CockroachDB Driver for Laravel
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/ylsideas/cockroachdb-laravel.svg?style=flat-square)](https://packagist.org/packages/ylsideas/cockroachdb-laravel)
-[![GitHub Tests Action Status](https://img.shields.io/github/workflow/status/ylsideas/cockroachdb-laravel/run-tests?label=tests&style=flat-square)](https://github.com/ylsideas/cockroachdb-laravel/actions?query=workflow%3Arun-tests+branch%3Amain)
-[![GitHub Code Style Action Status](https://img.shields.io/github/workflow/status/ylsideas/cockroachdb-laravel/Check%20&%20fix%20styling?label=Code%20Style&style=flat-square)](https://github.com/ylsideas/cockroachdb-laravel/actions?query=workflow%3A"Check+%26+fix+styling"+branch%3Amain)
+[![PHPUnit Tests](https://github.com/ylsideas/cockroachdb-laravel/actions/workflows/run-tests.yml/badge.svg)](https://github.com/ylsideas/cockroachdb-laravel/actions/workflows/run-tests.yml)[![GitHub Code Style Action Status](https://img.shields.io/github/workflow/status/ylsideas/cockroachdb-laravel/Check%20&%20fix%20styling?label=Code%20Style&style=flat-square)](https://github.com/ylsideas/cockroachdb-laravel/actions?query=workflow%3A"Check+%26+fix+styling"+branch%3Amain)
+[![Check & fix styling](https://github.com/ylsideas/cockroachdb-laravel/actions/workflows/pint.yml/badge.svg)](https://github.com/ylsideas/cockroachdb-laravel/actions/workflows/pint.yml)
 [![Total Downloads](https://img.shields.io/packagist/dt/ylsideas/cockroachdb-laravel.svg?style=flat-square)](https://packagist.org/packages/ylsideas/cockroachdb-laravel)
 [![codecov](https://codecov.io/github/ylsideas/cockroachdb-laravel/branch/main/graph/badge.svg?token=GCCY3KZHXQ)](https://codecov.io/github/ylsideas/cockroachdb-laravel)
 [![Help Fund](https://img.shields.io/github/sponsors/peterfox?style=flat-square)](https://github.com/sponsors/peterfox)
@@ -10,7 +10,7 @@
 A driver/grammar for Laravel that works with CockroachDB. While CockroachDB is compatible with Postgresql, this support
 is not 1 to 1 meaning you may run into issues, this driver hopes to resolve those problems as much as possible.
 
-Laravel 8 and 9 are both supported and tested against CockroachDB 2.5.
+Laravel 8 through to Laravel 10 is supported and tested against CockroachDB 2.5.
 
 ### Supporting Open Source
 
@@ -115,7 +115,7 @@ by lifting the tests straight from laravel/framework. This does provide some com
 Namely, cockroachdb is designed to be distributed so primary keys do not occur in sequence.
 
 Tests should also try to be compatible with not just the latest version of Laravel but across
-Laravel 8 and 9, this requires some tests to be skipped.
+Laravel 8, 9 and 10, this requires some tests to be skipped.
 
 You can run up a local cockroachDB test instance using Docker compose.
 ```shell
