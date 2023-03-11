@@ -2,6 +2,14 @@
 
 All notable changes to `cockroachdb-laravel` will be documented in this file.
 
+## v1.2.0 - Laravel 10 Support - 2023-03-11
+
+### What's Changed
+
+- Adds Laravel 10 support by @peterfox in https://github.com/ylsideas/cockroachdb-laravel/pull/17
+
+**Full Changelog**: https://github.com/ylsideas/cockroachdb-laravel/compare/v1.1.1...v1.2.0
+
 ## v1.1.1 - 2022-10-05
 
 ### What's Changed
