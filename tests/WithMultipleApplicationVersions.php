@@ -2,7 +2,7 @@
 
 namespace YlsIdeas\CockroachDb\Tests;
 
-use Illuminate\Support\Facades\App;
+use Illuminate\Foundation\Application;
 
 trait WithMultipleApplicationVersions
 {
@@ -15,14 +15,14 @@ trait WithMultipleApplicationVersions
 
     public function skipIfOlderThan(string $version): void
     {
-        if (version_compare(App::version(), $version, '<')) {
+        if (version_compare(Application::VERSION, $version, '<')) {
             $this->markTestSkipped('Not included before '. $version);
         }
     }
 
     public function skipIfNewerThan(string $version): void
     {
-        if (version_compare(App::version(), $version, '>=')) {
+        if (version_compare(Application::VERSION, $version, '>=')) {
             $this->markTestSkipped('Legacy test pre '. $version);
         }
     }
@@ -34,8 +34,8 @@ trait WithMultipleApplicationVersions
      * @param string $operator
      * @return mixed
      */
-    public function executeOnVersion(string $version, mixed $onTrue, mixed $onFalse, string $operator = '>=')
+    public function executeOnVersion(string $version, mixed $onTrue, mixed $onFalse, string $operator = '>='): mixed
     {
-        return version_compare(App::version(), $version, $operator) ? value($onTrue) : value($onFalse);
+        return version_compare(Application::VERSION, $version, $operator) ? value($onTrue) : value($onFalse);
     }
 }
