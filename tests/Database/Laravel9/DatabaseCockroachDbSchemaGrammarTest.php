@@ -2,7 +2,6 @@
 
 namespace YlsIdeas\CockroachDb\Tests\Database\Laravel9;
 
-use Composer\InstalledVersions;
 use Illuminate\Database\Connection;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Schema\ForeignIdColumnDefinition;
