@@ -21,8 +21,8 @@ class CockroachGrammar extends PostgresGrammar
     public function compileTables()
     {
         return 'select c.relname as name, n.nspname as schema, -1 as size, '
-            . "obj_description(c.oid, 'pg_class') as comment from pg_class c, pg_namespace n "
-            . "where c.relkind = 'r' and n.oid = c.relnamespace "
+            . 'obj_description(c.oid, \'pg_class\') as comment from pg_class c, pg_namespace n '
+            . 'where c.relkind = \'r\' and n.oid = c.relnamespace '
             . 'order by c.relname';
     }
 
