@@ -2,6 +2,18 @@
 
 All notable changes to `cockroachdb-laravel` will be documented in this file.
 
+## v1.2.1 - 2023-12-02
+
+### What's Changed
+
+* fix: Any artisan command that drops tables erroring with unknown function: pg_total_relation_size() by @wsamoht in https://github.com/ylsideas/cockroachdb-laravel/pull/26
+
+### New Contributors
+
+* @wsamoht made their first contribution in https://github.com/ylsideas/cockroachdb-laravel/pull/26
+
+**Full Changelog**: https://github.com/ylsideas/cockroachdb-laravel/compare/v1.2.0...v1.2.1
+
 ## v1.2.0 - Laravel 10 Support - 2023-03-11
 
 ### What's Changed
