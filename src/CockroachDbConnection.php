@@ -6,12 +6,12 @@ use Illuminate\Database\ConnectionInterface;
 use Illuminate\Database\Grammar;
 use Illuminate\Database\PDO\PostgresDriver;
 use Illuminate\Database\PostgresConnection;
-use Illuminate\Database\Schema\PostgresSchemaState;
 use Illuminate\Filesystem\Filesystem;
 use YlsIdeas\CockroachDb\Builder\CockroachDbBuilder;
 use YlsIdeas\CockroachDb\Processor\CockroachDbProcessor;
 use YlsIdeas\CockroachDb\Query\CockroachGrammar as QueryGrammar;
 use YlsIdeas\CockroachDb\Schema\CockroachGrammar as SchemaGrammar;
+use YlsIdeas\CockroachDb\Schema\CockroachSchemaState;
 
 class CockroachDbConnection extends PostgresConnection implements ConnectionInterface
 {
@@ -54,11 +54,11 @@ class CockroachDbConnection extends PostgresConnection implements ConnectionInte
      *
      * @param  \Illuminate\Filesystem\Filesystem|null  $files
      * @param  callable|null  $processFactory
-     * @return \Illuminate\Database\Schema\PostgresSchemaState
+     * @return \YlsIdeas\CockroachDb\Schema\CockroachSchemaState
      */
-    public function getSchemaState(Filesystem $files = null, callable $processFactory = null): PostgresSchemaState
+    public function getSchemaState(Filesystem $files = null, callable $processFactory = null): CockroachSchemaState
     {
-        return new PostgresSchemaState($this, $files, $processFactory);
+        return new CockroachSchemaState($this, $files, $processFactory);
     }
 
     /**
