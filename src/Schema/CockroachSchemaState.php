@@ -4,6 +4,7 @@ namespace YlsIdeas\CockroachDb\Schema;
 
 use Illuminate\Database\Connection;
 use Illuminate\Database\Schema\SchemaState;
+use Illuminate\Support\Facades\File;
 
 class CockroachSchemaState extends SchemaState
 {
@@ -21,16 +22,16 @@ class CockroachSchemaState extends SchemaState
         // tables
         $query = $pdo->query("SHOW CREATE ALL TABLES");
         $query->execute();
-        file_put_contents($path, $query->fetchAll(\PDO::FETCH_COLUMN));
+        File::put($path, $query->fetchAll(\PDO::FETCH_COLUMN));
 
         // migration statuses
-        $query = $pdo->query(sprintf('Select * from "%s"', $this->migrationTable));
+        $query = $pdo->query(sprintf('select * from "%s"', $this->migrationTable));
         $query->execute();
 
         $migrations = [];
         while ($migration = $query->fetch(\PDO::FETCH_ASSOC)) {
             $migrations[] = sprintf(
-                'Insert into "%s" (%s) values (%s);',
+                'insert into "%s" (%s) values (%s);',
                 $this->migrationTable,
                 join(
                     ', ',
@@ -40,7 +41,7 @@ class CockroachSchemaState extends SchemaState
             );
         }
 
-        file_put_contents($path, "\n\n" . join("\n", $migrations) . "\n\n", \FILE_APPEND);
+        File::put($path, "\n\n" . join("\n", $migrations) . "\n\n", \FILE_APPEND);
     }
 
     /**
@@ -52,6 +53,6 @@ class CockroachSchemaState extends SchemaState
     public function load($path)
     {
         $pdo = $this->connection->getPdo();
-        $pdo->exec(file_get_contents($path));
+        $pdo->exec(File::get($path));
     }
 }
