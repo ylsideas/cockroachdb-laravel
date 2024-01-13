@@ -4,7 +4,8 @@
     "keywords": [
         "ylsideas",
         "laravel",
-        "cockroachdb-laravel"
+        "cockroachdb-laravel",
+        "cockroachdb"
     ],
     "homepage": "https://github.com/ylsideas/cockroachdb-laravel",
     "license": "MIT",
