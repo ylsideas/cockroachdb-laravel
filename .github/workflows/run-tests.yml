@@ -32,9 +32,7 @@ jobs:
             dependencies: lowest
             dotenv: ^5.5.0
             carbon: ^2.62.1
-        exclude:
-          - laravel: 10.*
-            php: 8.0
+
 
     name: P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.dependencies }} - crdb.${{ matrix.cockroachdb }} ${{ matrix.os }}
 
@@ -67,7 +65,7 @@ jobs:
           --no-interaction --no-update
 
       - name: Require Minimum Packages for version
-        if: ${{ matrix.php == '8.2' && matrix.dependencies == 'lowest' }}
+        if: ${{ (matrix.php == '8.2' || matrix.php == '8.3') && matrix.dependencies == 'lowest' }}
         run: >
           composer require
           "vlucas/phpdotenv:${{ matrix.dotenv }}" "nesbot/carbon:${{ matrix.carbon }}"
