@@ -3,7 +3,6 @@
 namespace YlsIdeas\CockroachDb\Tests\Integration\Database;
 
 use Illuminate\Support\Facades\File;
-use YlsIdeas\CockroachDb\CockroachDbConnection;
 
 class DatabaseCockroachDbSchemaStateTest extends DatabaseTestCase
 {
