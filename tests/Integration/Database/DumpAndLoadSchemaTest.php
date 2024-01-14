@@ -64,7 +64,7 @@ class DumpAndLoadSchemaTest extends DatabaseTestCase
 
         $this->artisan('migrate', [
             ...$options,
-            ...['--schema-path' => database_path('schema-test/crdb-schema.sql')]
+            ...['--schema-path' => database_path('schema-test/crdb-schema.sql')],
         ]);
 
         $this->assertDatabaseCount('migrations', 2);

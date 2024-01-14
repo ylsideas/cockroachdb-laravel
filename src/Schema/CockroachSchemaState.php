@@ -5,7 +5,6 @@ namespace YlsIdeas\CockroachDb\Schema;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Database\Connection;
 use Illuminate\Database\Schema\SchemaState;
-use Illuminate\Support\Str;
 
 class CockroachSchemaState extends SchemaState
 {
