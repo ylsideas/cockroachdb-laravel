@@ -2,9 +2,10 @@
 
 namespace YlsIdeas\CockroachDb\Schema;
 
+use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Database\Connection;
 use Illuminate\Database\Schema\SchemaState;
-use Illuminate\Support\Facades\File;
+use Illuminate\Support\Str;
 
 class CockroachSchemaState extends SchemaState
 {
@@ -15,44 +16,45 @@ class CockroachSchemaState extends SchemaState
      * @param  string  $path
      * @return void
      */
-    public function dump(Connection $connection, $path)
+    public function dump(Connection $connection, $path): void
     {
-        $pdo = $connection->getPdo();
-
-        // tables
-        $query = $pdo->query("SHOW CREATE ALL TABLES");
-        $query->execute();
-        File::put($path, $query->fetchAll(\PDO::FETCH_COLUMN));
-
-        // migration statuses
-        $query = $pdo->query(sprintf('select * from "%s"', $this->migrationTable));
+        $query = $connection->getPdo()->query('SHOW CREATE ALL TABLES');
         $query->execute();
 
-        $migrations = [];
-        while ($migration = $query->fetch(\PDO::FETCH_ASSOC)) {
-            $migrations[] = sprintf(
-                'insert into "%s" (%s) values (%s);',
-                $this->migrationTable,
-                join(
-                    ', ',
-                    array_map(fn ($value) => '"' . $value . '"', array_keys($migration))
-                ),
-                join(', ', array_map(fn ($value) => is_string($value) ? "'" . $value . "'" : $value, $migration))
-            );
+        $file = collect($query->fetchAll(\PDO::FETCH_COLUMN))->join(PHP_EOL);
+
+        $migrationRows = $connection
+            ->table($this->migrationTable)
+            ->get()
+            ->map(fn (\stdClass $row) => (array) $row);
+
+        $statements = $connection->pretend(function (Connection $connection) use ($migrationRows) {
+            $connection->table($this->migrationTable)
+                ->insert($migrationRows->all());
+        });
+
+        if ($statements !== []) {
+            $file .= PHP_EOL . $statements[0]['query'];
         }
 
-        File::put($path, "\n\n" . join("\n", $migrations) . "\n\n", \FILE_APPEND);
+        $this->files->put($path, $file);
     }
 
     /**
      * Load the given schema file into the database.
      *
-     * @param  string  $path
+     * @param string $path
      * @return void
+     * @throws FileNotFoundException
      */
-    public function load($path)
+    public function load($path): void
     {
+        $fileContents = $this->files->get($path);
+        if (Str::squish($fileContents) === '') {
+            throw new \RuntimeException(sprintf('file %s is empty', $path));
+        }
+
         $pdo = $this->connection->getPdo();
-        $pdo->exec(File::get($path));
+        $pdo->exec($fileContents);
     }
 }
