@@ -2,6 +2,15 @@
 
 All notable changes to `cockroachdb-laravel` will be documented in this file.
 
+## v1.3.0 - 2024-01-14
+
+### What's Changed
+
+* Added Schema Dump functionality by @peterfox in https://github.com/ylsideas/cockroachdb-laravel/pull/30
+* Drops support for PHP 8.0 and Laravel 8 by @peterfox in https://github.com/ylsideas/cockroachdb-laravel/pull/30
+
+**Full Changelog**: https://github.com/ylsideas/cockroachdb-laravel/compare/v1.2.1...v1.3.0
+
 ## v1.2.1 - 2023-12-02
 
 ### What's Changed
