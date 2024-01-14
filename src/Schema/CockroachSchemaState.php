@@ -50,7 +50,7 @@ class CockroachSchemaState extends SchemaState
     public function load($path): void
     {
         $fileContents = $this->files->get($path);
-        if (Str::squish($fileContents) === '') {
+        if ($fileContents === '') {
             throw new \RuntimeException(sprintf('file %s is empty', $path));
         }
 
