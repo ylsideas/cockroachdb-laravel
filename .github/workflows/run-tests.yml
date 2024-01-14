@@ -24,8 +24,6 @@ jobs:
             testbench: ^8.0
           - laravel: 9.*
             testbench: ^7.0
-          - laravel: 8.*
-            testbench: ^6.24
           - php: 8.2
             dependencies: lowest
             dotenv: ^5.5.0
