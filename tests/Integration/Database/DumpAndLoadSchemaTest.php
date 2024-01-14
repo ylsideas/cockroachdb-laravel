@@ -4,7 +4,7 @@ namespace YlsIdeas\CockroachDb\Tests\Integration\Database;
 
 use Illuminate\Support\Facades\File;
 
-class DatabaseCockroachDbSchemaStateTest extends DatabaseTestCase
+class DumpAndLoadSchemaTest extends DatabaseTestCase
 {
     protected function setUp(): void
     {
@@ -38,6 +38,8 @@ class DatabaseCockroachDbSchemaStateTest extends DatabaseTestCase
 
     public function test_importing_an_sql_dump()
     {
+        // Make sure the schema direct exists first
+        File::ensureDirectoryExists(database_path('schema'));
         File::copy(__DIR__ . '/stubs/schema-dump.sql', database_path('schema/crdb-schema.sql'));
 
         if ($this->app['config']->get('database.default') !== 'testing') {
