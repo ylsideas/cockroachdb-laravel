@@ -6,11 +6,13 @@
 [![Total Downloads](https://img.shields.io/packagist/dt/ylsideas/cockroachdb-laravel.svg?style=flat-square)](https://packagist.org/packages/ylsideas/cockroachdb-laravel)
 [![codecov](https://codecov.io/github/ylsideas/cockroachdb-laravel/branch/main/graph/badge.svg?token=GCCY3KZHXQ)](https://codecov.io/github/ylsideas/cockroachdb-laravel)
 [![Help Fund](https://img.shields.io/github/sponsors/peterfox?style=flat-square)](https://github.com/sponsors/peterfox)
+[![License](http://poser.pugx.org/ylsideas/cockroachdb-laravel/license)](https://packagist.org/packages/ylsideas/cockroachdb-laravel)
+[![PHP Version Require](http://poser.pugx.org/ylsideas/cockroachdb-laravel/require/php)](https://packagist.org/packages/ylsideas/cockroachdb-laravel)
 
 A driver/grammar for Laravel that works with CockroachDB. While CockroachDB is compatible with Postgresql, this support
 is not 1 to 1 meaning you may run into issues, this driver hopes to resolve those problems as much as possible.
 
-Laravel 8 through to Laravel 10 is supported and tested against CockroachDB 2.5.
+Laravel 9 through to Laravel 10 is supported and tested against CockroachDB 22 & 23.
 
 ### Supporting Open Source
 
@@ -84,6 +86,10 @@ Cockroach Serverless requires you to provide a cluster with connection.
 Laravel doesn't provide this out of the box, so, it's being implemented as an extra `cluster` parameter in the 
 database config. Just pass the cluster identification from CockroachDB Serverless.
 
+### Schema Dumps
+You may use schema dumps. I'm not 100% sure the functionality is correct in line with other drivers.
+Please raise an issue if it isn't working as expect for you.
+
 ```php
 'crdb' => [
     'driver' => 'crdb',
@@ -125,7 +131,7 @@ docker-composer up -d
 If you need to you may run the docker compose file with different cockroachdb
 versions
 ```shell
-VERSION=v21.2.15 docker-compose up -d
+VERSION=v23.1.13 docker-compose up -d
 ```
 
 Then run the following PHP script to create a test database and user

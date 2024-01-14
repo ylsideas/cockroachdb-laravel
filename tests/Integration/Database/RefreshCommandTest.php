@@ -13,7 +13,7 @@ class RefreshCommandTest extends TestCase
         $this->app->setBasePath(__DIR__);
 
         $options = [
-            '--path' => 'stubs/',
+            '--path' => 'stubs/simple-migrations',
         ];
 
         $this->migrateRefreshWith($options);
@@ -22,7 +22,7 @@ class RefreshCommandTest extends TestCase
     public function test_refresh_with_realpath()
     {
         $options = [
-            '--path' => realpath(__DIR__.'/stubs/'),
+            '--path' => realpath(__DIR__.'/stubs/simple-migrations'),
             '--realpath' => true,
         ];
 

@@ -5,6 +5,8 @@ on:
     paths:
       - '**.php'
       - 'phpstan.neon.dist'
+  pull_request:
+    branches: [ main ]
 
 jobs:
   phpstan:
@@ -16,7 +18,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 8.2
+          php-version: 8.3
           coverage: none
 
       - name: Install composer dependencies

@@ -3,72 +3,70 @@
 namespace YlsIdeas\CockroachDb;
 
 use Illuminate\Database\ConnectionInterface;
-use Illuminate\Database\Grammar;
+use Illuminate\Database\Grammar as BaseGrammar;
 use Illuminate\Database\PDO\PostgresDriver;
 use Illuminate\Database\PostgresConnection;
-use Illuminate\Database\Schema\PostgresSchemaState;
 use Illuminate\Filesystem\Filesystem;
-use YlsIdeas\CockroachDb\Builder\CockroachDbBuilder;
-use YlsIdeas\CockroachDb\Processor\CockroachDbProcessor;
+use YlsIdeas\CockroachDb\Builder\CockroachDbBuilder as DbBuilder;
+use YlsIdeas\CockroachDb\Processor\CockroachDbProcessor as DbProcessor;
 use YlsIdeas\CockroachDb\Query\CockroachGrammar as QueryGrammar;
 use YlsIdeas\CockroachDb\Schema\CockroachGrammar as SchemaGrammar;
+use YlsIdeas\CockroachDb\Schema\CockroachSchemaState as SchemaState;
 
 class CockroachDbConnection extends PostgresConnection implements ConnectionInterface
 {
     /**
      * Get the default query grammar instance.
      *
-     * @return Grammar
+     * @return BaseGrammar
      */
-    protected function getDefaultQueryGrammar()
+    protected function getDefaultQueryGrammar(): BaseGrammar
     {
-        return $this->withTablePrefix(new QueryGrammar());
+        return $this->withTablePrefix($this->setConnection(new QueryGrammar()));
     }
 
     /**
      * Get a schema builder instance for the connection.
      *
-     * @return \Illuminate\Database\Schema\PostgresBuilder
+     * @return DbBuilder
      */
-    public function getSchemaBuilder()
+    public function getSchemaBuilder(): DbBuilder
     {
         if ($this->schemaGrammar === null) {
             $this->useDefaultSchemaGrammar();
         }
 
-        return new CockroachDbBuilder($this);
+        return new DbBuilder($this);
     }
 
     /**
      * Get the default schema grammar instance.
      *
-     * @return Grammar
+     * @return BaseGrammar
      */
-    protected function getDefaultSchemaGrammar(): Grammar
+    protected function getDefaultSchemaGrammar(): BaseGrammar
     {
-        return $this->withTablePrefix(new SchemaGrammar());
+        return $this->withTablePrefix($this->setConnection(new SchemaGrammar()));
     }
 
     /**
      * Get the schema state for the connection.
-     *
-     * @param  \Illuminate\Filesystem\Filesystem|null  $files
-     * @param  callable|null  $processFactory
-     * @return \Illuminate\Database\Schema\PostgresSchemaState
+     * @return SchemaState
+     * @phpstan-ignore-next-line base class has fixed type that we can't correct
      */
-    public function getSchemaState(Filesystem $files = null, callable $processFactory = null): PostgresSchemaState
+    public function getSchemaState(Filesystem $files = null, callable $processFactory = null)
     {
-        return new PostgresSchemaState($this, $files, $processFactory);
+        return new SchemaState($this, $files, $processFactory);
     }
 
     /**
      * Get the default post processor instance.
      *
-     * @return CockroachDbProcessor
+     * @return DbProcessor
      */
-    protected function getDefaultPostProcessor(): CockroachDbProcessor
+    protected function getDefaultPostProcessor(): DbProcessor
     {
-        return new CockroachDbProcessor();
+        return new DbProcessor();
     }
 
     /**
@@ -79,5 +77,17 @@ class CockroachDbConnection extends PostgresConnection implements ConnectionInte
     protected function getDoctrineDriver()
     {
         return new PostgresDriver();
+    }
+
+    /**
+     * Required to set the connection. This isn't compatible with older Laravel versions
+     */
+    protected function setConnection(BaseGrammar $grammar): BaseGrammar
+    {
+        if (method_exists($grammar, 'setConnection')) {
+            return $grammar->setConnection($this);
+        }
+
+        return $grammar;
     }
 }

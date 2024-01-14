@@ -17,7 +17,7 @@ class MigratorEventsTest extends TestCase
     protected function migrateOptions()
     {
         return [
-            '--path' => realpath(__DIR__.'/stubs/'),
+            '--path' => realpath(__DIR__.'/stubs/simple-migrations'),
             '--realpath' => true,
         ];
     }
