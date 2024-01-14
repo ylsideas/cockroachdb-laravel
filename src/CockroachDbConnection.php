@@ -52,6 +52,7 @@ class CockroachDbConnection extends PostgresConnection implements ConnectionInte
     /**
      * Get the schema state for the connection.
      * @return SchemaState
+     * @phpstan-ignore-next-line base class has fixed type that we can't correct
      */
     public function getSchemaState(Filesystem $files = null, callable $processFactory = null)
     {
