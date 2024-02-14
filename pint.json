@@ -1,6 +1,7 @@
 {
     "preset": "psr12",
     "rules": {
+        "@PHP83Migration": true,
         "array_syntax": {
             "syntax": "short"
         },

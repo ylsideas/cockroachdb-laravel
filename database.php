@@ -17,12 +17,12 @@ try {
     $pdo = new PDO($dsn, $user, $pass, $options);
 
     $pdo->exec(<<<heredoc
-DROP DATABASE IF EXISTS forge;
-DROP USER IF EXISTS forge;
-CREATE DATABASE forge;
-CREATE USER forge;
-GRANT ALL PRIVILEGES ON DATABASE forge TO forge;
-heredoc);
+        DROP DATABASE IF EXISTS forge;
+        DROP USER IF EXISTS forge;
+        CREATE DATABASE forge;
+        CREATE USER forge;
+        GRANT ALL PRIVILEGES ON DATABASE forge TO forge;
+        heredoc);
 
     $statements = [
         'SET CLUSTER SETTING kv.raft_log.disable_synchronization_unsafe = true;',
