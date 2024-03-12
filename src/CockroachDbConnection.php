@@ -4,10 +4,10 @@ namespace YlsIdeas\CockroachDb;
 
 use Illuminate\Database\ConnectionInterface;
 use Illuminate\Database\Grammar as BaseGrammar;
-use Illuminate\Database\PDO\PostgresDriver;
 use Illuminate\Database\PostgresConnection;
 use Illuminate\Filesystem\Filesystem;
 use YlsIdeas\CockroachDb\Builder\CockroachDbBuilder as DbBuilder;
+use YlsIdeas\CockroachDb\Driver\CockroachDBDriver;
 use YlsIdeas\CockroachDb\Processor\CockroachDbProcessor as DbProcessor;
 use YlsIdeas\CockroachDb\Query\CockroachGrammar as QueryGrammar;
 use YlsIdeas\CockroachDb\Schema\CockroachGrammar as SchemaGrammar;
@@ -76,7 +76,7 @@ class CockroachDbConnection extends PostgresConnection implements ConnectionInte
      */
     protected function getDoctrineDriver()
     {
-        return new PostgresDriver();
+        return new CockroachDBDriver();
     }
 
     /**
