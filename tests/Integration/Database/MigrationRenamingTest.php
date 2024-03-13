@@ -30,10 +30,10 @@ class MigrationRenamingTest extends DatabaseTestCase
             $table->renameColumn('column_x', 'column_y');
         });
 
-        $tableColumns = Schema::getColumns(self::TEST_TABLE);
+        $tableColumns = Schema::getColumnListing(self::TEST_TABLE);
         $this->assertCount(2, $tableColumns);
-        $this->assertEquals('id', $tableColumns[0]['name']);
-        $this->assertEquals('column_y', $tableColumns[1]['name']);
+        $this->assertEquals('id', $tableColumns[0]);
+        $this->assertEquals('column_y', $tableColumns[1]);
     }
 
     public function test_rename_column_with_any_previously_deleted_one(): void
@@ -46,10 +46,10 @@ class MigrationRenamingTest extends DatabaseTestCase
             $table->renameColumn('column_x', 'column_z');
         });
 
-        $tableColumns = Schema::getColumns(self::TEST_TABLE);
+        $tableColumns = Schema::getColumnListing(self::TEST_TABLE);
         $this->assertCount(2, $tableColumns);
-        $this->assertEquals('id', $tableColumns[0]['name']);
-        $this->assertEquals('column_z', $tableColumns[1]['name']);
+        $this->assertEquals('id', $tableColumns[0]);
+        $this->assertEquals('column_z', $tableColumns[1]);
     }
 
     public function test_rename_column_without_deleted_ones(): void
@@ -58,10 +58,10 @@ class MigrationRenamingTest extends DatabaseTestCase
             $table->renameColumn('column_x', 'column_z');
         });
 
-        $tableColumns = Schema::getColumns(self::TEST_TABLE);
+        $tableColumns = Schema::getColumnListing(self::TEST_TABLE);
         $this->assertCount(3, $tableColumns);
-        $this->assertEquals('id', $tableColumns[0]['name']);
-        $this->assertEquals('column_y', $tableColumns[1]['name']);
-        $this->assertEquals('column_z', $tableColumns[2]['name']);
+        $this->assertEquals('id', $tableColumns[0]);
+        $this->assertEquals('column_y', $tableColumns[1]);
+        $this->assertEquals('column_z', $tableColumns[2]);
     }
 }
