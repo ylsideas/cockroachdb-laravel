@@ -8,7 +8,7 @@ use Doctrine\DBAL\Schema\AbstractSchemaManager;
 use Illuminate\Database\PDO\PostgresDriver;
 use YlsIdeas\CockroachDb\Schema\CockroachSchemaManager;
 
-class CockroachDBDriver extends PostgresDriver
+class CockroachDbDriver extends PostgresDriver
 {
     public function getSchemaManager(Connection $conn, AbstractPlatform $platform): AbstractSchemaManager
     {
