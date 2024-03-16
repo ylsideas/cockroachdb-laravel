@@ -5,9 +5,22 @@ namespace YlsIdeas\CockroachDb\Schema;
 use Doctrine\DBAL\Result;
 use Doctrine\DBAL\Schema\Identifier;
 use Doctrine\DBAL\Schema\PostgreSQLSchemaManager;
+use Doctrine\DBAL\Schema\Table;
 
 class CockroachSchemaManager extends PostgreSQLSchemaManager
 {
+    public function introspectTable(string $table): Table
+    {
+        // It's possible that users may be using a pre doctrine\dbal 3.5 version.
+        // In the event this is the case we warn the user that using the SchemaManager will fail.
+        if (is_callable('parent::introspectTable')) {
+            /** @phpstan-ignore-next-line method will not exist depending on installed dependencies */
+            return parent::introspectTable($table);
+        }
+
+        throw new \RuntimeException('Method introspectTable() not implemented. You need to update doctrine\dbal to ^3.5');
+    }
+
     protected function selectTableColumns(string $databaseName, ?string $tableName = null): Result
     {
         $sql = 'SELECT';

@@ -2,6 +2,8 @@
 
 namespace YlsIdeas\CockroachDb\Tests\Integration\Database;
 
+use Composer\InstalledVersions;
+use Composer\Semver\VersionParser;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
@@ -12,6 +14,14 @@ class MigrationRenamingTest extends DatabaseTestCase
     protected function setUp(): void
     {
         parent::setUp();
+
+        if (!InstalledVersions::satisfies(new VersionParser(), 'doctrine/dbal', '^3.5')) {
+            $this->markTestSkipped(<<<MESSAGE
+These tests will always fail under due to pre `doctrine\dbal:3.5` installations missing
+Doctrine\DBAL\Schema\PostgreSQLSchemaManager::introspectTable() method.
+MESSAGE
+            );
+        }
 
         Schema::create(self::TEST_TABLE, function (Blueprint $table) {
             $table->id();
