@@ -14,7 +14,6 @@ class CockroachSchemaManager extends PostgreSQLSchemaManager
         // It's possible that users may be using a pre doctrine\dbal 3.5 version.
         // In the event this is the case we warn the user that using the SchemaManager will fail.
         if (is_callable('parent::introspectTable')) {
-            /** @phpstan-ignore-next-line method will not exist depending on installed dependencies */
             return parent::introspectTable($table);
         }
 
