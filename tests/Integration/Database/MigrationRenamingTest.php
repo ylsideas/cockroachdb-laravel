@@ -15,11 +15,12 @@ class MigrationRenamingTest extends DatabaseTestCase
     {
         parent::setUp();
 
-        if (!InstalledVersions::satisfies(new VersionParser(), 'doctrine/dbal', '^3.5')) {
-            $this->markTestSkipped(<<<MESSAGE
-These tests will always fail under due to pre `doctrine\dbal:3.5` installations missing
-Doctrine\DBAL\Schema\PostgreSQLSchemaManager::introspectTable() method.
-MESSAGE
+        if (! InstalledVersions::satisfies(new VersionParser(), 'doctrine/dbal', '^3.5')) {
+            $this->markTestSkipped(
+                <<<MESSAGE
+                    These tests will always fail under due to pre `doctrine\dbal:3.5` installations missing
+                    Doctrine\DBAL\Schema\PostgreSQLSchemaManager::introspectTable() method.
+                    MESSAGE
             );
         }
 
