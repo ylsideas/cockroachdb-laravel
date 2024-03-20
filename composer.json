@@ -17,22 +17,22 @@
         }
     ],
     "require": {
-        "php": "^8.1",
+        "php": "^8.2",
         "spatie/laravel-package-tools": "^1.9.2",
-        "illuminate/contracts": "10.*|9.*|8.*"
+        "illuminate/contracts": "11.*|10.*|9.*"
     },
     "require-dev": {
         "doctrine/dbal": "^3.2",
         "laravel/pint": "^1.2",
-        "nunomaduro/collision": "7.2|^6.0|^5.10",
-        "nunomaduro/larastan": "^2.0|^1.0",
-        "orchestra/testbench": "^8.0|^7.0|^6.24",
+        "nunomaduro/collision": "^8.1|7.2|^6.0|^5.10",
+        "larastan/larastan": "^2.0",
+        "orchestra/testbench": "^9.0|^8.0|^7.0",
         "pestphp/pest": "^1.21|^2.23",
         "pestphp/pest-plugin-laravel": "^1.1|^2.2",
         "phpstan/extension-installer": "^1.1",
         "phpstan/phpstan-deprecation-rules": "^1.0",
         "phpstan/phpstan-phpunit": "^1.0",
-        "rector/rector": "^0.14.2",
+        "rector/rector": "^0.14.2|^1.0",
         "spatie/laravel-ray": "^1.26"
     },
     "autoload": {
