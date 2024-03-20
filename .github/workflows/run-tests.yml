@@ -20,6 +20,8 @@ jobs:
         cockroachdb: [ v22.2.17, v23.1.13 ]
         dependencies: [ stable, lowest ]
         include:
+          - laravel: 11.*
+            testbench: ^9.0
           - laravel: 10.*
             testbench: ^8.0
           - laravel: 9.*
