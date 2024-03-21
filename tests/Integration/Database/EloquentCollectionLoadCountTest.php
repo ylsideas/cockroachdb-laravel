@@ -118,12 +118,12 @@ class PostLoadCollection extends Model
 
     public function comments()
     {
-        return $this->hasMany(CommentLoadCollection::class);
+        return $this->hasMany(CommentLoadCollection::class, 'post_id');
     }
 
     public function likes()
     {
-        return $this->hasMany(LikeLoadCollection::class);
+        return $this->hasMany(LikeLoadCollection::class, 'post_id');
     }
 }
 
