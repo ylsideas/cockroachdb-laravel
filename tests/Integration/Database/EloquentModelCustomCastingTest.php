@@ -170,7 +170,7 @@ class EloquentModelCustomCastingTest extends TestCase
     public function test_model_with_custom_casts_work_with_custom_increment_decrement()
     {
         $this->skipIfNewerThan('11.0.0');
-        
+
         $model = new Member();
         $model->amount = new Euro('2');
         $model->save();
