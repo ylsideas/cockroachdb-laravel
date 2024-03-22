@@ -10,7 +10,7 @@ class DatabaseCockroachDbProcessorTest extends TestCase
 {
     use WithMultipleApplicationVersions;
 
-    public function testProcessColumns()
+    public function test_process_columns()
     {
         $this->skipIfOlderThan('11.0.0');
         $processor = new CockroachDbProcessor();
