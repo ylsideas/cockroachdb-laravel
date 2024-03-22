@@ -1105,6 +1105,10 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
 
     public function test_compile_columns()
     {
+        if (! method_exists($this->getGrammar(), 'compileColumns')) {
+            $this->markTestSkipped('Installed Laravel Version does not have compileColumns() method');
+        }
+
         $statement = $this->getGrammar()->compileColumns('db', 'public', 'table');
 
         $this->assertStringContainsString("where c.relname = 'table' and n.nspname = 'public'", $statement);
