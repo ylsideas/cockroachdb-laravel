@@ -728,10 +728,10 @@ class EloquentBelongsToManyTest extends DatabaseTestCase
         $post->tags()->touch();
 
         foreach ($post->tags()->pluck('tags.updated_at') as $date) {
-            $this->assertSame('2017-10-10 10:10:10', $date);
+            $this->assertSame('2017-10-10 10:10:10', $date->toDateTimeString());
         }
 
-        $this->assertNotSame('2017-10-10 10:10:10', Tag::find(300)->updated_at);
+        $this->assertNotSame('2017-10-10 10:10:10', Tag::find(300)->updated_at?->toDateTimeString());
     }
 
     /** @group SkipMSSQL */
