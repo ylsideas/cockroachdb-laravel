@@ -14,12 +14,16 @@ use Illuminate\Database\Schema\Blueprint;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
+use YlsIdeas\CockroachDb\Tests\WithMultipleApplicationVersions;
 
 #[Group('integration')]
 class EloquentModelCustomCastingTest extends TestCase
 {
+    use WithMultipleApplicationVersions;
+
     protected function setUp(): void
     {
+        $this->skipIfOlderThan('9.28.0');
         $db = new DB();
 
         $db->addConnection([
@@ -69,7 +73,7 @@ class EloquentModelCustomCastingTest extends TestCase
     #[RequiresPhpExtension('gmp')]
     public function test_saving_casted_attributes_to_database()
     {
-        /** @var \Illuminate\Tests\Integration\Database\CustomCasts $model */
+        /** @var \YlsIdeas\CockroachDb\Tests\Integration\Database\CustomCasts $model */
         $model = CustomCasts::create([
             'address' => new AddressModel('address_line_one_value', 'address_line_two_value'),
             'amount' => gmp_init('1000', 10),
@@ -88,7 +92,7 @@ class EloquentModelCustomCastingTest extends TestCase
         $this->assertNull($model->getAttribute('string_field'));
         $this->assertSame('', $model->getRawOriginal('string_field'));
 
-        /** @var \Illuminate\Tests\Integration\Database\CustomCasts $another_model */
+        /** @var \YlsIdeas\CockroachDb\Tests\Integration\Database\CustomCasts $another_model */
         $another_model = CustomCasts::create([
             'address_line_one' => 'address_line_one_value',
             'address_line_two' => 'address_line_two_value',
@@ -106,7 +110,7 @@ class EloquentModelCustomCastingTest extends TestCase
     #[RequiresPhpExtension('gmp')]
     public function test_invalid_argument_exception_on_invalid_value()
     {
-        /** @var \Illuminate\Tests\Integration\Database\CustomCasts $model */
+        /** @var \YlsIdeas\CockroachDb\Tests\Integration\Database\CustomCasts $model */
         $model = CustomCasts::create([
             'address' => new AddressModel('address_line_one_value', 'address_line_two_value'),
             'amount' => gmp_init('1000', 10),
@@ -125,7 +129,7 @@ class EloquentModelCustomCastingTest extends TestCase
     #[RequiresPhpExtension('gmp')]
     public function test_invalid_argument_exception_on_null()
     {
-        /** @var \Illuminate\Tests\Integration\Database\CustomCasts $model */
+        /** @var \YlsIdeas\CockroachDb\Tests\Integration\Database\CustomCasts $model */
         $model = CustomCasts::create([
             'address' => new AddressModel('address_line_one_value', 'address_line_two_value'),
             'amount' => gmp_init('1000', 10),
@@ -144,7 +148,7 @@ class EloquentModelCustomCastingTest extends TestCase
     #[RequiresPhpExtension('gmp')]
     public function test_models_with_custom_casts_can_be_converted_to_arrays()
     {
-        /** @var \Illuminate\Tests\Integration\Database\CustomCasts $model */
+        /** @var \YlsIdeas\CockroachDb\Tests\Integration\Database\CustomCasts $model */
         $model = CustomCasts::create([
             'address' => new AddressModel('address_line_one_value', 'address_line_two_value'),
             'amount' => gmp_init('1000', 10),
