@@ -10,9 +10,18 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+use YlsIdeas\CockroachDb\Tests\WithMultipleApplicationVersions;
 
 class EloquentEagerLoadingLimitTest extends DatabaseTestCase
 {
+    use WithMultipleApplicationVersions;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+        $this->skipIfOlderThan('11.0.0');
+    }
+
     protected function afterRefreshingDatabase()
     {
         Schema::create('users', function (Blueprint $table) {
