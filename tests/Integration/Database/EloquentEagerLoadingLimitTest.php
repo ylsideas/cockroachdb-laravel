@@ -75,7 +75,7 @@ class EloquentEagerLoadingLimitTest extends DatabaseTestCase
         ]);
     }
 
-    public function testBelongsToMany(): void
+    public function test_belongs_to_many(): void
     {
         $users = EagerLoadLimitUser::with(['roles' => fn ($query) => $query->latest()->limit(2)])
             ->orderBy('id')
@@ -87,7 +87,7 @@ class EloquentEagerLoadingLimitTest extends DatabaseTestCase
         $this->assertArrayNotHasKey('@laravel_group := `user_id`', $users[0]->roles[0]);
     }
 
-    public function testBelongsToManyWithOffset(): void
+    public function test_belongs_to_many_with_offset(): void
     {
         $users = EagerLoadLimitUser::with(['roles' => fn ($query) => $query->latest()->limit(2)->offset(1)])
             ->orderBy('id')
@@ -97,7 +97,7 @@ class EloquentEagerLoadingLimitTest extends DatabaseTestCase
         $this->assertEquals([500, 400], $users[1]->roles->pluck('id')->all());
     }
 
-    public function testHasMany(): void
+    public function test_has_many(): void
     {
         $users = EagerLoadLimitUser::with(['posts' => fn ($query) => $query->latest()->limit(2)])
             ->orderBy('id')
@@ -109,7 +109,7 @@ class EloquentEagerLoadingLimitTest extends DatabaseTestCase
         $this->assertArrayNotHasKey('@laravel_group := `user_id`', $users[0]->posts[0]);
     }
 
-    public function testHasManyWithOffset(): void
+    public function test_has_many_with_offset(): void
     {
         $users = EagerLoadLimitUser::with(['posts' => fn ($query) => $query->latest()->limit(2)->offset(1)])
             ->orderBy('id')
@@ -119,7 +119,7 @@ class EloquentEagerLoadingLimitTest extends DatabaseTestCase
         $this->assertEquals([500, 400], $users[1]->posts->pluck('id')->all());
     }
 
-    public function testHasManyThrough(): void
+    public function test_has_many_through(): void
     {
         $users = EagerLoadLimitUser::with(['comments' => fn ($query) => $query->latest('comments.created_at')->limit(2)])
             ->orderBy('id')
@@ -131,7 +131,7 @@ class EloquentEagerLoadingLimitTest extends DatabaseTestCase
         $this->assertArrayNotHasKey('@laravel_group := `user_id`', $users[0]->comments[0]);
     }
 
-    public function testHasManyThroughWithOffset(): void
+    public function test_has_many_through_with_offset(): void
     {
         $users = EagerLoadLimitUser::with(['comments' => fn ($query) => $query->latest('comments.created_at')->limit(2)->offset(1)])
             ->orderBy('id')
