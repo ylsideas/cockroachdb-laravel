@@ -17,7 +17,7 @@ jobs:
         os: [ ubuntu-latest ]
         php: [ 8.2, 8.3 ]
         laravel: [ 11.*, 10.*, 9.* ]
-        cockroachdb: [ v22.2.17, v23.1.16 ]
+        cockroachdb: [ v22.2.17, v23.2.2 ]
         dependencies: [ stable, lowest ]
         include:
           - laravel: 11.*
