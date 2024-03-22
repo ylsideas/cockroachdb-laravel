@@ -73,9 +73,11 @@ class CockroachDbConnection extends PostgresConnection implements ConnectionInte
      * Get the Doctrine DBAL driver.
      *
      * @return \Illuminate\Database\PDO\PostgresDriver
+     * @phpstan-ignore-next-line Missing in Laravel 11
      */
     protected function getDoctrineDriver()
     {
+        /** @phpstan-ignore-next-line Now redundant in Laravel 11 */
         return new PostgresDriver();
     }
 
