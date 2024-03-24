@@ -7,7 +7,7 @@ use Illuminate\Database\Schema\Grammars\PostgresGrammar;
 use Illuminate\Support\Fluent;
 use YlsIdeas\CockroachDb\Exceptions\FeatureNotSupportedException;
 
-class CockroachGrammar extends PostgresGrammar
+class CockroachDbGrammar extends PostgresGrammar
 {
     /**
      * Compile the query to determine the tables.

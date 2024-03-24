@@ -10,7 +10,7 @@ use Illuminate\Filesystem\Filesystem;
 use YlsIdeas\CockroachDb\Builder\CockroachDbBuilder as DbBuilder;
 use YlsIdeas\CockroachDb\Processor\CockroachDbProcessor as DbProcessor;
 use YlsIdeas\CockroachDb\Query\CockroachGrammar as QueryGrammar;
-use YlsIdeas\CockroachDb\Schema\CockroachGrammar as SchemaGrammar;
+use YlsIdeas\CockroachDb\Schema\CockroachDbGrammar as SchemaGrammar;
 use YlsIdeas\CockroachDb\Schema\CockroachSchemaState as SchemaState;
 
 class CockroachDbConnection extends PostgresConnection implements ConnectionInterface
@@ -73,9 +73,11 @@ class CockroachDbConnection extends PostgresConnection implements ConnectionInte
      * Get the Doctrine DBAL driver.
      *
      * @return \Illuminate\Database\PDO\PostgresDriver
+     * @phpstan-ignore-next-line Missing in Laravel 11
      */
     protected function getDoctrineDriver()
     {
+        /** @phpstan-ignore-next-line Now redundant in Laravel 11 */
         return new PostgresDriver();
     }
 
