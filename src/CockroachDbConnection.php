@@ -10,7 +10,7 @@ use Illuminate\Filesystem\Filesystem;
 use YlsIdeas\CockroachDb\Builder\CockroachDbBuilder as DbBuilder;
 use YlsIdeas\CockroachDb\Processor\CockroachDbProcessor as DbProcessor;
 use YlsIdeas\CockroachDb\Query\CockroachGrammar as QueryGrammar;
-use YlsIdeas\CockroachDb\Schema\CockroachGrammar as SchemaGrammar;
+use YlsIdeas\CockroachDb\Schema\CockroachDbGrammar as SchemaGrammar;
 use YlsIdeas\CockroachDb\Schema\CockroachSchemaState as SchemaState;
 
 class CockroachDbConnection extends PostgresConnection implements ConnectionInterface

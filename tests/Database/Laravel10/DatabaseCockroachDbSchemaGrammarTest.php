@@ -9,7 +9,7 @@ use Illuminate\Support\Fluent;
 use Mockery as m;
 use PHPUnit\Framework\TestCase;
 use YlsIdeas\CockroachDb\Exceptions\FeatureNotSupportedException;
-use YlsIdeas\CockroachDb\Schema\CockroachGrammar;
+use YlsIdeas\CockroachDb\Schema\CockroachDbGrammar;
 use YlsIdeas\CockroachDb\Tests\WithMultipleApplicationVersions;
 
 class DatabaseCockroachDbSchemaGrammarTest extends TestCase
@@ -1100,7 +1100,7 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
 
     public function getGrammar()
     {
-        return new CockroachGrammar();
+        return new CockroachDbGrammar();
     }
 
     public function test_compile_columns()
