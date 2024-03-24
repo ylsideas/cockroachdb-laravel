@@ -263,6 +263,8 @@ class DatabaseCockroachDbBuilderTest extends TestCase
 
     public function test_drop_all_tables_when_search_path_is_string()
     {
+        $this->skipIfOlderThan('11.0.0');
+
         $connection = $this->getConnection();
         $connection->shouldReceive('getConfig')->with('search_path')->andReturn('public');
         $connection->shouldReceive('getConfig')->with('dont_drop')->andReturn(['foo']);
@@ -309,6 +311,8 @@ class DatabaseCockroachDbBuilderTest extends TestCase
 
     public function test_drop_all_tables_when_search_path_is_array_of_many()
     {
+        $this->skipIfOlderThan('11.0.0');
+
         $connection = $this->getConnection();
         $connection->shouldReceive('getConfig')->with('username')->andReturn('foouser');
         $connection->shouldReceive('getConfig')->with('search_path')->andReturn([
