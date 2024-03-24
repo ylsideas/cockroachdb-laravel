@@ -8,10 +8,12 @@ use PHPUnit\Framework\TestCase;
 use YlsIdeas\CockroachDb\Builder\CockroachDbBuilder;
 use YlsIdeas\CockroachDb\Processor\CockroachDbProcessor;
 use YlsIdeas\CockroachDb\Schema\CockroachDbGrammar;
+use YlsIdeas\CockroachDb\Tests\WithMultipleApplicationVersions;
 
 class DatabaseCockroachDbBuilderTest extends TestCase
 {
     use m\Adapter\Phpunit\MockeryPHPUnitIntegration;
+    use WithMultipleApplicationVersions;
 
     protected function tearDown(): void
     {
@@ -73,6 +75,8 @@ class DatabaseCockroachDbBuilderTest extends TestCase
 
     public function test_has_table_when_schema_unqualified_and_search_path_filled()
     {
+        $this->skipIfOlderThan('11.0.0');
+
         $connection = $this->getConnection();
         $connection->shouldReceive('getConfig')->with('search_path')->andReturn('myapp,public');
         $grammar = m::mock(CockroachDbGrammar::class);
@@ -91,6 +95,8 @@ class DatabaseCockroachDbBuilderTest extends TestCase
 
     public function test_has_table_when_schema_unqualified_and_search_path_fallback_filled()
     {
+        $this->skipIfOlderThan('11.0.0');
+
         $connection = $this->getConnection();
         $connection->shouldReceive('getConfig')->with('search_path')->andReturn(null);
         $connection->shouldReceive('getConfig')->with('schema')->andReturn(['myapp', 'public']);
@@ -110,6 +116,8 @@ class DatabaseCockroachDbBuilderTest extends TestCase
 
     public function test_has_table_when_schema_unqualified_and_search_path_is_user_variable()
     {
+        $this->skipIfOlderThan('11.0.0');
+
         $connection = $this->getConnection();
         $connection->shouldReceive('getConfig')->with('username')->andReturn('foouser');
         $connection->shouldReceive('getConfig')->with('search_path')->andReturn('$user');
@@ -129,6 +137,8 @@ class DatabaseCockroachDbBuilderTest extends TestCase
 
     public function test_has_table_when_schema_qualified_and_search_path_mismatches()
     {
+        $this->skipIfOlderThan('11.0.0');
+
         $connection = $this->getConnection();
         $connection->shouldReceive('getConfig')->with('search_path')->andReturn('public');
         $grammar = m::mock(CockroachDbGrammar::class);
@@ -146,6 +156,8 @@ class DatabaseCockroachDbBuilderTest extends TestCase
 
     public function test_has_table_when_database_and_schema_qualified_and_search_path_mismatches()
     {
+        $this->skipIfOlderThan('11.0.0');
+
         $this->expectException(\InvalidArgumentException::class);
 
         $connection = $this->getConnection();
@@ -158,6 +170,8 @@ class DatabaseCockroachDbBuilderTest extends TestCase
 
     public function test_get_column_listing_when_schema_unqualified_and_search_path_missing()
     {
+        $this->skipIfOlderThan('11.0.0');
+
         $connection = $this->getConnection();
         $connection->shouldReceive('getConfig')->with('search_path')->andReturn(null);
         $connection->shouldReceive('getConfig')->with('schema')->andReturn(null);
@@ -176,6 +190,8 @@ class DatabaseCockroachDbBuilderTest extends TestCase
 
     public function test_get_column_listing_when_schema_unqualified_and_search_path_filled()
     {
+        $this->skipIfOlderThan('11.0.0');
+
         $connection = $this->getConnection();
         $connection->shouldReceive('getConfig')->with('search_path')->andReturn('myapp,public');
         $grammar = m::mock(CockroachDbGrammar::class);
@@ -193,6 +209,8 @@ class DatabaseCockroachDbBuilderTest extends TestCase
 
     public function test_get_column_listing_when_schema_unqualified_and_search_path_is_user_variable()
     {
+        $this->skipIfOlderThan('11.0.0');
+
         $connection = $this->getConnection();
         $connection->shouldReceive('getConfig')->with('username')->andReturn('foouser');
         $connection->shouldReceive('getConfig')->with('search_path')->andReturn('$user');
@@ -211,6 +229,8 @@ class DatabaseCockroachDbBuilderTest extends TestCase
 
     public function test_get_column_listing_when_schema_qualified_and_search_path_mismatches()
     {
+        $this->skipIfOlderThan('11.0.0');
+
         $connection = $this->getConnection();
         $connection->shouldReceive('getConfig')->with('search_path')->andReturn('public');
         $grammar = m::mock(CockroachDbGrammar::class);
@@ -228,6 +248,8 @@ class DatabaseCockroachDbBuilderTest extends TestCase
 
     public function test_get_column_when_database_and_schema_qualified_and_search_path_mismatches()
     {
+        $this->skipIfOlderThan('11.0.0');
+
         $this->expectException(\InvalidArgumentException::class);
 
         $connection = $this->getConnection();
