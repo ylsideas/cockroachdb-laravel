@@ -52,6 +52,8 @@ class DatabaseCockroachDbBuilderTest extends TestCase
 
     public function test_has_table_when_schema_unqualified_and_search_path_missing()
     {
+        $this->skipIfOlderThan('10.0.0');
+        
         $connection = $this->getConnection();
         $connection->shouldReceive('getConfig')->with('search_path')->andReturn(null);
         $connection->shouldReceive('getConfig')->with('schema')->andReturn(null);
