@@ -12,7 +12,7 @@
 A driver/grammar for Laravel that works with CockroachDB. While CockroachDB is compatible with Postgresql, this support
 is not 1 to 1 meaning you may run into issues, this driver hopes to resolve those problems as much as possible.
 
-Laravel 9 through to Laravel 10 is supported and tested against CockroachDB 22 & 23.
+Laravel 9 through to Laravel 11 is supported and tested against CockroachDB 22 & 23.
 
 ### Supporting Open Source
 
