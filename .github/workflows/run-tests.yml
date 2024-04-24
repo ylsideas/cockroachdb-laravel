@@ -15,11 +15,13 @@ jobs:
       fail-fast: false
       matrix:
         os: [ ubuntu-latest ]
-        php: [ 8.1, 8.2, 8.3 ]
-        laravel: [ 10.*, 9.* ]
-        cockroachdb: [ v22.2.17, v23.1.13 ]
+        php: [ 8.2, 8.3 ]
+        laravel: [ 11.*, 10.*, 9.* ]
+        cockroachdb: [ v22.2.17, v23.2.2 ]
         dependencies: [ stable, lowest ]
         include:
+          - laravel: 11.*
+            testbench: ^9.0
           - laravel: 10.*
             testbench: ^8.0
           - laravel: 9.*
@@ -72,7 +74,7 @@ jobs:
           --no-interaction --no-update
 
       - name: Install dependencies
-        uses: ramsey/composer-install@v2
+        uses: ramsey/composer-install@v3
         with:
           dependency-versions: ${{ matrix.dependencies }}
           composer-options: ${{ matrix.composer-options }}

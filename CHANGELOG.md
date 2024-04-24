@@ -2,6 +2,14 @@
 
 All notable changes to `cockroachdb-laravel` will be documented in this file.
 
+## v1.4.0 - 2024-03-24
+
+### What's Changed
+
+* Upgrade to Laravel 11 by @peterfox in https://github.com/ylsideas/cockroachdb-laravel/pull/37
+
+**Full Changelog**: https://github.com/ylsideas/cockroachdb-laravel/compare/v1.3.0...v1.4.0
+
 ## v1.3.0 - 2024-01-14
 
 ### What's Changed

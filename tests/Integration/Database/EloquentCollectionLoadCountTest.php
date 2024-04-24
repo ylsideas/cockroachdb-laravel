@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Integration\Database;
+namespace YlsIdeas\CockroachDb\Tests\Integration\Database;
 
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
-use YlsIdeas\CockroachDb\Tests\Integration\Database\DatabaseTestCase;
 
 class EloquentCollectionLoadCountTest extends DatabaseTestCase
 {
@@ -30,17 +29,17 @@ class EloquentCollectionLoadCountTest extends DatabaseTestCase
             $table->unsignedInteger('post_id');
         });
 
-        $post = Post::create();
-        $post->comments()->saveMany([new Comment(), new Comment()]);
+        $post = PostLoadCollection::create();
+        $post->comments()->saveMany([new CommentLoadCollection(), new CommentLoadCollection()]);
 
-        $post->likes()->save(new Like());
+        $post->likes()->save(new LikeLoadCollection());
 
-        Post::create();
+        PostLoadCollection::create();
     }
 
     public function test_load_count()
     {
-        $posts = Post::all();
+        $posts = PostLoadCollection::all();
 
         DB::enableQueryLog();
 
@@ -54,7 +53,7 @@ class EloquentCollectionLoadCountTest extends DatabaseTestCase
 
     public function test_load_count_with_same_models()
     {
-        $posts = Post::all()->push(Post::first());
+        $posts = PostLoadCollection::all()->push(PostLoadCollection::first());
 
         DB::enableQueryLog();
 
@@ -68,7 +67,7 @@ class EloquentCollectionLoadCountTest extends DatabaseTestCase
 
     public function test_load_count_on_deleted_models()
     {
-        $posts = Post::all()->each->delete();
+        $posts = PostLoadCollection::all()->each->delete();
 
         DB::enableQueryLog();
 
@@ -81,7 +80,7 @@ class EloquentCollectionLoadCountTest extends DatabaseTestCase
 
     public function test_load_count_with_array_of_relations()
     {
-        $posts = Post::all();
+        $posts = PostLoadCollection::all();
 
         DB::enableQueryLog();
 
@@ -96,7 +95,7 @@ class EloquentCollectionLoadCountTest extends DatabaseTestCase
 
     public function test_load_count_does_not_override_attributes_with_default_value()
     {
-        $post = Post::first();
+        $post = PostLoadCollection::first();
         $post->some_default_value = 200;
 
         Collection::make([$post])->loadCount('comments');
@@ -106,9 +105,10 @@ class EloquentCollectionLoadCountTest extends DatabaseTestCase
     }
 }
 
-class Post extends Model
+class PostLoadCollection extends Model
 {
     use SoftDeletes;
+    protected $table = 'posts';
 
     protected $attributes = [
         'some_default_value' => 100,
@@ -118,21 +118,23 @@ class Post extends Model
 
     public function comments()
     {
-        return $this->hasMany(Comment::class);
+        return $this->hasMany(CommentLoadCollection::class, 'post_id');
     }
 
     public function likes()
     {
-        return $this->hasMany(Like::class);
+        return $this->hasMany(LikeLoadCollection::class, 'post_id');
     }
 }
 
-class Comment extends Model
+class CommentLoadCollection extends Model
 {
     public $timestamps = false;
+    protected $table = 'comments';
 }
 
-class Like extends Model
+class LikeLoadCollection extends Model
 {
+    protected $table = 'likes';
     public $timestamps = false;
 }

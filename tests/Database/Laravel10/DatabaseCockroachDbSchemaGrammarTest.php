@@ -9,7 +9,7 @@ use Illuminate\Support\Fluent;
 use Mockery as m;
 use PHPUnit\Framework\TestCase;
 use YlsIdeas\CockroachDb\Exceptions\FeatureNotSupportedException;
-use YlsIdeas\CockroachDb\Schema\CockroachGrammar;
+use YlsIdeas\CockroachDb\Schema\CockroachDbGrammar;
 use YlsIdeas\CockroachDb\Tests\WithMultipleApplicationVersions;
 
 class DatabaseCockroachDbSchemaGrammarTest extends TestCase
@@ -22,6 +22,7 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
     public function onlyForLaravel10()
     {
         $this->skipIfOlderThan('10.0.0');
+        $this->skipIfNewerThan('11.0.0');
     }
 
     protected function tearDown(): void
@@ -1099,7 +1100,18 @@ class DatabaseCockroachDbSchemaGrammarTest extends TestCase
 
     public function getGrammar()
     {
-        return new CockroachGrammar();
+        return new CockroachDbGrammar();
+    }
+
+    public function test_compile_columns()
+    {
+        if (! method_exists($this->getGrammar(), 'compileColumns')) {
+            $this->markTestSkipped('Installed Laravel Version does not have compileColumns() method');
+        }
+
+        $statement = $this->getGrammar()->compileColumns('db', 'public', 'table');
+
+        $this->assertStringContainsString("where c.relname = 'table' and n.nspname = 'public'", $statement);
     }
 
     public function test_grammars_are_macroable()
