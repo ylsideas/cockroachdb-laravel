@@ -35,6 +35,6 @@ jobs:
       - name: Execute tests
         run: vendor/bin/pest
 
-      - uses: codecov/codecov-action@v4
+      - uses: codecov/codecov-action@v5
         with:
           files: ./build/logs/clover.xml
