@@ -1,6 +1,6 @@
 services:
   crdb:
-    image: "cockroachdb/cockroach:${VERSION:-v24.2.0}"
+    image: "cockroachdb/cockroach:${VERSION:-v23.2.16}"
     ports:
       - "26257:26257"
       - "8080:8080"
