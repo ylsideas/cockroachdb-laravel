@@ -33,7 +33,7 @@ class CockroachSchemaState extends SchemaState
         });
 
         if ($statements !== []) {
-            $file .= PHP_EOL . $statements[0]['query'];
+            $file .= PHP_EOL . $statements[0]['query'] .(ends_with(trim($statements[0]['query']), ';') ? '' : ';');
         }
 
         $this->files->put($path, $file);

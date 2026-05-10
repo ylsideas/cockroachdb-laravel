@@ -16,14 +16,16 @@ class CockroachDbGrammar extends PostgresGrammar
      * https://github.com/cockroachdb/cockroach/issues/20712
      * https://github.com/cockroachdb/cockroach/pull/59604
      *
+     * @param  string|null  $schema
      * @return string
      */
-    public function compileTables()
+    public function compileTables($schema = null)
     {
         return 'select c.relname as name, n.nspname as schema, -1 as size, '
             . 'obj_description(c.oid, \'pg_class\') as comment from pg_class c, pg_namespace n '
-            . 'where c.relkind = \'r\' and n.oid = c.relnamespace '
-            . 'order by c.relname';
+            . 'where c.relkind = \'r\' and n.oid = c.relnamespace and '
+            . $this->compileSchemaWhereClause($schema, 'n.nspname')
+            . ' order by n.nspname, c.relname';
     }
 
     /**

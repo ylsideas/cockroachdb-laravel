@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(test:*)",
+      "Bash(composer install:*)",
+      "Bash(vendor/bin/pest:*)",
+      "Bash(composer show:*)",
+      "Bash(php -r:*)",
+      "Bash(git stash:*)",
+      "Bash(git checkout:*)",
+      "WebSearch",
+      "WebFetch(domain:github.com)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
